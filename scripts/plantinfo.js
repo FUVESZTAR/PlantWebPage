@@ -590,7 +590,7 @@ fetch("images/images.json")
     }
 
   });*/
-const imgText = plant.Nr + "_" + plant.LatinName;
+const imgText = plant.Nr + "_" + plant.LatinName+ "_" + plant.Name_Variety;
 const searchId = normalizeName(imgText);
 
 fetch("images/images.json")
