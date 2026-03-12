@@ -133,9 +133,10 @@ console.log("start1");
     let plant;
     console.log("load" ,plantLatinName);
     if (plantLatinName) {
-      plant = plants.find((item) => item.LatinName === decodeURIComponent(plantLatinName));
+      const decodedLatinName = decodeURIComponent(plantLatinName).trim();
+      plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName);
     } else {
-      plant = plants.find((item) => item.Nr === selectedNr);
+      plant = plants.find((item) => String(item.Nr) === String(selectedNr));
     }
 
     if (!plant) {

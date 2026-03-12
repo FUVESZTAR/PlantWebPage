@@ -34,7 +34,7 @@ async function populate() {
     if (selector.value) {
       localStorage.setItem("selectedPlantNr", selector.value);
       // Find the selected plant to get LatinName for direct linking
-      const selectedPlant = plants.find((p) => p.Nr === selector.value);
+      const selectedPlant = plants.find((p) => String(p.Nr) === selector.value);
       if (selectedPlant && selectedPlant.LatinName) {
         console.log("Navigating with LatinName:", selectedPlant.LatinName);
         window.location.href = `PlantInfoPage.html?plant=${encodeURIComponent(selectedPlant.LatinName)}`;
