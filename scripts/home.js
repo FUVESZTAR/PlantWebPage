@@ -12,6 +12,7 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   openBtn.disabled = true;
+  nfcBtn.disabled = true;
 
   let plants = []; // Declare plants outside try block so it's accessible in event handlers
 
@@ -34,6 +35,7 @@ async function populate() {
 
   selector.addEventListener("change", () => {
     openBtn.disabled = !selector.value;
+    nfcBtn.disabled = !selector.value;
   });
 
   openBtn.addEventListener("click", () => {
