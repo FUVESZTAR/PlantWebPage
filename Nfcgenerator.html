@@ -25,6 +25,62 @@
         <button id="open-view" type="button" disabled>Generate NFC</button>
         <p class="error-message" id="error-message" aria-live="polite"></p>
       </section>
+
+         <div class="row">
+            <div>
+                <label>NR:</label>
+                <input type="text" id="nr" style="width:500px;" readonly>
+            </div>
+        </div>
+                 <div class="row">
+            <div>
+                <label>Year:</label>
+                <input type="text" id="name_hu" style="width:500px;" readonly>
+            </div>
+        </div>
+           <div class="row">
+            <div>
+                <label>Name:</label>
+                <input type="text" id="name_hu" style="width:500px;" readonly>
+            </div>
+        </div>
+         <div class="row">
+            <div>
+                <label>Variety:</label>
+                <input type="text" id="variety" style="width:500px;" readonly>
+            </div>
+        </div>
+         <div class="row">
+            <div>
+                <label>Latin Name:</label>
+                <input type="text" id="latinname" style="width:500px;" readonly>
+            </div>
+        </div>
+            <div>
+                <label>Date:</label>
+                <input type="text" id="datum" style="width:500px;" readonly>
+            </div>
+        </div>
+                  <div>
+                <label>NFC Typ:</label>
+                <input type="text" id="nfctyp" style="width:500px;" readonly>
+                    <!--  noveny / oltas  -->
+            </div>
+        </div>
+                  <div>
+                <label>Egyéb:</label>
+                <input type="text" id="egyeb" style="width:500px;" readonly>
+            </div>
+        </div>
+
+      <!--
+      135/2024/Póréhagyma/Walky/Allium ampeloprasum/Edible/Zöldség//
+      181/1994/Körte/Fehértói magonc/prunus communis/Edible/Fruit/oltóvessző/gyümölcs kemeny világos zöld augusztus vége édes savanykás, nagy , finom, kis növésű,  önmetsző
+      -->
+       <div class="section">
+           <h3>NFC Link</h3>
+        <p id="nfc-link">plant://0</p>
+    </div>
     </main>
 
     <script src="scripts/generate.js" type="module"></script>
