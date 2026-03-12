@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Page</title>
+    <link rel="stylesheet" href="css/homepagestyles.css" />
+  </head>
+  <body>
+    <main class="landing-wrapper">
+      <section class="card landing-card">
+        <h1>Plant Page</h1>
+        <p class="subtitle">Choose a plant and open its detailed view.</p>
+
+        <label for="plant-selector">Plant name</label>
+        <select id="plant-selector" aria-label="Select plant">
+          <option value="">Loading plants…</option>
+        </select>
+
+        <label for="plant-selector-variety">Variety</label>
+        <select id="plant-selector-variety" aria-label="Select plant variety">
+          <option value="">Loading varieties…</option>
+        </select>
+
+        <button id="open-view" type="button" disabled>Generate NFC</button>
+        <p class="error-message" id="error-message" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="scripts/generate.js" type="module"></script>
+  </body>
+</html>
