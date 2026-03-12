@@ -36,10 +36,14 @@ const ROW_COLORS = [
 const selectedNr = localStorage.getItem("selectedPlantNr");
 const urlParams = new URLSearchParams(window.location.search);
 const plantLatinName = urlParams.get("plant"); // Get plant from URL query param
+// Get URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const plantVariety = urlParams.get('variety');
 
 console.log("view.js loaded");
 console.log("selectedNr from localStorage:", selectedNr);
 console.log("plantLatinName from URL:", plantLatinName);
+console.log("plantVariety from URL:", plantVariety);
 
 document.querySelector("#back-button").addEventListener("click", () => {
   window.location.href = "HomePage.html";
