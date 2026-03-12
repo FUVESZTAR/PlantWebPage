@@ -1,0 +1,15 @@
+{
+  "1_malus_domestica": [
+    "1_malus_domestica_species.jpg",
+    "10_malus_domestica_voros.jpg"
+  ],
+  "2_ziziphus_jujuba": [
+    "2_ziziphus_jujuba.jpg"
+  ],
+  "6_prunus_communis": [
+    "6_prunus_communis.jpg"
+  ],
+  "default": [
+    "default.jpg"
+  ]
+}
