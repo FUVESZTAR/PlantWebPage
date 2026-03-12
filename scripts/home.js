@@ -2,7 +2,7 @@ import { loadPlantData } from "./csv-utils.js";
 
 // Add at the end of scripts/home.js
 document.querySelector('#nfc-button').addEventListener('click', () => {
-  window.location.href = '/Nfcgenerator.html';
+  window.location.href = 'Nfcgenerator.html';
 });
 
 
