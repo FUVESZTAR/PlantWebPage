@@ -1,1 +1,56 @@
-<button id="nfc-button">NFC Generator</button>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Page</title>
+    <link rel="stylesheet" href="/css/homepagestyles.css" />
+  </head>
+  <body>
+    <main class="landing-wrapper">
+      <section class="card landing-card">
+        <h1>Plant Page</h1>
+        <p class="subtitle">Choose a plant and open its detailed view.</p>
+
+        <label for="plant-selector">Plant name</label>
+        <select id="plant-selector" aria-label="Select plant">
+          <option value="">Loading plants…</option>
+        </select>
+
+        <label for="plant-selector-variety">Variety</label>
+        <select id="plant-selector-variety" aria-label="Select plant variety">
+          <option value="">Loading varieties…</option>
+        </select>
+        
+        <p class="subtitle">Lists</p>
+
+        <label for="plant-selector-family">Family</label>
+        <select id="plant-selector-family" aria-label="Select plant family">
+          <option value="">Loading families…</option>
+        </select>
+
+        <label for="plant-selector-genus">Genus</label>
+        <select id="plant-selector-genus" aria-label="Select plant genus">
+          <option value="">Loading genera…</option>
+        </select>
+
+        <label for="plant-selector-latin">Latin name</label>
+        <select id="plant-selector-latin" aria-label="Select plant latin name">
+          <option value="">Loading plants…</option>
+        </select>
+
+        <button id="open-view" type="button" disabled>Open Plant View</button>
+        <p class="error-message" id="error-message" aria-live="polite"></p>
+
+
+        <div>
+            <button>Open Plant View</button>
+            <button>NFC Generator</button> <!-- New NFC Generator button added -->
+        </div>
+        
+      </section>
+    </main>
+
+    <script src="scripts/home.js" type="module"></script>
+  </body>
+</html>
