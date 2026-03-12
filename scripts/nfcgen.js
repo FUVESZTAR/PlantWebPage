@@ -215,9 +215,9 @@ async function populate() {
     const egyeb = egyebInput.value;
     
     let plantInfoUrl = "";
-    if (selectedPlantIndex !== null) {
+    if (latinName) {
       const baseUrl = window.location.origin;
-      plantInfoUrl = `${baseUrl}/PlantInfoPage.html?plant=${selectedPlantIndex}`;
+      plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}`;
     }
     
     const nfcData = `${nr} / ${year} / ${nameHu} / ${nameVariety} / ${latinName} / ${datum} / ${nfctyp} / ${plantInfoUrl} / ${egyeb}`;
@@ -225,9 +225,10 @@ async function populate() {
   }
 
   function updateLinkPreview() {
-    if (selectedPlantIndex !== null) {
+    const latinName = latinNameInput.value;
+    if (latinName) {
       const baseUrl = window.location.origin;
-      const link = `${baseUrl}/PlantInfoPage.html?plant=${selectedPlantIndex}`;
+      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}`;
       linkPreview.textContent = link;
     } else {
       linkPreview.textContent = "Link will appear here...";
@@ -288,7 +289,7 @@ async function populate() {
 
   // Back button
   backBtn.addEventListener("click", () => {
-    window.location.href = "HomePage.html";
+    window.history.back();
   });
 
   function clearForm() {
