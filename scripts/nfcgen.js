@@ -2,7 +2,7 @@ import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const openBtn = document.getElementById("open-view");
+  const openBtn = document.getElementById("gennfc");
   const errorMsg = document.getElementById("error-message");
 
   openBtn.disabled = true;
