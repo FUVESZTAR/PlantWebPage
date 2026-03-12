@@ -1,4 +1,4 @@
-import { loadPlantData } from "./csv-utils.js";
+import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
@@ -29,6 +29,9 @@ async function populate() {
   selector.addEventListener("change", () => {
     openBtn.disabled = !selector.value;
   });
+      // Set NFC link
+    // Set NFC link text to current page URL (could also keep plant:// scheme if needed)
+    document.querySelector("#nfc-link").textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
 
   openBtn.addEventListener("click", () => {
     if (selector.value) {
