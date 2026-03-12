@@ -3,6 +3,8 @@ import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const gennfcBtn = document.getElementById("generate-nfc");
+  const copynfcBtn = document.getElementById("copy-nfc");
+  const backBtn = document.getElementById("back-button");
   const errorMsg = document.getElementById("error-message");
 
   //gennfcBtn.disabled = true;
@@ -33,7 +35,13 @@ async function populate() {
     // Set NFC link text to current page URL (could also keep plant:// scheme if needed)
     document.querySelector("#nfc-link").textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
 
-  openBtn.addEventListener("click", () => {
+  
+  backBtn.addEventListener("click", () => {
+  window.location.href = "HomePage.html";
+   });
+
+  
+  gennfcBtn.addEventListener("click", () => {
     if (selector.value) {
       localStorage.setItem("selectedPlantNr", selector.value);
       // Find the selected plant to get LatinName for direct linking
@@ -48,6 +56,9 @@ async function populate() {
     }
   });
 }
+
+
+
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", populate);
