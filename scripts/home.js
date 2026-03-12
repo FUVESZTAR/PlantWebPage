@@ -9,6 +9,7 @@ document.querySelector('#nfc-button').addEventListener('click', () => {
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const openBtn = document.getElementById("open-view");
+  const nfcBtn = document.getElementById("open-view");
   const errorMsg = document.getElementById("error-message");
 
   openBtn.disabled = true;
