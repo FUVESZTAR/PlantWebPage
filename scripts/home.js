@@ -1,5 +1,11 @@
 import { loadPlantData } from "./csv-utils.js";
 
+// Add at the end of scripts/home.js
+document.querySelector('#nfc-button').addEventListener('click', () => {
+  window.location.href = '/Nfcgenerator.html';
+});
+
+
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const openBtn = document.getElementById("open-view");
