@@ -44,9 +44,9 @@ async function populate() {
       localStorage.setItem("selectedPlantNr", selector.value);
       // Find the selected plant to get LatinName for direct linking
       const selectedPlant = plants.find((p) => String(p.Nr) === selector.value);
-      if (selectedPlant && selectedPlant.LatinName) {
+      if (selectedPlant && selectedPlant.LatinName && selectedPlant.NameVariety) {
         console.log("Navigating with LatinName:", selectedPlant.LatinName);
-        window.location.href = `PlantInfoPage.html?plant=${encodeURIComponent(selectedPlant.LatinName)}`;
+        window.location.href = `PlantInfoPage.html?plant=${encodeURIComponent(selectedPlant.LatinName)}variety=${encodeURIComponent(selectedPlant.NameVariety)}`;
       } else {
         console.warn("Plant not found or no LatinName");
         window.location.href = "PlantInfoPage.html";
