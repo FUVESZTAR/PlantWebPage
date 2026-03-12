@@ -195,29 +195,29 @@ async function populate() {
     updateLinkPreview();
   }
 
+  function getVarietyText() {
+    if (customVarietyMode && nameVarietyCustomInput.value) {
+      return nameVarietyCustomInput.value;
+    } else {
+      return nameVarietySelector.options[nameVarietySelector.selectedIndex]?.text || 
+             nameVarietySelector.value;
+    }
+  }
+
   function updateNFCPreview() {
     const nr = nrInput.value;
     const year = yearInput.value;
     const nameHu = nameHuInput.value;
-    
-    // Get variety - either from custom input or from selector
-    let nameVariety = "";
-    if (customVarietyMode && nameVarietyCustomInput.value) {
-      nameVariety = nameVarietyCustomInput.value;
-    } else {
-      nameVariety = nameVarietySelector.options[nameVarietySelector.selectedIndex]?.text || 
-                    nameVarietySelector.value;
-    }
-    
+    const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
     const datum = datumInput.value;
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
     
     let plantInfoUrl = "";
-    if (latinName) {
+    if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
-      plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}`;
+      plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
     }
     
     const nfcData = `${nr} / ${year} / ${nameHu} / ${nameVariety} / ${latinName} / ${datum} / ${nfctyp} / ${plantInfoUrl} / ${egyeb}`;
@@ -226,9 +226,11 @@ async function populate() {
 
   function updateLinkPreview() {
     const latinName = latinNameInput.value;
-    if (latinName) {
+    const nameVariety = getVarietyText();
+    
+    if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
-      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}`;
+      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
       linkPreview.textContent = link;
     } else {
       linkPreview.textContent = "Link will appear here...";
