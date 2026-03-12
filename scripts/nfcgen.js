@@ -3,6 +3,7 @@ import { loadPlantData } from "./csv-utils.js";
 let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
+let customVarietyMode = false;
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
@@ -10,6 +11,7 @@ async function populate() {
   const yearInput = document.getElementById("year");
   const nameHuInput = document.getElementById("name-hu");
   const nameVarietySelector = document.getElementById("name-variety");
+  const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
   const datumInput = document.getElementById("datum");
   const nfctypInput = document.getElementById("nfctyp");
@@ -21,7 +23,6 @@ async function populate() {
   const copylinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
   const errorMsg = document.getElementById("error-message");
-  const qrnfcBtn = document.getElementById("qr-button");
 
   let plants = [];
 
@@ -59,6 +60,8 @@ async function populate() {
       clearForm();
       selectedPlantIndex = null;
       selectedVarietyData = null;
+      customVarietyMode = false;
+      nameVarietyCustomInput.style.display = "none";
       return;
     }
     
@@ -87,6 +90,9 @@ async function populate() {
   function populateVarieties(latinName) {
     console.log("Populating varieties for Latin name:", latinName);
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option><option value="__custom__">-- Add custom --</option>';
+    customVarietyMode = false;
+    nameVarietyCustomInput.style.display = "none";
+    nameVarietyCustomInput.value = "";
     
     if (!latinName) {
       console.log("No Latin name provided");
@@ -130,17 +136,29 @@ async function populate() {
     if (value === "") {
       // Clear variety selection
       selectedVarietyData = null;
+      customVarietyMode = false;
+      nameVarietyCustomInput.style.display = "none";
+      nameVarietyCustomInput.value = "";
+      updatePreviews();
       return;
     }
     
     if (value === "__custom__") {
       // Allow custom text input
+      customVarietyMode = true;
       selectedVarietyData = null;
-      nameVarietySelector.value = "";
+      nameVarietyCustomInput.style.display = "block";
+      nameVarietyCustomInput.value = "";
+      nameVarietyCustomInput.focus();
+      updatePreviews();
       return;
     }
     
     // Load data from selected variety row
+    customVarietyMode = false;
+    nameVarietyCustomInput.style.display = "none";
+    nameVarietyCustomInput.value = "";
+    
     const varietyIndex = parseInt(value);
     const varietyPlant = plants[varietyIndex];
     
@@ -162,6 +180,10 @@ async function populate() {
     }
   });
 
+  // Custom variety input change event
+  nameVarietyCustomInput.addEventListener("change", updatePreviews);
+  nameVarietyCustomInput.addEventListener("input", updatePreviews);
+
   // Input change events - update previews
   [nrInput, yearInput, nameHuInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
@@ -177,8 +199,16 @@ async function populate() {
     const nr = nrInput.value;
     const year = yearInput.value;
     const nameHu = nameHuInput.value;
-    const nameVariety = nameVarietySelector.options[nameVarietySelector.selectedIndex]?.text || 
-                        nameVarietySelector.value;
+    
+    // Get variety - either from custom input or from selector
+    let nameVariety = "";
+    if (customVarietyMode && nameVarietyCustomInput.value) {
+      nameVariety = nameVarietyCustomInput.value;
+    } else {
+      nameVariety = nameVarietySelector.options[nameVarietySelector.selectedIndex]?.text || 
+                    nameVarietySelector.value;
+    }
+    
     const latinName = latinNameInput.value;
     const datum = datumInput.value;
     const nfctyp = nfctypInput.value;
@@ -206,18 +236,6 @@ async function populate() {
 
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
-    const nfcData = nfcPreview.textContent;
-    
-    if (nfcData === "NFC data will appear here...") {
-      showError("Please select a plant and configure the NFC data");
-      return;
-    }
-    
-    const encodedData = encodeURIComponent(nfcData);
-  });
-
-    // Generate NFC button
-  qrnfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
     if (nfcData === "NFC data will appear here...") {
@@ -270,7 +288,7 @@ async function populate() {
 
   // Back button
   backBtn.addEventListener("click", () => {
-    window.history.back();
+    window.location.href = "HomePage.html";
   });
 
   function clearForm() {
@@ -278,6 +296,8 @@ async function populate() {
     yearInput.value = new Date().getFullYear();
     nameHuInput.value = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
+    nameVarietyCustomInput.value = "";
+    nameVarietyCustomInput.style.display = "none";
     latinNameInput.value = "";
     datumInput.value = dateString;
     nfctypInput.value = "";
