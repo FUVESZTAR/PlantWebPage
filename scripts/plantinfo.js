@@ -138,7 +138,9 @@ console.log("start1");
     console.log("load" ,plantLatinName);
     if (plantLatinName) {
       const decodedLatinName = decodeURIComponent(plantLatinName).trim();
-      plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName);
+      const decodedvarietyName = decodeURIComponent(plantVariety).trim();
+      plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName) && 
+      String(item.Name_Variety).trim() === decodedvarietyName;
     } else {
       plant = plants.find((item) => String(item.Nr) === String(selectedNr));
     }
