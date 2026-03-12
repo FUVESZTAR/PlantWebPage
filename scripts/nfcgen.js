@@ -2,10 +2,10 @@ import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const openBtn = document.getElementById("gennfc");
+  const gennfcBtn = document.getElementById("gennfc");
   const errorMsg = document.getElementById("error-message");
 
-  openBtn.disabled = true;
+  //gennfcBtn.disabled = true;
 
   let plants = []; // Declare plants outside try block so it's accessible in event handlers
 
@@ -26,9 +26,9 @@ async function populate() {
     selector.innerHTML = '<option value="">(error)</option>';
   }
 
-  selector.addEventListener("change", () => {
-    openBtn.disabled = !selector.value;
-  });
+ // selector.addEventListener("change", () => {
+ //   gennfcBtn.disabled = !selector.value;
+ // });
       // Set NFC link
     // Set NFC link text to current page URL (could also keep plant:// scheme if needed)
     document.querySelector("#nfc-link").textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
