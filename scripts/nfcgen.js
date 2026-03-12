@@ -21,12 +21,14 @@ async function populate() {
   const copylinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
   const errorMsg = document.getElementById("error-message");
+  const qrnfcBtn = document.getElementById("qr-button");
 
   let plants = [];
 
   try {
     plants = await loadPlantData();
     plantData = plants;
+    console.log("Plants loaded:", plants.length, "plants");
     selector.innerHTML = '<option value="">Select a plant</option>';
     plants
       .sort((a, b) => Number(a.Nr) - Number(b.Nr))
@@ -50,16 +52,21 @@ async function populate() {
 
   // Plant selector change event
   selector.addEventListener("change", () => {
-    const index = parseInt(selector.value);
-    if (index === "") {
+    const indexValue = selector.value;
+    console.log("Plant selected, value:", indexValue);
+    
+    if (indexValue === "") {
       clearForm();
       selectedPlantIndex = null;
       selectedVarietyData = null;
       return;
     }
     
+    const index = parseInt(indexValue);
     selectedPlantIndex = index;
     const plant = plants[index];
+    
+    console.log("Selected plant:", plant);
     
     // Fill form fields
     nrInput.value = plant.Nr || "";
@@ -78,18 +85,22 @@ async function populate() {
 
   // Populate varieties dropdown
   function populateVarieties(latinName) {
+    console.log("Populating varieties for Latin name:", latinName);
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option><option value="__custom__">-- Add custom --</option>';
     
-    if (!latinName) return;
+    if (!latinName) {
+      console.log("No Latin name provided");
+      return;
+    }
     
     // Find all plants with same Latin name
     const varietiesSet = new Set();
     const varietiesData = [];
     
     plants.forEach((plant, idx) => {
-      if (plant.LatinName === latinName && plant.Name_Variety) {
-        const variety = plant.Name_Variety.trim();
-        if (!varietiesSet.has(variety)) {
+      if (plant.LatinName === latinName) {
+        const variety = (plant.Name_Variety || "").trim();
+        if (variety && !varietiesSet.has(variety)) {
           varietiesSet.add(variety);
           varietiesData.push({
             variety: variety,
@@ -99,6 +110,8 @@ async function populate() {
         }
       }
     });
+    
+    console.log("Found varieties:", varietiesData);
     
     // Add varieties to dropdown
     varietiesData.forEach(item => {
@@ -112,6 +125,7 @@ async function populate() {
   // Variety selector change event
   nameVarietySelector.addEventListener("change", () => {
     const value = nameVarietySelector.value;
+    console.log("Variety selected, value:", value);
     
     if (value === "") {
       // Clear variety selection
@@ -129,6 +143,8 @@ async function populate() {
     // Load data from selected variety row
     const varietyIndex = parseInt(value);
     const varietyPlant = plants[varietyIndex];
+    
+    console.log("Selected variety plant:", varietyPlant);
     
     if (varietyPlant) {
       selectedVarietyData = varietyPlant;
@@ -150,11 +166,6 @@ async function populate() {
   [nrInput, yearInput, nameHuInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
-  });
-
-  // Allow free text in variety input
-  nameVarietySelector.addEventListener("blur", () => {
-    // This allows manual editing if needed
   });
 
   function updatePreviews() {
@@ -195,6 +206,18 @@ async function populate() {
 
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
+    const nfcData = nfcPreview.textContent;
+    
+    if (nfcData === "NFC data will appear here...") {
+      showError("Please select a plant and configure the NFC data");
+      return;
+    }
+    
+    const encodedData = encodeURIComponent(nfcData);
+  });
+
+    // Generate NFC button
+  qrnfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
     if (nfcData === "NFC data will appear here...") {
