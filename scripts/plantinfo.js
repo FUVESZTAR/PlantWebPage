@@ -136,9 +136,15 @@ console.log("start1");
     console.log("load" ,plantLatinName);
     if (plantLatinName) {
       const decodedLatinName = decodeURIComponent(plantLatinName).trim();
-      const decodedvarietyName = decodeURIComponent(plantVariety).trim();
-      plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName) && 
-      String(item.Name_Variety).trim() === decodedvarietyName;
+      if (plantVariety) {
+        const decodedVarietyName = decodeURIComponent(plantVariety).trim();
+        plant = plants.find((item) =>
+          String(item.LatinName).trim() === decodedLatinName &&
+          String(item.Name_Variety).trim() === decodedVarietyName
+        );
+      } else {
+        plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName);
+      }
     } else {
       plant = plants.find((item) => String(item.Nr) === String(selectedNr));
     }
