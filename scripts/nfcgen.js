@@ -21,6 +21,7 @@ async function populate() {
   const nfcSize = document.getElementById("nfc-size");
   const linkPreview = document.getElementById("link-preview");
   const linkSize = document.getElementById("link-size");
+  const totalSize = document.getElementById("total-size");
   const gennfcBtn = document.getElementById("generate-nfc");
   const copynfcBtn = document.getElementById("copy-nfc");
   const copylinkBtn = document.getElementById("copy-link");
@@ -237,7 +238,7 @@ async function populate() {
       plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
     }
     
-    const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${plantInfoUrl} / ${egyeb}`;
+    const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -258,11 +259,13 @@ async function populate() {
       // Update size indicator
       if (linkSize) {
         linkSize.textContent = `Size: ${calculateSize(link)}`;
+        totalSize.textContent = `Total Size: ${calculateSize(link)+calculateSize(nfcData)}`;
       }
     } else {
       linkPreview.textContent = "Link will appear here...";
-      if (linkSize) {
+      if () {
         linkSize.textContent = "Size: 0 B";
+        totalSize.textContent = "Size: 0 B";
       }
     }
   }
@@ -339,6 +342,7 @@ async function populate() {
     nfcSize.textContent = "Size: 0 B";
     linkPreview.textContent = "Link will appear here...";
     linkSize.textContent = "Size: 0 B";
+    totalSize.textContent = "Size: 0 B";
   }
 
   function showError(message, type = "error") {
