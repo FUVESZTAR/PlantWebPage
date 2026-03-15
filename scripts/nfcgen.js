@@ -319,7 +319,7 @@ function calculateSize(text) {
 
   // Back button
   backBtn.addEventListener("click", () => {
-    window.history.back();
+    window.location.href = "P.html";
   });
 
   function clearForm() {
