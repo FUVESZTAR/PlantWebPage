@@ -205,22 +205,28 @@ async function populate() {
              nameVarietySelector.value;
     }
   }
+  function calculateSizeInBytes(text) {
+  // Calculate size in bytes (UTF-8 encoding) - returns NUMBER
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(text);
+  return bytes.length;
+   }
 
-  function calculateSize(text) {
-    // Calculate size in bytes (UTF-8 encoding)
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(text);
-    const sizeInBytes = bytes.length;
-    
-    // Convert to appropriate unit
-    if (sizeInBytes < 1024) {
-      return `${sizeInBytes} B`;
-    } else if (sizeInBytes < 1024 * 1024) {
-      return `${(sizeInBytes / 1024).toFixed(2)} KB`;
-    } else {
-      return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
-    }
+function formatSize(sizeInBytes) {
+  // Convert bytes to appropriate unit - returns STRING
+  if (sizeInBytes < 1024) {
+    return `${sizeInBytes} B`;
+  } else if (sizeInBytes < 1024 * 1024) {
+    return `${(sizeInBytes / 1024).toFixed(2)} KB`;
+  } else {
+    return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
   }
+ }
+
+function calculateSize(text) {
+  // Kept for backward compatibility - returns STRING
+  return formatSize(calculateSizeInBytes(text));
+}
 
   function updateNFCPreview() {
     const nr = nrInput.value;
@@ -243,7 +249,8 @@ async function populate() {
     
     // Update size indicator
     if (nfcSize) {
-      nfcSize.textContent = `Size: ${calculateSize(nfcData)}`;
+      const nfcSizeBytes = calculateSizeInBytes(nfcData);
+      nfcSize.textContent = `Size: ${formatSize(nfcSizeBytes)}`;
     }
   }
 
@@ -258,8 +265,12 @@ async function populate() {
       
       // Update size indicator
       if (linkSize) {
-        linkSize.textContent = `Size: ${calculateSize(link)}`;
-        totalSize.textContent = `Total Size: ${calculateSize(link)+calculateSize(nfcData)}`;
+        // Calculate total size
+         const linkSizeBytes = calculateSizeInBytes(link);
+         const nfcSizeBytes = calculateSizeInBytes(nfcData);
+         const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
+         totalSize.textContent = `Total Size: ${formatSize(totalSizeBytes)}`;
+         linkSize.textContent = `Size: ${formatSize(linkSizeBytes)}`;
       }
     } else {
       linkPreview.textContent = "Link will appear here...";
