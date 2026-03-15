@@ -37,10 +37,10 @@ async function populate() {
       const selectedPlant = plants.find((p) => p.Nr === selector.value);
       if (selectedPlant && selectedPlant.LatinName) {
         console.log("Navigating with LatinName:", selectedPlant.LatinName);
-        window.location.href = `PlantInfoPage.html?plant=${encodeURIComponent(selectedPlant.LatinName)}`;
+        window.location.href = `P.html?plant=${encodeURIComponent(selectedPlant.LatinName)}`;
       } else {
         console.warn("Plant not found or no LatinName");
-        window.location.href = "PlantInfoPage.html";
+        window.location.href = "P.html";
       }
     }
   });
