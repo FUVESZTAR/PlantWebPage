@@ -172,7 +172,6 @@ async function populate() {
       
       // Update all fields from this variety's data
       nrInput.value = varietyPlant.Nr || "";
-      yearInput.value = new Date().getFullYear();
       nameHuInput.value = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -188,7 +187,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, yearInput, nameHuInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [nrInput, plantIdInput, nameHuInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -226,7 +225,6 @@ async function populate() {
   function updateNFCPreview() {
     const nr = nrInput.value;
     const id2 = plantIdInput.value;
-    const year = yearInput.value;
     const nameHu = nameHuInput.value;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
@@ -329,7 +327,7 @@ async function populate() {
 
   function clearForm() {
     nrInput.value = "";
-    yearInput.value = new Date().getFullYear();
+    plantIdInput.value = "";
     nameHuInput.value = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
     nameVarietyCustomInput.value = "";
@@ -358,7 +356,7 @@ async function populate() {
   }
 
   // Set current date on load
-  yearInput.value = new Date().getFullYear();
+//  yearInput.value = new Date().getFullYear();
   datumInput.value = dateString;
 }
 
