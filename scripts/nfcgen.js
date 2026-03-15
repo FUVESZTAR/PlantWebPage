@@ -236,8 +236,7 @@ function calculateSize(text) {
     const datum = datumInput.value;
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
-    const link  = "no link";
-    let plantInfoUrl = "";
+    let link = "";
     if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
       link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
