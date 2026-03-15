@@ -240,8 +240,8 @@ function calculateSize(text) {
     let plantInfoUrl = "";
     if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
-      plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
-      linkPreview.textContent = plantInfoUrl;
+      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
+      linkPreview.textContent = link;
     }
     
     const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${egyeb}`;
