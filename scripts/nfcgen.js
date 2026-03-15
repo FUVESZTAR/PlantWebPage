@@ -263,7 +263,7 @@ async function populate() {
       }
     } else {
       linkPreview.textContent = "Link will appear here...";
-      if () {
+      if (linkSize) {
         linkSize.textContent = "Size: 0 B";
         totalSize.textContent = "Size: 0 B";
       }
