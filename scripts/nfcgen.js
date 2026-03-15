@@ -239,7 +239,7 @@ function calculateSize(text) {
     let link = "";
     if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
-      link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
+      link = `${baseUrl}/W/P.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
       linkPreview.textContent = link;
     }
     
