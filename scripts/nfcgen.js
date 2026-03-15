@@ -237,9 +237,9 @@ function calculateSize(text) {
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
     let link = "";
-    if (latinName && nameVariety) {
+    if (nr) {
       const baseUrl = window.location.origin;
-      link = `${baseUrl}/W/P.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
+      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(nr)}`;
       linkPreview.textContent = link;
     }
     
@@ -319,7 +319,7 @@ function calculateSize(text) {
 
   // Back button
   backBtn.addEventListener("click", () => {
-    window.location.href = "P.html";
+    window.location.href = "HomePage.html";
   });
 
   function clearForm() {

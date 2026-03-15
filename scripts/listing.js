@@ -33,13 +33,13 @@ async function populate() {
   openBtn.addEventListener("click", () => {
     if (selector.value) {
       localStorage.setItem("selectedPlantNr", selector.value);
-      // Find the selected plant to get LatinName for direct linking
+      // Find the selected plant to get Nr for direct linking
       const selectedPlant = plants.find((p) => p.Nr === selector.value);
-      if (selectedPlant && selectedPlant.LatinName) {
-        console.log("Navigating with LatinName:", selectedPlant.LatinName);
-        window.location.href = `P.html?plant=${encodeURIComponent(selectedPlant.LatinName)}`;
+      if (selectedPlant && selectedPlant.Nr) {
+        console.log("Navigating with Nr:", selectedPlant.Nr);
+        window.location.href = `P.html?id=${encodeURIComponent(selectedPlant.Nr)}`;
       } else {
-        console.warn("Plant not found or no LatinName");
+        console.warn("Plant not found or no Nr");
         window.location.href = "P.html";
       }
     }

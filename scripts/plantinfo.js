@@ -35,13 +35,11 @@ const ROW_COLORS = [
 
 const selectedNr = localStorage.getItem("selectedPlantNr");
 const urlParams = new URLSearchParams(window.location.search);
-const plantLatinName = urlParams.get("plant"); // Get plant from URL query param
-const plantVariety = urlParams.get("variety");
+const urlPlantId = urlParams.get("id"); // Get plant Nr from URL query param
 
 console.log("view.js loaded");
 console.log("selectedNr from localStorage:", selectedNr);
-console.log("plantLatinName from URL:", plantLatinName);
-console.log("plantVariety from URL:", plantVariety);
+console.log("urlPlantId from URL:", urlPlantId);
 
 document.querySelector("#back-button").addEventListener("click", () => {
   window.location.href = "HomePage.html";
@@ -123,31 +121,19 @@ console.log("start1");
   const identitylatinName = document.querySelector("#identity-latinName");
   const identityvariety = document.querySelector("#identity-variety");
    console.log("start2");
-  if (!selectedNr && !plantLatinName) {
+  if (!selectedNr && !urlPlantId) {
     title.textContent = "No plant selected";
-    subtitle.textContent = "Go back and choose a plant from the list or use a direct link with ?plant=LatinName";
+    subtitle.textContent = "Go back and choose a plant from the list or use a direct link with ?id=Nr";
     return;
   }
 
   try {
     const plants = await loadPlantData();
-    // Find plant by Nr (from homepage) or by LatinName (from direct link)
+    // Find plant by Nr (from URL param or localStorage)
     let plant;
-    console.log("load" ,plantLatinName);
-    if (plantLatinName) {
-      const decodedLatinName = decodeURIComponent(plantLatinName).trim();
-      if (plantVariety) {
-        const decodedVarietyName = decodeURIComponent(plantVariety).trim();
-        plant = plants.find((item) =>
-          String(item.LatinName).trim() === decodedLatinName &&
-          String(item.Name_Variety).trim() === decodedVarietyName
-        );
-      } else {
-        plant = plants.find((item) => String(item.LatinName).trim() === decodedLatinName);
-      }
-    } else {
-      plant = plants.find((item) => String(item.Nr) === String(selectedNr));
-    }
+    const lookupNr = urlPlantId || selectedNr;
+    console.log("load" ,lookupNr);
+    plant = plants.find((item) => String(item.Nr) === String(lookupNr));
 
     if (!plant) {
       title.textContent = "Plant not found";
