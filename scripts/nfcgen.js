@@ -236,11 +236,11 @@ function calculateSize(text) {
     const datum = datumInput.value;
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
-    
+    const link  = "no link";
     let plantInfoUrl = "";
     if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
-      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
+      link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
       linkPreview.textContent = link;
     }
     
