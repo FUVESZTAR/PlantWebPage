@@ -4,20 +4,23 @@ let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
+let plantId = 1;
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const nrInput = document.getElementById("nr");
-  const yearInput = document.getElementById("year");
+  const plantIdInput = document.getElementById("plantId");
+  const datumInput = document.getElementById("datum");
   const nameHuInput = document.getElementById("name-hu");
   const nameVarietySelector = document.getElementById("name-variety");
   const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
-  const datumInput = document.getElementById("datum");
   const nfctypInput = document.getElementById("nfctyp");
   const egyebInput = document.getElementById("egyeb");
   const nfcPreview = document.getElementById("nfc-preview");
+  const nfcSize = document.getElementById("nfc-size");
   const linkPreview = document.getElementById("link-preview");
+  const linkSize = document.getElementById("link-size");
   const gennfcBtn = document.getElementById("generate-nfc");
   const copynfcBtn = document.getElementById("copy-nfc");
   const copylinkBtn = document.getElementById("copy-link");
@@ -73,12 +76,12 @@ async function populate() {
     
     // Fill form fields
     nrInput.value = plant.Nr || "";
-    yearInput.value = new Date().getFullYear();
     nameHuInput.value = plant.Name_HU || "";
     latinNameInput.value = plant.LatinName || "";
     datumInput.value = dateString;
     nfctypInput.value = plant.nfctyp || "";
     egyebInput.value = plant.egyeb || "";
+    plantIdInput.value = plant.plantId;
     
     // Populate varieties dropdown based on latin name
     populateVarieties(plant.LatinName);
@@ -204,8 +207,25 @@ async function populate() {
     }
   }
 
+  function calculateSize(text) {
+    // Calculate size in bytes (UTF-8 encoding)
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(text);
+    const sizeInBytes = bytes.length;
+    
+    // Convert to appropriate unit
+    if (sizeInBytes < 1024) {
+      return `${sizeInBytes} B`;
+    } else if (sizeInBytes < 1024 * 1024) {
+      return `${(sizeInBytes / 1024).toFixed(2)} KB`;
+    } else {
+      return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+  }
+
   function updateNFCPreview() {
     const nr = nrInput.value;
+    const id2 = plantIdInput.value;
     const year = yearInput.value;
     const nameHu = nameHuInput.value;
     const nameVariety = getVarietyText();
@@ -220,8 +240,13 @@ async function populate() {
       plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
     }
     
-    const nfcData = `${nr} / ${year} / ${nameHu} / ${nameVariety} / ${latinName} / ${datum} / ${nfctyp} / ${plantInfoUrl} / ${egyeb}`;
+    const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${plantInfoUrl} / ${egyeb}`;
     nfcPreview.textContent = nfcData;
+    
+    // Update size indicator
+    if (nfcSize) {
+      nfcSize.textContent = `Size: ${calculateSize(nfcData)}`;
+    }
   }
 
   function updateLinkPreview() {
@@ -232,8 +257,16 @@ async function populate() {
       const baseUrl = window.location.origin;
       const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
       linkPreview.textContent = link;
+      
+      // Update size indicator
+      if (linkSize) {
+        linkSize.textContent = `Size: ${calculateSize(link)}`;
+      }
     } else {
       linkPreview.textContent = "Link will appear here...";
+      if (linkSize) {
+        linkSize.textContent = "Size: 0 B";
+      }
     }
   }
 
@@ -306,7 +339,9 @@ async function populate() {
     nfctypInput.value = "";
     egyebInput.value = "";
     nfcPreview.textContent = "NFC data will appear here...";
+    nfcSize.textContent = "Size: 0 B";
     linkPreview.textContent = "Link will appear here...";
+    linkSize.textContent = "Size: 0 B";
   }
 
   function showError(message, type = "error") {
