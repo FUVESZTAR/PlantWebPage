@@ -81,7 +81,6 @@ async function populate() {
     datumInput.value = dateString;
     nfctypInput.value = plant.nfctyp || "";
     egyebInput.value = plant.egyeb || "";
-    plantIdInput.value = plant.plantId;
     
     // Populate varieties dropdown based on latin name
     populateVarieties(plant.LatinName);
