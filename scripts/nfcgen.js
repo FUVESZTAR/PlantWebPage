@@ -243,7 +243,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${egyeb}`;
+    const nfcData = `${nr}/${id2}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
