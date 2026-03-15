@@ -194,7 +194,6 @@ async function populate() {
 
   function updatePreviews() {
     updateNFCPreview();
-    updateLinkPreview();
   }
 
   function getVarietyText() {
@@ -242,6 +241,7 @@ function calculateSize(text) {
     if (latinName && nameVariety) {
       const baseUrl = window.location.origin;
       plantInfoUrl = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
+      linkPreview.textContent = plantInfoUrl;
     }
     
     const nfcData = `${nr} / ${id2} / ${nameHu} / ${nameVariety} / ${latinName} / ${nfctyp} /${datum} / ${egyeb}`;
@@ -249,36 +249,21 @@ function calculateSize(text) {
     
     // Update size indicator
     if (nfcSize) {
+      const linkSizeBytes = calculateSizeInBytes(link);
       const nfcSizeBytes = calculateSizeInBytes(nfcData);
+      const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
       nfcSize.textContent = `Size: ${formatSize(nfcSizeBytes)}`;
-    }
-  }
-
-  function updateLinkPreview() {
-    const latinName = latinNameInput.value;
-    const nameVariety = getVarietyText();
-    
-    if (latinName && nameVariety) {
-      const baseUrl = window.location.origin;
-      const link = `${baseUrl}/PlantWebPage/PlantInfoPage.html?plant=${encodeURIComponent(latinName)}&variety=${encodeURIComponent(nameVariety)}`;
-      linkPreview.textContent = link;
-      
-      // Update size indicator
-      if (linkSize) {
-        // Calculate total size
-         const linkSizeBytes = calculateSizeInBytes(link);
-         const nfcSizeBytes = calculateSizeInBytes(nfcData);
-         const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
-         totalSize.textContent = `Total Size: ${formatSize(totalSizeBytes)}`;
-         linkSize.textContent = `Size: ${formatSize(linkSizeBytes)}`;
-      }
+      totalSize.textContent = `Total Size: ${formatSize(totalSizeBytes)}`;
+      linkSize.textContent = `Size: ${formatSize(linkSizeBytes)}`;
     } else {
       linkPreview.textContent = "Link will appear here...";
+      nfcPreview.textContent = "NFC will appear here...";
       if (linkSize) {
+        nfcSize.textContent = "Size: 0 B";
         linkSize.textContent = "Size: 0 B";
         totalSize.textContent = "Size: 0 B";
       }
-    }
+    }   
   }
 
   // Generate NFC button
