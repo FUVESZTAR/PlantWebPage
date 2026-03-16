@@ -3,47 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant Page</title>
-    <link rel="stylesheet" href="css/listpagestyles.css" />
+    <title>Plant List</title>
+    <link rel="stylesheet" href="css/plantlistpagestyles.css" />
+    <style>
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .filter-label {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .filter-value {
+        font-size: 1rem;
+        color: #444;
+      }
+      .plant-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 0.95rem;
+      }
+      .plant-list-table th {
+        background: #4a7c4e;
+        color: white;
+        text-align: left;
+        padding: 8px 10px;
+        white-space: nowrap;
+      }
+      .plant-list-table td {
+        padding: 7px 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .plant-list-table tr:hover td {
+        background: #f0f8f0;
+        cursor: pointer;
+      }
+      .plant-list-table tr:nth-child(even) td {
+        background: #f9f9f9;
+      }
+      .plant-list-table tr:nth-child(even):hover td {
+        background: #f0f8f0;
+      }
+      .back-button {
+        margin-bottom: 0;
+      }
+    </style>
   </head>
   <body>
     <main class="landing-wrapper">
       <section class="card landing-card">
-        <h1>Plant Page</h1>
-        <p class="subtitle">Choose a plant and open its detailed view.</p>
-
-        <label for="plant-selector">Plant name</label>
-        <select id="plant-selector" aria-label="Select plant">
-          <option value="">Loading plants…</option>
-        </select>
-
-        <label for="plant-selector-variety">Variety</label>
-        <select id="plant-selector-variety" aria-label="Select plant variety">
-          <option value="">Loading varieties…</option>
-        </select>
-        
-        <p class="subtitle">Lists</p>
-
-        <label for="plant-selector-family">Family</label>
-        <select id="plant-selector-family" aria-label="Select plant family">
-          <option value="">Loading families…</option>
-        </select>
-
-        <label for="plant-selector-genus">Genus</label>
-        <select id="plant-selector-genus" aria-label="Select plant genus">
-          <option value="">Loading genera…</option>
-        </select>
-
-        <label for="plant-selector-latin">Latin name</label>
-        <select id="plant-selector-latin" aria-label="Select plant latin name">
-          <option value="">Loading plants…</option>
-        </select>
-
-        <button id="open-view" type="button" disabled>Open Plant View</button>
+        <div class="filter-bar">
+          <button id="back-button" class="back-button" type="button">← Back</button>
+          <h1 style="margin:0; font-size:1.4rem;">Plant List</h1>
+        </div>
+        <p id="filter-summary" class="subtitle"></p>
+        <table class="plant-list-table">
+          <thead>
+            <tr>
+              <th>Latin Name</th>
+              <th>Variety</th>
+              <th>Name (EN)</th>
+              <th>Name (HU)</th>
+            </tr>
+          </thead>
+          <tbody id="plant-list-body">
+            <tr><td colspan="4">Loading…</td></tr>
+          </tbody>
+        </table>
         <p class="error-message" id="error-message" aria-live="polite"></p>
       </section>
     </main>
-
     <script src="scripts/listing.js" type="module"></script>
   </body>
 </html>

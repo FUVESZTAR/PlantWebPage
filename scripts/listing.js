@@ -1,48 +1,73 @@
 import { loadPlantData } from "./csv-utils.js";
 
+document.getElementById("back-button").addEventListener("click", () => {
+  window.location.href = "HomePage.html";
+});
+
+const FILTER_LABELS = {
+  family: "Family",
+  genus: "Genus",
+  latin: "Latin Name",
+};
+
+const FILTER_FIELDS = {
+  family: "Family",
+  genus: "Genus",
+  latin: "LatinName",
+};
+
 async function populate() {
-  const selector = document.getElementById("plant-selector");
-  const openBtn = document.getElementById("open-view");
+  const tbody = document.getElementById("plant-list-body");
+  const filterSummary = document.getElementById("filter-summary");
   const errorMsg = document.getElementById("error-message");
 
-  openBtn.disabled = true;
+  const params = new URLSearchParams(window.location.search);
+  const filterType = params.get("filterType") || "";
+  const filterValue = params.get("filterValue") || "";
 
-  let plants = []; // Declare plants outside try block so it's accessible in event handlers
+  if (filterType && filterValue) {
+    filterSummary.textContent = `${FILTER_LABELS[filterType] || filterType}: ${filterValue}`;
+  } else {
+    filterSummary.textContent = "All plants";
+  }
 
+  let plants = [];
   try {
     plants = await loadPlantData();
-    selector.innerHTML = '<option value="">Select a plant</option>';
-    plants
-      .sort((a, b) => Number(a.Nr) - Number(b.Nr))
-      .forEach((plant) => {
-        const opt = document.createElement("option");
-        opt.value = plant.Nr;
-        opt.textContent = `${plant.Nr}.${plant.Name_HU || ""}`;
-        selector.appendChild(opt);
-      });
   } catch (err) {
     console.error(err);
     errorMsg.textContent = "Failed to load plant data";
-    selector.innerHTML = '<option value="">(error)</option>';
+    tbody.innerHTML = '<tr><td colspan="4">Error loading data</td></tr>';
+    return;
   }
 
-  selector.addEventListener("change", () => {
-    openBtn.disabled = !selector.value;
-  });
+  let filtered = plants;
+  const field = FILTER_FIELDS[filterType];
+  if (field && filterValue) {
+    filtered = plants.filter((p) => (p[field] || "") === filterValue);
+  }
 
-  openBtn.addEventListener("click", () => {
-    if (selector.value) {
-      localStorage.setItem("selectedPlantNr", selector.value);
-      // Find the selected plant to get Nr for direct linking
-      const selectedPlant = plants.find((p) => p.Nr === selector.value);
-      if (selectedPlant && selectedPlant.Nr) {
-        console.log("Navigating with Nr:", selectedPlant.Nr);
-        window.location.href = `P.html?id=${encodeURIComponent(selectedPlant.Nr)}`;
-      } else {
-        console.warn("Plant not found or no Nr");
-        window.location.href = "P.html";
-      }
-    }
+  filtered.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
+
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="4">No plants found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = "";
+  filtered.forEach((plant) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${plant.LatinName || ""}</td>
+      <td>${plant.Name_Variety || ""}</td>
+      <td>${plant.Name_EN || ""}</td>
+      <td>${plant.Name_HU || ""}</td>
+    `;
+    tr.addEventListener("click", () => {
+      localStorage.setItem("selectedPlantNr", plant.Nr);
+      window.location.href = `P.html?id=${encodeURIComponent(plant.Nr)}`;
+    });
+    tbody.appendChild(tr);
   });
 }
 

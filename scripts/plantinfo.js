@@ -45,9 +45,48 @@ document.querySelector("#back-button").addEventListener("click", () => {
   window.location.href = "HomePage.html";
 });
 
+function setIdentityFilterLink(element, filterType, value) {
+  if (!element) return;
+  element.textContent = " / ";
+
+  const cleanedValue = String(value || "").trim();
+  if (!cleanedValue) return;
+
+  const link = document.createElement("a");
+  link.href = `PlantListPage.html?filterType=${encodeURIComponent(filterType)}&filterValue=${encodeURIComponent(cleanedValue)}`;
+  link.textContent = cleanedValue;
+  element.appendChild(link);
+}
+
 function uniqueValidMonths(...values) {
   const all = values.flatMap((value) => monthsFromValue(value || ""));
   return Array.from(new Set(all.filter((m) => Number.isInteger(m) && m >= 1 && m <= 12)));
+}
+
+function uniqueCALENDER1Slots(...values) {
+  const slots = new Set();
+
+  splitPipe(values.join("|")).forEach((token) => {
+    const match = token.match(/^(\d{1,2})(?:\.(\d))?$/);
+    if (!match) return;
+
+    const month = Number.parseInt(match[1], 10);
+    if (!Number.isInteger(month) || month < 1 || month > 12) return;
+
+    const weekRaw = match[2];
+    if (weekRaw === undefined) {
+      for (let week = 1; week <= 4; week += 1) {
+        slots.add(`${month}-${week}`);
+      }
+      return;
+    }
+
+    const week = Number.parseInt(weekRaw, 10);
+    if (!Number.isInteger(week) || week < 1 || week > 4) return;
+    slots.add(`${month}-${week}`);
+  });
+
+  return slots;
 }
 
 function renderCALENDER1(plant) {
@@ -55,14 +94,14 @@ function renderCALENDER1(plant) {
   if (!root) return;
 
   const data = {
-    planting: uniqueValidMonths(plant.Planting_time_in_cover_months, plant.Planting_time_in_ground_month),
-    occupyingSpace: uniqueValidMonths(plant.Ocuppying_space_month),
-    flowering: uniqueValidMonths(plant.Flowering_time_month),
-    ripe: uniqueValidMonths(plant.Harvesting_time_in_cover_month, plant.Harvesting_time_in_ground_month),
-    fruiting: uniqueValidMonths(plant.Fruit_Harvesting_time_month),
-    harvesting: uniqueValidMonths(plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month, plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month, plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
-    harvestStoring: uniqueValidMonths(plant.Harvest_storing_month),
-    seedSaving: uniqueValidMonths(plant.Seed_saving),
+    planting: uniqueCALENDER1Slots(plant.Planting_time_in_cover_months, plant.Planting_time_in_ground_month),
+    occupyingSpace: uniqueCALENDER1Slots(plant.Occuppying_space_month, plant.Ocuppying_space_month),
+    flowering: uniqueCALENDER1Slots(plant.Flowering_time_month),
+    ripe: uniqueCALENDER1Slots(plant.Harvesting_time_in_cover_month, plant.Harvesting_time_in_ground_month),
+    fruiting: uniqueCALENDER1Slots(plant.Fruit_Harvesting_time_month),
+    harvesting: uniqueCALENDER1Slots(plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month, plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month, plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
+    harvestStoring: uniqueCALENDER1Slots(plant.Harvest_storing_month),
+    seedSaving: uniqueCALENDER1Slots(plant.Seed_saving),
   };
 
   root.innerHTML = "";
@@ -80,7 +119,7 @@ function renderCALENDER1(plant) {
   CALENDER1_TRACKS.forEach((track) => {
     const row = document.createElement("div");
     row.className = "CALENDER1-row";
-    const activeMonths = new Set(data[track.id]);
+    const activeSlots = data[track.id];
 
     for (let month = 1; month <= 12; month += 1) {
       for (let subCell = 1; subCell <= 4; subCell += 1) {
@@ -89,7 +128,7 @@ function renderCALENDER1(plant) {
         if (subCell === 4) {
           cell.classList.add("month-end");
         }
-        if (activeMonths.has(month)) {
+        if (activeSlots.has(`${month}-${subCell}`)) {
           cell.classList.add("active");
           cell.style.setProperty("--CALENDER1-color", track.color);
         }
@@ -151,9 +190,9 @@ console.log("start1");
        const textName =  plant.Name_HU || "Unknown";
    // title.textContent = plant.Name_HU || "Unknown";
     title.textContent = textName +"   |   "+plant.Name_EN;
-    identityfamily.innerHTML = `<strong> /${plant.Family || ""}</strong>`;
-    identitygenus.innerHTML = `<strong> / ${plant.Genus || ""}</strong>`;
-    identitylatinName.innerHTML = `<strong> / ${plant.LatinName || ""}</strong>`;
+  setIdentityFilterLink(identityfamily, "family", plant.Family);
+  setIdentityFilterLink(identitygenus, "genus", plant.Genus);
+  setIdentityFilterLink(identitylatinName, "latin", plant.LatinName);
     identityvariety.innerHTML = `<strong> / ${plant.Name_Variety|| ""}</strong>`;
 
     subtitle.textContent = plant.Name_Variety || "Unknown";
