@@ -29,7 +29,7 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   openBtn.disabled = true;
-  nfcBtn.disabled = true;
+  nfcBtn.disabled = false;
   varietySelector.disabled = true;
   if (listBtn) listBtn.disabled = true;
 
@@ -62,7 +62,7 @@ async function populate() {
     if (!selector.value) {
       varietySelector.disabled = true;
       openBtn.disabled = true;
-      nfcBtn.disabled = true;
+      nfcBtn.disabled = false;
       return;
     }
 
