@@ -11,7 +11,7 @@
       <section class="card landing-card">
         <h1>Plant Page</h1>
         <p class="subtitle">Choose a plant and open its detailed view.</p>
-
+       <block class="plant-view-panel">
         <label for="plant-selector">Plant name</label>
         <select id="plant-selector" aria-label="Select plant">
           <option value="">Loading plants…</option>
@@ -21,7 +21,13 @@
         <select id="plant-selector-variety" aria-label="Select plant variety">
           <option value="">Loading varieties…</option>
         </select>
-        
+
+        <button id="open-view" type="button" disabled> Open Plant View</button>
+
+        <button id="nfc-button" type="button">NFC Generator</button>
+        </block>
+        <block class="list-view-panel">
+          
         <p class="subtitle">Lists</p>
 
         <label for="plant-selector-family">Family</label>
@@ -39,14 +45,12 @@
           <option value="">Loading plants…</option>
         </select>
 
-        <button id="open-view" type="button" disabled> Open Plant View</button>
 
-        <button id="nfc-button" type="button">NFC Generator</button>
 
         <button id="plant-list-btn" type="button" disabled>Open Plant List</button>
         
         <p class="error-message" id="error-message" aria-live="polite"></p>
-        
+        </block>
       </section>
     </main>
 
