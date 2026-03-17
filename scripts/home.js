@@ -1,7 +1,16 @@
 import { loadPlantData } from "./csv-utils.js";
 
 document.querySelector('#nfc-button').addEventListener('click', () => {
-  window.location.href = 'Nfcgenerator.html';
+  const nameEl = document.getElementById('plant-selector');
+  const varEl = document.getElementById('plant-selector-variety');
+  const name = nameEl ? nameEl.value : '';
+  const nr = varEl ? varEl.value : '';
+  let url = 'Nfcgenerator.html';
+  if (name) {
+    url += `?name=${encodeURIComponent(name)}`;
+    if (nr) url += `&nr=${encodeURIComponent(nr)}`;
+  }
+  window.location.href = url;
 });
 
 
