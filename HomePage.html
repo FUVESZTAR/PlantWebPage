@@ -17,6 +17,33 @@
   .list-view-panel {
     padding: 10px;
   }
+  .nfc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
   </style>
   </head>
   <body>
@@ -24,7 +51,7 @@
       <section class="card landing-card">
         <h1>Plant Page</h1>
         <p class="subtitle">Choose a plant and open its detailed view.</p>
-       <div class="plant-view-panel">
+       <div class="nfc-form">
         <label for="plant-selector">Plant name</label>
         <select id="plant-selector" aria-label="Select plant">
           <option value="">Loading plants…</option>
@@ -39,7 +66,7 @@
 
         <button id="nfc-button" type="button">NFC Generator</button>
         </div>
-        <div class="list-view-panel">
+        <div class="nfc-form">
           
         <p class="subtitle">Lists</p>
 
