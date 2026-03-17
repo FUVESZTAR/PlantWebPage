@@ -3,7 +3,7 @@ import { loadPlantData } from "./csv-utils.js";
 // Google Sheets configuration for saving NFC data
 // To enable saving, create an OAuth 2.0 Client ID at https://console.cloud.google.com/
 // and replace the placeholder below with your actual Client ID.
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+//const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
 const SPREADSHEET_ID = '1nxRfS0k4zoX7SFlLefuUlPlgDpBZCNkRzxirR1CDGtE';
 // '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
 const NFC_LIST_SHEET = 'nfc_list';
@@ -373,10 +373,10 @@ function calculateSize(text) {
       return;
     }
 
-    if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
+    /*if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
       showError("Save is not configured: set GOOGLE_CLIENT_ID in nfcgen.js");
       return;
-    }
+    }*/
 
     if (!tokenClient) {
       if (typeof google === "undefined" || !google.accounts) {
