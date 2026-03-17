@@ -1,6 +1,5 @@
 import { loadPlantData } from "./csv-utils.js";
 
-// Add at the end of scripts/home.js
 document.querySelector('#nfc-button').addEventListener('click', () => {
   window.location.href = 'Nfcgenerator.html';
 });
@@ -37,15 +36,18 @@ async function populate() {
 
   try {
     plants = await loadPlantData();
+
+    // Populate plant selector with unique Name_HU values (sorted alphabetically)
     selector.innerHTML = '<option value="">Select a plant</option>';
-    plants
-      .sort((a, b) => Number(a.Nr) - Number(b.Nr))
-      .forEach((plant) => {
-        const opt = document.createElement("option");
-        opt.value = plant.Nr;
-        opt.textContent = `${plant.Nr}.${plant.Name_HU || ""}`;
-        selector.appendChild(opt);
-      });
+    const uniqueNames = [...new Set(plants.map(p => p.Name_HU).filter(Boolean))].sort((a, b) =>
+      a.localeCompare(b)
+    );
+    uniqueNames.forEach((name) => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      selector.appendChild(opt);
+    });
 
     fillUniqueSelector(familySelector, plants.map(p => p.Family), "All families");
     fillUniqueSelector(genusSelector, plants.map(p => p.Genus), "All genera");
@@ -57,36 +59,37 @@ async function populate() {
   }
 
   function populateVarietiesForSelection() {
-    varietySelector.innerHTML = '<option value="">Select a variety</option>';
+    varietySelector.innerHTML = '';
 
-    if (!selector.value) {
+    const selectedName = selector.value;
+    if (!selectedName) {
       varietySelector.disabled = true;
       openBtn.disabled = true;
       nfcBtn.disabled = false;
       return;
     }
 
-    varietySelector.disabled = false;
-
-    const selectedPlant = plants.find((p) => String(p.Nr) === selector.value);
-    const latinName = selectedPlant?.LatinName || "";
+    // Find all rows for the selected Name_HU and add their varieties
+    const matchingPlants = plants.filter(p => p.Name_HU === selectedName);
     const seenVarieties = new Set();
+    matchingPlants.forEach((plant) => {
+      const variety = (plant.Name_Variety || "").trim();
+      if (!variety || seenVarieties.has(variety)) return;
+      seenVarieties.add(variety);
 
-    if (latinName) {
-      plants
-        .filter((p) => (p.LatinName || "") === latinName)
-        .forEach((plant) => {
-          const variety = (plant.Name_Variety || "").trim();
-          if (!variety || seenVarieties.has(variety)) return;
-          seenVarieties.add(variety);
+      const option = document.createElement("option");
+      option.value = String(plant.Nr);
+      option.textContent = variety;
+      varietySelector.appendChild(option);
+    });
 
-          const option = document.createElement("option");
-          option.value = String(plant.Nr);
-          option.textContent = variety;
-          varietySelector.appendChild(option);
-        });
+    // Default to "Species" variety when available
+    const speciesOption = Array.from(varietySelector.options).find(opt => opt.textContent === "Species");
+    if (speciesOption) {
+      varietySelector.value = speciesOption.value;
     }
 
+    varietySelector.disabled = false;
     openBtn.disabled = false;
     nfcBtn.disabled = false;
   }
@@ -94,28 +97,27 @@ async function populate() {
   selector.addEventListener("change", populateVarietiesForSelection);
 
   varietySelector.addEventListener("change", () => {
-    if (!varietySelector.value) return;
-
-    const selectedVarietyPlant = plants.find((p) => String(p.Nr) === varietySelector.value);
-    if (selectedVarietyPlant?.Nr) {
-      selector.value = String(selectedVarietyPlant.Nr);
-      openBtn.disabled = false;
-      nfcBtn.disabled = false;
-    }
+    openBtn.disabled = !selector.value;
+    nfcBtn.disabled = false;
   });
 
   openBtn.addEventListener("click", () => {
-    const targetNr = varietySelector.value || selector.value;
+    const selectedName = selector.value;
+    if (!selectedName) return;
+
+    // Use selected variety's Nr, or fall back to the Species row for this Name_HU
+    let targetNr = varietySelector.value;
+    if (!targetNr) {
+      const speciesPlant = plants.find(
+        p => p.Name_HU === selectedName && String(p.Name_Variety).trim() === "Species"
+      );
+      targetNr = speciesPlant ? String(speciesPlant.Nr) : null;
+    }
+
     if (targetNr) {
-      localStorage.setItem("selectedPlantNr", targetNr);
-      const selectedPlant = plants.find((p) => String(p.Nr) === String(targetNr));
-      if (selectedPlant && selectedPlant.Nr) {
-        console.log("Navigating with Nr:", selectedPlant.Nr);
-        window.location.href = `P.html?id=${encodeURIComponent(selectedPlant.Nr)}`;
-      } else {
-        console.warn("Plant not found or no Nr");
-        window.location.href = "P.html";
-      }
+      window.location.href = `P.html?id=${encodeURIComponent(targetNr)}`;
+    } else {
+      window.location.href = "P.html";
     }
   });
 
