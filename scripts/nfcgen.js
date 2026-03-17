@@ -1,5 +1,16 @@
 import { loadPlantData } from "./csv-utils.js";
 
+// Google Sheets configuration for saving NFC data
+// To enable saving, create an OAuth 2.0 Client ID at https://console.cloud.google.com/
+// and replace the placeholder below with your actual Client ID.
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+const SPREADSHEET_ID = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
+const NFC_LIST_SHEET = 'nfc_list';
+const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+
+let tokenClient = null;
+let accessToken = null;
+
 let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
@@ -26,6 +37,7 @@ async function populate() {
   const copynfcBtn = document.getElementById("copy-nfc");
   const copylinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
+  const saveNfcBtn = document.getElementById("save-nfc");
   const errorMsg = document.getElementById("error-message");
 
   let plants = [];
@@ -321,6 +333,88 @@ function calculateSize(text) {
   // Back button
   backBtn.addEventListener("click", () => {
     window.location.href = "HomePage.html";
+  });
+
+  // Save NFC button – appends a row to the nfc_list sheet via Google Sheets API
+  async function appendNfcRow(nfcId, nfcData, link) {
+    const range = `${NFC_LIST_SHEET}!A:C`;
+    const url =
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}` +
+      `/values/${encodeURIComponent(range)}:append` +
+      `?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ values: [[nfcId, nfcData, link]] }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        accessToken = null;
+        throw new Error("Session expired. Please click Save again to re-authenticate.");
+      }
+      throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+    }
+  }
+
+  saveNfcBtn.addEventListener("click", async () => {
+    const nfcData = nfcPreview.textContent;
+    const link = linkPreview.textContent;
+    const nfcId = plantIdInput.value;
+
+    if (nfcData === "NFC data will appear here...") {
+      showError("Please select a plant and generate NFC data first");
+      return;
+    }
+
+    if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
+      showError("Save is not configured: set GOOGLE_CLIENT_ID in nfcgen.js");
+      return;
+    }
+
+    if (!tokenClient) {
+      if (typeof google === "undefined" || !google.accounts) {
+        showError("Google API not loaded. Please refresh the page and try again.");
+        return;
+      }
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: SHEETS_SCOPE,
+        callback: () => {}, // Updated before each use
+      });
+    }
+
+    // Update callback to capture the current form values for this save attempt
+    tokenClient.callback = async (tokenResponse) => {
+      if (tokenResponse.error) {
+        showError("Authorization failed: " + tokenResponse.error);
+        return;
+      }
+      accessToken = tokenResponse.access_token;
+      try {
+        await appendNfcRow(nfcId, nfcData, link);
+        showError("NFC saved to list!", "success");
+      } catch (err) {
+        showError("Failed to save NFC: " + err.message);
+      }
+    };
+
+    if (!accessToken) {
+      tokenClient.requestAccessToken();
+      return;
+    }
+
+    try {
+      await appendNfcRow(nfcId, nfcData, link);
+      showError("NFC saved to list!", "success");
+    } catch (err) {
+      showError("Failed to save NFC: " + err.message);
+    }
   });
 
   function clearForm() {

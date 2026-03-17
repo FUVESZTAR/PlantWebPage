@@ -1,5 +1,5 @@
 const SHEET_ID = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
-const SHEET_NAME = 'PlantDataSheet';
+const SHEET_NAME = 'plant_list';
 
 /**
  * Fetch raw Google Visualization API response for the plant data sheet.
