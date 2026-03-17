@@ -23,6 +23,7 @@ async function populate() {
   const nrInput = document.getElementById("nr");
   const plantIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
+  const nameHuInput ="";
   const nameVarietySelector = document.getElementById("name-variety");
   const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
