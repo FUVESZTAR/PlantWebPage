@@ -52,44 +52,52 @@
         <h1>Plant Page</h1>
         <p class="subtitle">Choose a plant and open its detailed view.</p>
        <div class="nfc-form">
+         <div class="form-group">
         <label for="plant-selector">Plant name</label>
         <select id="plant-selector" aria-label="Select plant">
           <option value="">Loading plants…</option>
         </select>
-
+         </div>
+           <div class="form-group">
         <label for="plant-selector-variety">Variety</label>
         <select id="plant-selector-variety" aria-label="Select plant variety">
           <option value="">Loading varieties…</option>
         </select>
-
+         </div>
+           <div class="button-group">
         <button id="open-view" type="button" disabled> Open Plant View</button>
 
         <button id="nfc-button" type="button">NFC Generator</button>
+             </div>
         </div>
         <div class="nfc-form">
           
         <p class="subtitle">Lists</p>
-
+           <div class="form-group">
         <label for="plant-selector-family">Family</label>
         <select id="plant-selector-family" aria-label="Select plant family">
           <option value="">Loading families…</option>
         </select>
-
+</div>
+           <div class="form-group">
         <label for="plant-selector-genus">Genus</label>
         <select id="plant-selector-genus" aria-label="Select plant genus">
           <option value="">Loading genera…</option>
         </select>
-
+</div>
+           <div class="form-group">
         <label for="plant-selector-latin">Latin name</label>
         <select id="plant-selector-latin" aria-label="Select plant latin name">
           <option value="">Loading plants…</option>
         </select>
-
+</div>
+           <div class="button-group">
 
 
         <button id="plant-list-btn" type="button" disabled>Open Plant List</button>
         
         <p class="error-message" id="error-message" aria-live="polite"></p>
+             </div>
         </div>
       </section>
     </main>
