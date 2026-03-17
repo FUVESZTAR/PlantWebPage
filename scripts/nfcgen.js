@@ -332,7 +332,7 @@ function calculateSize(text) {
     nameVarietyCustomInput.style.display = "none";
     latinNameInput.value = "";
     datumInput.value = dateString;
-    nfctypInput.value = "";
+    nfctypInput.value = "n";
     egyebInput.value = "";
     nfcPreview.textContent = "NFC data will appear here...";
     nfcSize.textContent = "Size: 0 B";
