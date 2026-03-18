@@ -9,8 +9,8 @@ import { loadPlantData } from "./csv-utils.js";
 // write-only authorization (no data can be read via this key) and is combined
 // with rate limiting and input validation in the Apps Script to prevent abuse.
 // Keep the SECRET_KEY long and random; treat the Web App URL as semi-private.
-const SHEET_WRITER_URL    = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
-const SHEET_WRITER_SECRET = 'YOUR_SECRET_KEY';
+const SHEET_WRITER_URL    = 'https://script.google.com/macros/s/AKfycbysWB68AM6TKlobnA3MLR_18LpJjGVkHolPf3G_WNziV3r93_fztJIenTVSoll-Kmtp/exec';
+const SHEET_WRITER_SECRET = '159753g9d5rt4Ht4eg7e5z4d6szo89fsef';
 // ─────────────────────────────────────────────────────────────────────────────
 
 let plantData = [];
