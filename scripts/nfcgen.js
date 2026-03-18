@@ -208,7 +208,7 @@ async function populate() {
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
-      nfctypInput.value = varietyPlant.nfctyp || "";
+      nfctypInput.value = "n";
       egyebInput.value = varietyPlant.egyeb || "";
       
       updatePreviews();
