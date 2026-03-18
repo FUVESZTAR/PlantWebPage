@@ -115,7 +115,7 @@ async function populate() {
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
-      nfctypInput.value = plant.nfctyp || "";
+      nfctypInput.value = "n";
       egyebInput.value = plant.egyeb || "";
     }
     
