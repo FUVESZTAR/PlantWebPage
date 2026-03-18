@@ -1,22 +1,40 @@
 import { loadPlantData } from "./csv-utils.js";
 
-// Google Sheets configuration for saving NFC data
-// To enable saving, create an OAuth 2.0 Client ID at https://console.cloud.google.com/
-// and replace the placeholder below with your actual Client ID.
-//const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
-const SPREADSHEET_ID = '1nxRfS0k4zoX7SFlLefuUlPlgDpBZCNkRzxirR1CDGtE';
-// '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
-const NFC_LIST_SHEET = 'nfc_list';
-const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
-
-let tokenClient = null;
-let accessToken = null;
+// ── Google Apps Script Web App configuration ─────────────────────────────────
+// Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
+// resulting URL below.  Also set the same SECRET_KEY in Script Properties.
+// See scripts/sheetwriter.js for full deployment instructions.
+//
+// Security note: SHEET_WRITER_SECRET is visible in page source.  It provides
+// write-only authorization (no data can be read via this key) and is combined
+// with rate limiting and input validation in the Apps Script to prevent abuse.
+// Keep the SECRET_KEY long and random; treat the Web App URL as semi-private.
+const SHEET_WRITER_URL    = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+const SHEET_WRITER_SECRET = 'YOUR_SECRET_KEY';
+// ─────────────────────────────────────────────────────────────────────────────
 
 let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
 let plantId = 1;
+
+/**
+ * Fetches the last value from column A of the NFC list sheet via the
+ * Apps Script Web App and pre-fills the NFC ID input.
+ */
+async function loadLastNfcId(plantIdInput) {
+  if (SHEET_WRITER_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') return;
+  try {
+    const response = await fetch(SHEET_WRITER_URL, { redirect: 'follow' });
+    const result   = await response.json();
+    if (result.lastId !== undefined && result.lastId !== '') {
+      plantIdInput.value = result.lastId;
+    }
+  } catch (err) {
+    console.warn('Could not load last NFC ID:', err.message);
+  }
+}
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
@@ -63,6 +81,9 @@ async function populate() {
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
+
+  // Pre-fill NFC ID with the last value from column A of the NFC list sheet
+  loadLastNfcId(plantIdInput);
 
   // Set current date
   const today = new Date();
@@ -336,90 +357,44 @@ function calculateSize(text) {
     window.location.href = "HomePage.html";
   });
 
-  // Save NFC button – appends a row to the nfc_list sheet via Google Sheets API
-  async function appendNfcRow(nfcId, nfcData, link) {
-    const range = `${NFC_LIST_SHEET}!A:C`;
-    const url =
-      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}` +
-      `/values/${encodeURIComponent(range)}:append` +
-      `?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ values: [[nfcId, nfcData, link]] }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      if (response.status === 401) {
-        accessToken = null;
-        throw new Error("Session expired. Please click Save again to re-authenticate.");
-      }
-      throw new Error(errorData.error?.message || `HTTP ${response.status}`);
-    }
-  }
-
+  // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   saveNfcBtn.addEventListener("click", async () => {
     const nfcData = nfcPreview.textContent;
-    const link = linkPreview.textContent;
-    const nfcId = plantIdInput.value;
+    const link    = linkPreview.textContent;
+    const nfcId   = plantIdInput.value;
 
     if (nfcData === "NFC data will appear here...") {
       showError("Please select a plant and generate NFC data first");
       return;
     }
 
-    /*if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
-      showError("Save is not configured: set GOOGLE_CLIENT_ID in nfcgen.js");
-      return;
-    }*/
-
-    if (!tokenClient) {
-      if (typeof google === "undefined" || !google.accounts) {
-        showError("Google API not loaded. Please refresh the page and try again.");
-        return;
-      }
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
-        scope: SHEETS_SCOPE,
-        callback: () => {}, // Updated before each use
-      });
-    }
-
-    // Update callback to capture the current form values for this save attempt
-    tokenClient.callback = async (tokenResponse) => {
-      if (tokenResponse.error) {
-        showError("Authorization failed: " + tokenResponse.error);
-        return;
-      }
-      accessToken = tokenResponse.access_token;
-      try {
-        await appendNfcRow(nfcId, nfcData, link);
-        showError("NFC saved to list!", "success");
-      } catch (err) {
-        showError("Failed to save NFC: " + err.message);
-      }
-    };
-
-    if (!accessToken) {
-      tokenClient.requestAccessToken();
+    if (SHEET_WRITER_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') {
+      showError("Save is not configured: set SHEET_WRITER_URL in nfcgen.js");
       return;
     }
 
+    saveNfcBtn.disabled = true;
     try {
-      await appendNfcRow(nfcId, nfcData, link);
-      showError("NFC saved to list!", "success");
+      const response = await fetch(SHEET_WRITER_URL, {
+        method: 'POST',
+        // Apps Script Web Apps accept text/plain without a CORS preflight.
+        // The body is still valid JSON, parsed by the Apps Script handler.
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, nfcData, link }),
+        redirect: 'follow',
+      });
+      const result = await response.json().catch(() => ({}));
+      if (result.status === 'success') {
+        showError("NFC saved to list!", "success");
+      } else {
+        showError("Failed to save NFC: " + (result.error || "Unknown error"));
+      }
     } catch (err) {
       showError("Failed to save NFC: " + err.message);
+    } finally {
+      saveNfcBtn.disabled = false;
     }
   });
-
-
-
 
   //save end
 
@@ -487,35 +462,4 @@ if (document.readyState === "loading") {
 } else {
   populate();
 }
-//sheet write
-const SECRET = "my_super_secret_key_123";
-
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-
-  if (data.key !== SECRET) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ error: "Unauthorized" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
-  sheet.appendRow([data.text]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: "success" }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-// https://script.google.com/macros/s/XXXXX/exec
-//use
-fetch("YOUR_WEB_APP_URL", {
-  method: "POST",
-  body: JSON.stringify({ text: "Hello world!" }),
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-.then(res => res.json())
-.then(data => console.log(data));
 
