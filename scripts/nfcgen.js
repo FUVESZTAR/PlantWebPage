@@ -418,6 +418,11 @@ function calculateSize(text) {
     }
   });
 
+
+
+
+  //save end
+
   function clearForm() {
     nrInput.value = "";
     plantIdInput.value = "";
@@ -482,3 +487,35 @@ if (document.readyState === "loading") {
 } else {
   populate();
 }
+//sheet write
+const SECRET = "my_super_secret_key_123";
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+
+  if (data.key !== SECRET) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: "Unauthorized" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+  sheet.appendRow([data.text]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// https://script.google.com/macros/s/XXXXX/exec
+//use
+fetch("YOUR_WEB_APP_URL", {
+  method: "POST",
+  body: JSON.stringify({ text: "Hello world!" }),
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(res => res.json())
+.then(data => console.log(data));
+
