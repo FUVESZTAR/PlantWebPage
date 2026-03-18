@@ -93,7 +93,7 @@ async function populate() {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
       nrInput.value = plant.Nr || "";
-      nameHuInput.value = plant.Name_HU || "";
+      nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = plant.nfctyp || "";
@@ -186,7 +186,7 @@ async function populate() {
       
       // Update all fields from this variety's data
       nrInput.value = varietyPlant.Nr || "";
-      nameHuInput.value = varietyPlant.Name_HU || "";
+      nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = varietyPlant.nfctyp || "";
@@ -244,7 +244,7 @@ function calculateSize(text) {
   function updateNFCPreview() {
     const nr = nrInput.value;
     const id2 = plantIdInput.value;
-    const nameHu = nameHuInput.value;
+    const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
     const datum = datumInput.value;
@@ -421,7 +421,7 @@ function calculateSize(text) {
   function clearForm() {
     nrInput.value = "";
     plantIdInput.value = "";
-    nameHuInput.value = "";
+    nameHuInput = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
