@@ -83,9 +83,6 @@ async function populate() {
     return;
   }
 
-  // Pre-fill NFC ID with the last value from column A of the NFC list sheet
-  loadLastNfcId(nfcIdInput);
-
   // Set current date
   const today = new Date();
   const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -229,6 +226,9 @@ async function populate() {
   });
 
   function updatePreviews() {
+    // Pre-fill NFC ID with the last value from column A of the NFC list sheet
+    loadLastNfcId(nfcIdInput);
+    //update NFC field
     updateNFCPreview();
   }
 
