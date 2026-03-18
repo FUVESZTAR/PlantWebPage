@@ -23,13 +23,14 @@ let plantId = 1;
  * Fetches the last value from column A of the NFC list sheet via the
  * Apps Script Web App and pre-fills the NFC ID input.
  */
-async function loadLastNfcId(plantIdInput) {
+async function loadLastNfcId(nfcIdInput) {
   if (SHEET_WRITER_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') return;
   try {
     const response = await fetch(SHEET_WRITER_URL, { redirect: 'follow' });
     const result   = await response.json();
     if (result.lastId !== undefined && result.lastId !== '') {
-      plantIdInput.value = result.lastId +1;
+        const nextId = Number(result.lastId) + 1;
+        nfcIdInput.value = nextId;
     }
   } catch (err) {
     console.warn('Could not load last NFC ID:', err.message);
@@ -39,7 +40,7 @@ async function loadLastNfcId(plantIdInput) {
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const nrInput = document.getElementById("nr");
-  const plantIdInput = document.getElementById("plantId");
+  const nfcIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -83,7 +84,7 @@ async function populate() {
   }
 
   // Pre-fill NFC ID with the last value from column A of the NFC list sheet
-  loadLastNfcId(plantIdInput);
+  loadLastNfcId(nfcIdInput);
 
   // Set current date
   const today = new Date();
@@ -222,7 +223,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, plantIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [nrInput, nfcIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -264,7 +265,7 @@ function calculateSize(text) {
 
   function updateNFCPreview() {
     const nr = nrInput.value;
-    const id2 = plantIdInput.value;
+    const id2 = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
@@ -361,7 +362,7 @@ function calculateSize(text) {
   saveNfcBtn.addEventListener("click", async () => {
     const nfcData = nfcPreview.textContent;
     const link    = linkPreview.textContent;
-    const nfcId   = plantIdInput.value;
+    const nfcId   = nfcIdInput.value;
 
     if (nfcData === "NFC data will appear here...") {
       showError("Please select a plant and generate NFC data first");
@@ -400,7 +401,7 @@ function calculateSize(text) {
 
   function clearForm() {
     nrInput.value = "";
-    plantIdInput.value = "";
+    nfcIdInput.value = "";
     nameHuInput = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
     nameVarietyCustomInput.value = "";
