@@ -29,7 +29,7 @@ async function loadLastNfcId(plantIdInput) {
     const response = await fetch(SHEET_WRITER_URL, { redirect: 'follow' });
     const result   = await response.json();
     if (result.lastId !== undefined && result.lastId !== '') {
-      plantIdInput.value = result.lastId;
+      plantIdInput.value = result.lastId +1;
     }
   } catch (err) {
     console.warn('Could not load last NFC ID:', err.message);
