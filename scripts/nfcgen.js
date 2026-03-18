@@ -23,7 +23,7 @@ async function populate() {
   const nrInput = document.getElementById("nr");
   const plantIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
-  const nameHuInput ="";
+  let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
   const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
@@ -201,7 +201,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, plantIdInput, nameHuInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [nrInput, plantIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
