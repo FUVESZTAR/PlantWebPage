@@ -265,7 +265,7 @@ function calculateSize(text) {
 
   function updateNFCPreview() {
     const nr = nrInput.value;
-    const id2 = nfcIdInput.value;
+    const nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
@@ -279,7 +279,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nr}/${id2}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -303,6 +303,7 @@ function calculateSize(text) {
 
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
+    updatePreviews();
     const nfcData = nfcPreview.textContent;
     
     if (nfcData === "NFC data will appear here...") {
