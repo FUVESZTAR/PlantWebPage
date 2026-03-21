@@ -154,6 +154,13 @@ async function populate() {
       window.location.href = `PlantListPage.html?filterType=${encodeURIComponent(filter.filterType)}&filterValue=${encodeURIComponent(filter.filterValue)}`;
     });
   }
+
+  const nfcListBtn = document.getElementById("nfc-list-btn");
+  if (nfcListBtn) {
+    nfcListBtn.addEventListener("click", () => {
+      window.location.href = "NFCListPage.html";
+    });
+  }
 }
 
 if (document.readyState === "loading") {
