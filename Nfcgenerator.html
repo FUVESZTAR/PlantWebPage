@@ -42,10 +42,15 @@
       font-family: monospace;
       font-size: 0.9rem;
     }
-    .button-group {
+    .button-group1 {
       display: flex;
       gap: 0.5rem;
       margin-top: 1rem;
+    }
+    .button-group2 {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
     }
     button {
       padding: 0.75rem 1.5rem;
@@ -150,12 +155,12 @@
 <p class="error-message" id="error-message"></p>
 
 <!-- Action Buttons -->
-<div class="button-group">
+<div class="button-group1">
   <button id="back-button" type="button">Back</button>
   <button id="generate-nfc" type="button">Generate NFC</button>
   <button id="save-nfc" type="button">Save NFC</button>
-</div><br>
-<div class="button-group">
+</div>
+<div class="button-group2">
   <button id="copy-nfc" type="button">Copy NFC Data</button><br>
   <button id="copy-link" type="button">Copy Link</button>
   <button id="qr-button" type="button">NFC QR</button>
