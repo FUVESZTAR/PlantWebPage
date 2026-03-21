@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant List</title>
+    <title>NFC List</title>
     <link rel="stylesheet" href="css/plantlistpagestyles.css" />
     <style>
       .filter-bar {
@@ -12,43 +12,51 @@
         gap: 12px;
         margin-bottom: 16px;
       }
-      .filter-label {
-        font-weight: bold;
-        font-size: 1rem;
-      }
-      .filter-value {
-        font-size: 1rem;
-        color: #444;
-      }
-      .plant-list-table {
+      .nfc-list-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 8px;
         font-size: 0.95rem;
       }
-      .plant-list-table th {
+      .nfc-list-table th {
         background: #4a7c4e;
         color: white;
         text-align: left;
         padding: 8px 10px;
         white-space: nowrap;
       }
-      .plant-list-table td {
+      .nfc-list-table td {
         padding: 7px 10px;
         border-bottom: 1px solid #ddd;
+        word-break: break-all;
       }
-      .plant-list-table tr:hover td {
+      .nfc-list-table tr:hover td {
         background: #f0f8f0;
-        cursor: pointer;
       }
-      .plant-list-table tr:nth-child(even) td {
+      .nfc-list-table tr:nth-child(even) td {
         background: #f9f9f9;
       }
-      .plant-list-table tr:nth-child(even):hover td {
+      .nfc-list-table tr:nth-child(even):hover td {
         background: #f0f8f0;
+      }
+      .nfc-list-table a {
+        color: #2f7d32;
+        text-decoration: none;
+      }
+      .nfc-list-table a:hover {
+        text-decoration: underline;
       }
       .back-button {
         margin-bottom: 0;
+      }
+      @media (max-width: 600px) {
+        .nfc-list-table {
+          font-size: 0.8rem;
+        }
+        .nfc-list-table th,
+        .nfc-list-table td {
+          padding: 5px 6px;
+        }
       }
     </style>
   </head>
@@ -57,27 +65,25 @@
       <section class="card landing-card" style="width: min(900px, 96vw);">
         <div class="filter-bar">
           <button id="back-button" class="back-button" type="button">← Back</button>
-          <h1 style="margin:0; font-size:1.4rem;">Plant List</h1>
+          <h1 style="margin:0; font-size:1.4rem;">NFC List</h1>
         </div>
-        <p id="filter-summary" class="subtitle"></p>
         <div style="overflow-x: auto;">
-        <table class="plant-list-table">
-          <thead>
-            <tr>
-              <th>Latin Name</th>
-              <th>Variety</th>
-              <th>Name (EN)</th>
-              <th>Name (HU)</th>
-            </tr>
-          </thead>
-          <tbody id="plant-list-body">
-            <tr><td colspan="4">Loading…</td></tr>
-          </tbody>
-        </table>
+          <table class="nfc-list-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NFC Text</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody id="nfc-list-body">
+              <tr><td colspan="3">Loading…</td></tr>
+            </tbody>
+          </table>
         </div>
         <p class="error-message" id="error-message" aria-live="polite"></p>
       </section>
     </main>
-    <script src="scripts/listing.js" type="module"></script>
+    <script src="scripts/nfc-listing.js" type="module"></script>
   </body>
 </html>

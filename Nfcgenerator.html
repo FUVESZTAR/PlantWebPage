@@ -46,11 +46,13 @@
       display: flex;
       gap: 0.5rem;
       margin-top: 1rem;
+      flex-wrap: wrap;
     }
     .button-group2 {
       display: flex;
       gap: 0.5rem;
       margin-top: 0.5rem;
+      flex-wrap: wrap;
     }
     button {
       padding: 0.75rem 1.5rem;
@@ -71,6 +73,18 @@
     .error-message {
       color: red;
       margin-top: 0.5rem;
+    }
+    @media (max-width: 480px) {
+      .nfc-form {
+        max-width: 100%;
+      }
+      .button-group1,
+      .button-group2 {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
