@@ -54,6 +54,7 @@ async function populate() {
   const linkSize = document.getElementById("link-size");
   const totalSize = document.getElementById("total-size");
   const gennfcBtn = document.getElementById("generate-nfc");
+  const qrnfcBtn = document.getElementById("qr-button");
   const copynfcBtn = document.getElementById("copy-nfc");
   const copylinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
@@ -310,8 +311,20 @@ function calculateSize(text) {
       showError("Please select a plant and configure the NFC data");
       return;
     }
+  });
+
+    // Generate QR NFC button
+  qrnfcBtn.addEventListener("click", () => {
+    updatePreviews();
+    const nfcData = nfcPreview.textContent;
+    const link = linkPreview.textContent;
+    const combined = nfcData + " " + link;
+    if (nfcData === "NFC data will appear here...") {
+      showError("Please select a plant and configure the NFC data");
+      return;
+    }
     
-    const encodedData = encodeURIComponent(nfcData);
+    const encodedData = encodeURIComponent(combined);
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedData}`;
     
     const win = window.open(qrCodeUrl, "_blank");
@@ -361,6 +374,7 @@ function calculateSize(text) {
 
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   saveNfcBtn.addEventListener("click", async () => {
+    updatePreviews();
     const nfcData = nfcPreview.textContent;
     const link    = linkPreview.textContent;
     const nfcId   = nfcIdInput.value;
