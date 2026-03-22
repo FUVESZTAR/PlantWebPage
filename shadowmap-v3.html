@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShadowMap 3D – Sun Path Visualizer</title>
+<!--
+  ╔══════════════════════════════════════════╗
+  ║  SETUP: Replace YOUR_API_KEY below       ║
+  ║  Get key: console.cloud.google.com       ║
+  ║  Enable:  Maps JavaScript API            ║
+  ╚══════════════════════════════════════════╝
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:rgba(10,14,26,0.94);
+  --border:rgba(255,220,60,0.18);
+  --bh:rgba(255,220,60,0.38);
+  --text:#f0e8c8;
+  --dim:rgba(220,200,130,0.45);
+  --sun:#f5e020;
+  --sun2:#ffa500;
+  --blue:#4e8ef7;
+  --r:10px;
+  --mono:'JetBrains Mono',monospace;
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--mono);background:#0d1020}
+#gmap{position:fixed;inset:0}
+#cv{position:absolute;inset:0;pointer-events:none;z-index:2}
+
+/* ── panels ── */
+.panel{
+  position:fixed;z-index:20;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:11px 15px;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  transition:border-color .2s;
+}
+.panel:hover{border-color:var(--bh)}
+.lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.val{font-size:13px;font-weight:600;color:var(--text);font-family:var(--mono)}
+.row{display:flex;gap:16px;align-items:flex-start}
+.col{display:flex;flex-direction:column}
+
+/* ── top HUD (time + date) – matches reference ── */
+#hud-top{
+  top:14px;right:14px;
+  min-width:340px;
+  padding:12px 16px 10px;
+}
+#hud-top .time-big{
+  font-family:var(--mono);font-size:32px;font-weight:600;
+  color:var(--sun);letter-spacing:.04em;line-height:1;
+}
+#hud-top .utc-tag{font-size:9px;color:var(--dim);margin-top:2px}
+.day-slider-wrap{margin-top:10px}
+.day-slider-wrap .ds-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ds-time{font-size:10px;font-weight:600;color:var(--sun);min-width:36px}
+.ds-time.right{text-align:right}
+.ds-track{
+  flex:1;height:4px;border-radius:2px;
+  background:rgba(255,220,60,.15);
+  position:relative;cursor:pointer;
+}
+.ds-fill{height:100%;border-radius:2px;background:linear-gradient(to right,var(--sun2),var(--sun));transition:width .1s}
+.ds-thumb{
+  position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:14px;height:14px;border-radius:50%;
+  background:var(--sun);border:2px solid #fff3;cursor:pointer;
+  box-shadow:0 0 8px rgba(255,220,60,.6);
+}
+#year-slider{width:100%;-webkit-appearance:none;height:3px;border-radius:2px;
+  background:rgba(200,200,200,.15);outline:none;cursor:pointer;margin-top:4px}
+#year-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;
+  background:rgba(200,200,200,.7);cursor:pointer}
+
+/* ── object panel ── */
+#obj-panel{bottom:90px;left:14px;width:220px}
+#obj-panel h3{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--sun);margin-bottom:9px}
+.srange{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--blue) 0%,var(--blue) var(--pct,6%),
+  rgba(100,150,230,.18) var(--pct,6%),rgba(100,150,230,.18) 100%);
+  outline:none;cursor:pointer;margin-top:6px;margin-bottom:10px}
+.srange::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--blue);border:2px solid rgba(255,255,255,.2);cursor:pointer}
+.stat-row{display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-top:1px solid rgba(255,220,60,.1)}
+.btn{width:100%;margin-top:7px;padding:7px;border-radius:6px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+.btn-undo{background:rgba(78,142,247,.08);border:1px solid rgba(78,142,247,.2);color:rgba(130,180,255,.85)}
+.btn-undo:hover{background:rgba(78,142,247,.2)}
+.btn-clear{background:rgba(220,70,70,.08);border:1px solid rgba(220,70,70,.2);color:rgba(255,150,150,.8);margin-top:5px}
+.btn-clear:hover{background:rgba(220,70,70,.2)}
+
+/* ── coords ── */
+#coords-panel{top:14px;left:14px}
+
+/* ── basemap ── */
+#bm-bar{top:14px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;padding:0;overflow:hidden}
+.bm-btn{padding:8px 16px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--dim);cursor:pointer;border:none;background:transparent;font-family:var(--mono);transition:background .15s,color .15s}
+.bm-btn.active{background:rgba(255,220,60,.15);color:var(--sun)}
+.bm-btn:hover:not(.active){background:rgba(255,220,60,.07);color:var(--text)}
+.bm-sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+
+/* ── hint ── */
+#hint{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:5px 16px;font-size:10px;color:var(--dim);pointer-events:none;
+  letter-spacing:.06em;transition:opacity .5s;z-index:20}
+
+/* ── date panel ── */
+#date-panel{bottom:14px;left:14px}
+#date-panel input[type=date]{background:transparent;border:1px solid var(--border);
+  color:var(--text);font-family:var(--mono);font-size:12px;
+  border-radius:6px;padding:4px 8px;outline:none;cursor:pointer;margin-top:4px;width:100%}
+#date-panel input[type=date]::-webkit-calendar-picker-indicator{
+  filter:invert(.8) sepia(.5) hue-rotate(10deg);cursor:pointer}
+
+/* ── play bar ── */
+#play-bar{bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:14px;
+  padding:10px 22px;border-radius:40px;
+  min-width:440px;max-width:600px;width:48vw}
+#play-bar input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--sun) 0%,var(--sun) var(--pct,50%),
+  rgba(255,220,60,.15) var(--pct,50%),rgba(255,220,60,.15) 100%);
+  outline:none;cursor:pointer}
+#play-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
+  border-radius:50%;background:var(--sun);border:2px solid rgba(255,255,255,.25);cursor:pointer}
+#play-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+  background:rgba(255,220,60,.1);color:var(--sun);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+#play-btn:hover{background:rgba(255,220,60,.22)}
+#speed-sel{background:rgba(10,14,26,.9);border:1px solid var(--border);
+  color:var(--text);font-family:var(--mono);font-size:10px;
+  border-radius:5px;padding:3px 5px;outline:none;cursor:pointer}
+
+/* ── api warning ── */
+#api-warn{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--bg);border:1px solid rgba(255,180,30,.35);
+  border-radius:12px;padding:26px 30px;z-index:100;max-width:460px;text-align:center;line-height:1.7}
+#api-warn h2{font-family:'Syne',sans-serif;font-size:15px;color:var(--sun);margin-bottom:10px}
+#api-warn p{font-size:11px;color:var(--dim)}
+#api-warn code{background:rgba(255,220,60,.1);border:1px solid rgba(255,220,60,.2);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--sun)}
+#api-warn a{color:var(--blue)}
+#dismiss-warn{margin-top:14px;padding:7px 18px;background:rgba(255,220,60,.12);
+  border:1px solid rgba(255,220,60,.3);border-radius:6px;color:var(--sun);
+  font-family:var(--mono);font-size:11px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="gmap"></div>
+
+<!-- API warning -->
+<div id="api-warn">
+  <h2>Add your Google Maps API Key</h2>
+  <p>Open this file and replace <code>YOUR_API_KEY</code> near the bottom with your key.</p>
+  <p style="margin-top:8px">Get a free key at <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Enable <strong>Maps JavaScript API</strong>.</p>
+  <p style="margin-top:8px">The app runs in <strong>demo mode</strong> without a key.</p>
+  <button id="dismiss-warn" onclick="document.getElementById('api-warn').style.display='none'">Continue in demo mode</button>
+</div>
+
+<!-- Basemap -->
+<div class="panel" id="bm-bar">
+  <button class="bm-btn active" onclick="setMapType('roadmap',this)">Map</button>
+  <div class="bm-sep"></div>
+  <button class="bm-btn" onclick="setMapType('satellite',this)">Satellite</button>
+  <div class="bm-sep"></div>
+  <button class="bm-btn" onclick="setMapType('hybrid',this)">Hybrid</button>
+  <div class="bm-sep"></div>
+  <button class="bm-btn" onclick="setMapType('terrain',this)">Terrain</button>
+</div>
+
+<!-- Coords -->
+<div class="panel" id="coords-panel">
+  <div class="row">
+    <div class="col"><div class="lbl">Lat</div><div class="val" id="lat-v">47.6725°</div></div>
+    <div class="col"><div class="lbl">Lng</div><div class="val" id="lng-v">17.3505°</div></div>
+    <div class="col"><div class="lbl">Zoom</div><div class="val" id="zoom-v">17</div></div>
+    <div class="col"><div class="lbl">Azimuth</div><div class="val" id="az-v">—</div></div>
+    <div class="col"><div class="lbl">Elevation</div><div class="val" id="el-v">—</div></div>
+  </div>
+</div>
+
+<!-- Top time HUD -->
+<div class="panel" id="hud-top">
+  <div style="display:flex;align-items:flex-end;gap:14px">
+    <div class="time-big" id="t-big">11:18</div>
+    <div>
+      <div class="utc-tag">UTC +1:00</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:2px" id="date-disp">2026. 03. 22.</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+      <button id="play-btn2" onclick="togglePlay()" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:rgba(255,220,60,.1);color:var(--sun);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">▶</button>
+      <span style="font-size:9px;color:var(--dim)">24H</span>
+    </div>
+  </div>
+  <!-- Day progress bar -->
+  <div class="day-slider-wrap" style="margin-top:10px">
+    <div class="ds-row">
+      <span class="ds-time" id="rise-disp">5:50</span>
+      <div class="ds-track" id="ds-track">
+        <div class="ds-fill" id="ds-fill" style="width:50%"></div>
+        <div class="ds-thumb" id="ds-thumb" style="left:50%"></div>
+      </div>
+      <span class="ds-time right" id="set-disp">18:05</span>
+    </div>
+    <!-- Year slider (day of year) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+      <span style="font-size:9px;color:var(--dim)">01.01.</span>
+      <input type="range" id="year-slider" min="1" max="365" value="81" oninput="onYearSlider(this)">
+      <span style="font-size:9px;color:var(--dim)">12.31.</span>
+    </div>
+  </div>
+  <div style="margin-top:8px;display:flex;gap:14px">
+    <div class="col"><div class="lbl">Shadow len</div><div class="val" id="sh-v" style="color:var(--sun)">—</div></div>
+    <div class="col"><div class="lbl">Object h.</div><div class="val" id="oh-v">10 m</div></div>
+    <div class="col"><div class="lbl">Sunrise</div><div class="val" id="rise-v">—</div></div>
+    <div class="col"><div class="lbl">Sunset</div><div class="val" id="set-v">—</div></div>
+  </div>
+</div>
+
+<!-- Object panel -->
+<div class="panel" id="obj-panel">
+  <h3>Object & Shadow</h3>
+  <div class="lbl">Object height</div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px">
+    <div class="val" id="h-disp">10.0 m</div>
+    <div style="font-size:9px;color:var(--dim)">click map → place</div>
+  </div>
+  <input type="range" class="srange" min="1" max="150" value="10" step="0.5" id="h-slider" style="--pct:6%" oninput="onHeight(this)">
+  <div class="stat-row">
+    <span class="lbl" style="margin:0">Sun path radius</span>
+    <span class="val" id="ring-v" style="font-size:12px">200 m</span>
+  </div>
+  <input type="range" class="srange" min="50" max="800" value="200" step="10" id="ring-slider" style="--pct:19%" oninput="onRing(this)">
+  <div class="stat-row"><span class="lbl" style="margin:0">Objects placed</span><span class="val" id="obj-c">0</span></div>
+  <button class="btn btn-undo" onclick="undoLast()">Undo last</button>
+  <button class="btn btn-clear" onclick="clearAll()">Clear all</button>
+</div>
+
+<!-- Date -->
+<div class="panel" id="date-panel">
+  <div class="lbl">Date</div>
+  <input type="date" id="date-inp" value="2026-03-22" oninput="onDatePicker()">
+</div>
+
+<!-- Play bar -->
+<div class="panel" id="play-bar">
+  <button id="play-btn" onclick="togglePlay()">▶</button>
+  <div style="flex-shrink:0"><div class="lbl">Time</div><div class="val" id="t-disp" style="font-size:15px">12:00</div></div>
+  <input type="range" min="0" max="1440" value="720" id="t-slider" step="1" style="--pct:50%" oninput="onTime(this)">
+  <div style="flex-shrink:0">
+    <div class="lbl">Speed</div>
+    <select id="speed-sel"><option value="1">1×</option><option value="10">10×</option><option value="60">60×</option><option value="300">300×</option></select>
+  </div>
+</div>
+
+<div id="hint">Click on the map to place an object and cast its shadow</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════
+const CFG = {
+  apiKey:'YOUR_API_KEY',
+  lat:47.67245, lng:17.35047, zoom:17,
+};
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let map=null, overlay=null;
+let objects=[];
+let objHeight=10, ringMetres=200;
+let sunAz=180, sunEl=45;
+let playing=false, raf=null, lastTs=null, curMin=678; // ~11:18
+let sunPathCenter={x:0,y:0}; // screen coords of ring center (first object or map center)
+
+const cv=document.createElement('canvas');
+cv.id='cv';
+const ctx=cv.getContext('2d');
+
+// ═══════════════════════════════════════════
+//  SOLAR POSITION
+// ═══════════════════════════════════════════
+function solarPos(dateStr,min,lat,lng){
+  const d=new Date(dateStr);d.setUTCHours(0,0,0,0);
+  const JD=d.getTime()/86400000+2440587.5+min/1440;
+  const n=JD-2451545.0;
+  const L=(280.460+0.9856474*n)%360;
+  const g=((357.528+0.9856003*n)%360)*Math.PI/180;
+  const lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g))*Math.PI/180;
+  const eps=23.439*Math.PI/180;
+  const sinDec=Math.sin(eps)*Math.sin(lam);
+  const dec=Math.asin(sinDec);
+  const RA=Math.atan2(Math.cos(eps)*Math.sin(lam),Math.cos(lam));
+  const GMST=(6.697375+0.0657098242*n+min/60)%24;
+  const LST=(GMST*15+lng)%360;
+  const HA=(LST-RA*180/Math.PI)*Math.PI/180;
+  const latR=lat*Math.PI/180;
+  const sinAlt=Math.sin(latR)*sinDec+Math.cos(latR)*Math.cos(dec)*Math.cos(HA);
+  const alt=Math.asin(Math.max(-1,Math.min(1,sinAlt)));
+  const cosAz=(sinDec-Math.sin(latR)*sinAlt)/(Math.cos(latR)*Math.cos(alt));
+  let az=Math.acos(Math.max(-1,Math.min(1,cosAz)));
+  if(Math.sin(HA)>0)az=2*Math.PI-az;
+  return{alt:alt*180/Math.PI,az:az*180/Math.PI};
+}
+
+function sunEvent(dateStr,rising,lat,lng){
+  let lo=0,hi=1440;
+  for(let i=0;i<34;i++){const m=(lo+hi)/2;solarPos(dateStr,m,lat,lng).alt>0===rising?hi=m:lo=m;}
+  const m=Math.round((lo+hi)/2);
+  return{min:m,str:String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+}
+
+function shadowLen(h,el){if(el<0.5)return null;return h/Math.tan(el*Math.PI/180);}
+
+function pxPerMetre(lat,zoom){
+  return 1/((156543.03392*Math.cos(lat*Math.PI/180))/Math.pow(2,zoom));
+}
+
+// ═══════════════════════════════════════════
+//  RECALC
+// ═══════════════════════════════════════════
+function recalc(){
+  const ds=document.getElementById('date-inp').value;
+  const lat=map?map.getCenter().lat():CFG.lat;
+  const lng=map?map.getCenter().lng():CFG.lng;
+  const p=solarPos(ds,curMin,lat,lng);
+  sunAz=p.az;sunEl=p.alt;
+
+  document.getElementById('az-v').textContent=sunAz.toFixed(1)+'°';
+  document.getElementById('el-v').textContent=sunEl.toFixed(1)+'°';
+  const sl=shadowLen(objHeight,sunEl);
+  const slTxt=sl!==null?sl.toFixed(1)+' m':'night';
+  document.getElementById('sh-v').textContent=slTxt;
+
+  // sunrise/sunset
+  const rise=sunEvent(ds,true,lat,lng);
+  const set=sunEvent(ds,false,lat,lng);
+  document.getElementById('rise-v').textContent=rise.str;
+  document.getElementById('set-v').textContent=set.str;
+  document.getElementById('rise-disp').textContent=rise.str;
+  document.getElementById('set-disp').textContent=set.str;
+
+  // day progress bar
+  const dayLen=set.min-rise.min;
+  const pct=Math.max(0,Math.min(100,((curMin-rise.min)/dayLen*100)));
+  document.getElementById('ds-fill').style.width=pct+'%';
+  document.getElementById('ds-thumb').style.left=pct+'%';
+
+  if(overlay)overlay.draw();else drawDemo();
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — main render function
+// ═══════════════════════════════════════════
+function drawAll(proj,zoom,lat){
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const PPM=pxPerMetre(lat,zoom);
+
+  // Determine ring center: first object or map center
+  let cx2,cy2;
+  if(objects.length>0&&proj){
+    const pt=proj.fromLatLngToDivPixel(new google.maps.LatLng(objects[0].lat,objects[0].lng));
+    cx2=pt.x;cy2=pt.y;
+  } else if(objects.length>0&&!proj){
+    cx2=objects[0].x;cy2=objects[0].y;
+  } else {
+    cx2=W/2;cy2=H/2;
+  }
+  sunPathCenter={x:cx2,y:cy2};
+
+  const ringPx=ringMetres*PPM;
+  const ds=document.getElementById('date-inp').value;
+  const rLat=map?map.getCenter().lat():CFG.lat;
+  const rLng=map?map.getCenter().lng():CFG.lng;
+  const rise=sunEvent(ds,true,rLat,rLng);
+  const set=sunEvent(ds,false,rLat,rLng);
+
+  // ── Draw sun path ring (3D ellipse = perspective tilt) ──
+  drawSunPathRing(cx2,cy2,ringPx,rise,set,ds,rLat,rLng);
+
+  // ── Draw shadow triangles + sun ray ──
+  const shadowAzR=(sunAz+180)*Math.PI/180;
+
+  objects.forEach((obj,idx)=>{
+    let px,py;
+    if(proj){
+      const pt=proj.fromLatLngToDivPixel(new google.maps.LatLng(obj.lat,obj.lng));
+      px=pt.x;py=pt.y;
+    } else {px=obj.x;py=obj.y;}
+
+    const sl=shadowLen(obj.height,sunEl);
+
+    // ── Sun ray from sun position on ring to object ──
+    const sunRingPos=getSunOnRing(cx2,cy2,ringPx,sunAz);
+    if(sunEl>0){
+      const grad=ctx.createLinearGradient(sunRingPos.x,sunRingPos.y,px,py);
+      grad.addColorStop(0,'rgba(255,230,30,0.0)');
+      grad.addColorStop(0.6,'rgba(255,230,30,0.25)');
+      grad.addColorStop(1,'rgba(255,230,30,0.55)');
+      ctx.beginPath();ctx.moveTo(sunRingPos.x,sunRingPos.y);ctx.lineTo(px,py);
+      ctx.strokeStyle=grad;ctx.lineWidth=2.5;ctx.setLineDash([]);ctx.stroke();
+      // Arrow tip glow
+      ctx.fillStyle='rgba(255,230,30,0.25)';
+      ctx.beginPath();ctx.arc(px,py,18,0,Math.PI*2);ctx.fill();
+    }
+
+    if(sl===null){
+      ctx.fillStyle='rgba(70,90,180,.18)';ctx.beginPath();ctx.arc(px,py,14,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#4e8ef7';ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fill();
+      return;
+    }
+
+    const shadowPx=sl*PPM;
+    const heightPx=obj.height*PPM;
+    const sdx=Math.sin(shadowAzR),sdy=-Math.cos(shadowAzR);
+    const pdx=-sdy,pdy=sdx;
+    const ax=px,ay=py;
+    const bx=ax+sdx*shadowPx,by=ay+sdy*shadowPx;
+    const cx3=ax+pdx*heightPx,cy3=ay+pdy*heightPx;
+
+    // Shadow fill
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.lineTo(cx3,cy3);ctx.closePath();
+    ctx.fillStyle='rgba(8,14,40,0.72)';ctx.fill();
+    ctx.strokeStyle='rgba(255,220,60,0.12)';ctx.lineWidth=1;ctx.stroke();
+
+    // Right-angle marker
+    const ms=Math.min(heightPx*.2,14);
+    ctx.beginPath();
+    ctx.moveTo(ax+sdx*ms,ay+sdy*ms);
+    ctx.lineTo(ax+sdx*ms+pdx*ms,ay+sdy*ms+pdy*ms);
+    ctx.lineTo(ax+pdx*ms,ay+pdy*ms);
+    ctx.strokeStyle='rgba(255,220,60,0.3)';ctx.lineWidth=0.9;ctx.stroke();
+
+    // Height leg dashed
+    ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(255,220,60,0.25)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(cx3,cy3);ctx.stroke();ctx.setLineDash([]);
+
+    // Labels
+    const fs=Math.max(11,Math.min(14,PPM*2));
+    ctx.font=`600 ${fs}px 'JetBrains Mono',monospace`;
+    ctx.fillStyle='rgba(255,210,30,.9)';
+    ctx.fillText(sl.toFixed(1)+'m',(ax+bx)/2+pdx*8,(ay+by)/2+pdy*8);
+    ctx.fillStyle='rgba(140,190,255,.8)';
+    ctx.fillText(obj.height.toFixed(0)+'m',(ax+cx3)/2-sdx*16,(ay+cy3)/2-sdy*16);
+
+    // Object pin
+    ctx.fillStyle='rgba(255,230,60,.9)';ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);ctx.fill();ctx.stroke();
+    // Elevation label on first object only
+    if(idx===0&&sunEl>0){
+      ctx.fillStyle='rgba(255,220,60,.75)';ctx.font=`500 10px 'JetBrains Mono',monospace`;
+      ctx.fillText('▲'+sunEl.toFixed(1)+'°',px+10,py-10);
+    }
+  });
+}
+
+// ── Sun path ring ──────────────────────────
+function drawSunPathRing(cx,cy,ringPx,rise,set,ds,lat,lng){
+  // 3D perspective: the ring is an ellipse tilted to simulate ground plane
+  // tiltY makes it look like a circle lying on the ground viewed at angle
+  const tilt=0.38; // vertical compression factor (0=flat circle, 1=no perspective)
+  const rx=ringPx;
+  const ry=ringPx*tilt;
+
+  // ── Outer faint full ring ──
+  ctx.beginPath();
+  ctx.ellipse(cx,cy,rx+2,ry+2,0,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.stroke();
+
+  // ── Dashed full ring ──
+  ctx.beginPath();
+  ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.15)';
+  ctx.setLineDash([4,6]);ctx.lineWidth=1.2;ctx.stroke();ctx.setLineDash([]);
+
+  // ── Sun arc (lit portion from rise to set) ──
+  // Convert azimuth angles to ellipse parameter angles
+  // Azimuth: 0=N=top, 90=E=right, 180=S=bottom, 270=W=left
+  // Ellipse parameter: 0=right, -PI/2=top (N), so angle = azimuth - 90° (in radians)
+  const riseAz=solarPos(ds,rise.min,lat,lng).az;
+  const setAz=solarPos(ds,set.min,lat,lng).az;
+
+  // Sample the full day arc
+  const steps=120;
+  let arcStarted=false;
+  ctx.beginPath();
+  for(let i=0;i<=steps;i++){
+    const m=rise.min+(set.min-rise.min)*(i/steps);
+    const p=solarPos(ds,m,lat,lng);
+    if(p.alt<0)continue;
+    const pt=azToEllipse(cx,cy,rx,ry,p.az);
+    if(!arcStarted){ctx.moveTo(pt.x,pt.y);arcStarted=true;}
+    else ctx.lineTo(pt.x,pt.y);
+  }
+  ctx.strokeStyle='rgba(255,215,30,0.55)';ctx.lineWidth=2.5;ctx.stroke();
+
+  // ── Degree markings ──
+  const degMarks=[0,30,60,90,120,150,180,210,240,270,300,330];
+  const labels=['N','30','60','E','120','150','S','210','240','W','300','330'];
+  degMarks.forEach((deg,i)=>{
+    const pt=azToEllipse(cx,cy,rx,ry,deg);
+    const outerPt=azToEllipse(cx,cy,rx+14,ry+14,deg);
+    const tickPt=azToEllipse(cx,cy,rx-8,ry-8,deg);
+    // tick line
+    ctx.beginPath();ctx.moveTo(pt.x,pt.y);ctx.lineTo(tickPt.x,tickPt.y);
+    ctx.strokeStyle='rgba(255,255,255,0.25)';ctx.lineWidth=1;ctx.stroke();
+    // label
+    const isCardinal=(deg%90===0);
+    ctx.font=isCardinal?`600 12px 'JetBrains Mono',monospace`:`400 10px 'JetBrains Mono',monospace`;
+    ctx.fillStyle=isCardinal?'rgba(255,255,255,0.8)':'rgba(200,200,200,0.45)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(labels[i],outerPt.x,outerPt.y);
+    ctx.textAlign='start';ctx.textBaseline='alphabetic';
+  });
+
+  // ── Sunrise dot + label ──
+  const risePt=azToEllipse(cx,cy,rx,ry,riseAz);
+  drawEventDot(risePt.x,risePt.y,rise.str,'rgba(255,200,80,0.9)');
+
+  // ── Sunset dot + label ──
+  const setPt=azToEllipse(cx,cy,rx,ry,setAz);
+  drawEventDot(setPt.x,setPt.y,set.str,'rgba(255,150,60,0.9)');
+
+  // ── Zenith line (N-S dashed) ──
+  const nPt=azToEllipse(cx,cy,rx*.85,ry*.85,0);
+  const sPt=azToEllipse(cx,cy,rx*.85,ry*.85,180);
+  ctx.beginPath();ctx.moveTo(nPt.x,nPt.y);ctx.lineTo(cx,cy);ctx.lineTo(sPt.x,sPt.y);
+  ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.setLineDash([3,5]);ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+
+  // ── Current sun dot on ring ──
+  if(sunEl>0){
+    const sunPt=getSunOnRing(cx,cy,ringPx,sunAz);
+    // Glow
+    const grd=ctx.createRadialGradient(sunPt.x,sunPt.y,0,sunPt.x,sunPt.y,28);
+    grd.addColorStop(0,'rgba(255,235,60,0.5)');grd.addColorStop(1,'rgba(255,235,60,0)');
+    ctx.fillStyle=grd;ctx.beginPath();ctx.arc(sunPt.x,sunPt.y,28,0,Math.PI*2);ctx.fill();
+    // Outer ring
+    ctx.beginPath();ctx.arc(sunPt.x,sunPt.y,13,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,235,60,0.5)';ctx.lineWidth=2;ctx.stroke();
+    // Sun disk
+    ctx.fillStyle='rgba(255,235,60,0.95)';
+    ctx.beginPath();ctx.arc(sunPt.x,sunPt.y,9,0,Math.PI*2);ctx.fill();
+    // Time label
+    const h=Math.floor(curMin/60),m=curMin%60;
+    const tStr=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    ctx.font=`600 11px 'JetBrains Mono',monospace`;
+    ctx.fillStyle='rgba(255,235,60,0.9)';
+    ctx.textAlign='center';
+    ctx.fillText(tStr,sunPt.x,sunPt.y+24);
+    // Elevation label
+    ctx.fillStyle='rgba(255,215,100,0.65)';
+    ctx.font=`400 9px 'JetBrains Mono',monospace`;
+    ctx.fillText('▲'+sunEl.toFixed(1)+'°',sunPt.x,sunPt.y+35);
+    ctx.textAlign='start';
+  }
+}
+
+function azToEllipse(cx,cy,rx,ry,azDeg){
+  // azimuth 0=N, 90=E, 180=S, 270=W
+  // on screen: N=top (y-), E=right (x+), S=bottom (y+), W=left (x-)
+  const a=(azDeg-90)*Math.PI/180; // rotate so 0°=right on ellipse = East
+  // But we want 0(N)=top. Ellipse param 0=right, -PI/2=top
+  // So param = (az - 90)*PI/180 → az=0(N) → param=-PI/2 → top ✓
+  return{x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)};
+}
+
+function getSunOnRing(cx,cy,ringPx,azDeg){
+  return azToEllipse(cx,cy,ringPx,ringPx*0.38,azDeg);
+}
+
+function drawEventDot(x,y,label,color){
+  ctx.fillStyle=color;
+  ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)';ctx.lineWidth=1;ctx.stroke();
+  ctx.font=`600 10px 'JetBrains Mono',monospace`;
+  ctx.fillStyle=color;
+  ctx.textAlign='center';ctx.textBaseline='bottom';
+  ctx.fillText(label,x,y-9);
+  ctx.textAlign='start';ctx.textBaseline='alphabetic';
+}
+
+// ═══════════════════════════════════════════
+//  GOOGLE MAPS OVERLAY
+// ═══════════════════════════════════════════
+class ShadowOverlay extends google.maps.OverlayView{
+  onAdd(){
+    this.getPanes().overlayLayer.appendChild(cv);
+    this.getPanes().overlayLayer.style.zIndex=2;
+  }
+  draw(){
+    const proj=this.getProjection();
+    const zoom=map.getZoom();
+    const lat=map.getCenter().lat();
+    const div=this.getPanes().overlayLayer.parentElement;
+    cv.width=div.offsetWidth||window.innerWidth;
+    cv.height=div.offsetHeight||window.innerHeight;
+    cv.style.cssText='position:absolute;top:0;left:0;pointer-events:none;';
+    drawAll(proj,zoom,lat);
+  }
+  onRemove(){if(cv.parentNode)cv.parentNode.removeChild(cv);}
+}
+
+// ═══════════════════════════════════════════
+//  INIT GOOGLE MAPS
+// ═══════════════════════════════════════════
+function initMap(){
+  if(CFG.apiKey!=='YOUR_API_KEY')document.getElementById('api-warn').style.display='none';
+  map=new google.maps.Map(document.getElementById('gmap'),{
+    center:{lat:CFG.lat,lng:CFG.lng},zoom:CFG.zoom,
+    mapTypeId:'roadmap',
+    styles:[
+      {featureType:'water',stylers:[{color:'#1a2f4a'}]},
+      {featureType:'landscape',stylers:[{color:'#2d4a1e'}]},
+      {featureType:'landscape.man_made',stylers:[{color:'#d9d0bc'}]},
+      {featureType:'road',elementType:'geometry',stylers:[{color:'#c8bfa0'}]},
+      {featureType:'road',elementType:'geometry.stroke',stylers:[{color:'#b8af90'}]},
+      {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#555045'}]},
+      {featureType:'poi.park',stylers:[{color:'#4a7a2a'}]},
+      {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+      {featureType:'administrative',elementType:'geometry.stroke',stylers:[{color:'#a09080'}]},
+      {featureType:'administrative',elementType:'labels.text.fill',stylers:[{color:'#605040'}]},
+      {featureType:'transit',stylers:[{visibility:'off'}]},
+      {featureType:'building',elementType:'geometry',stylers:[{color:'#ddd5c0'}]},
+    ],
+    disableDefaultUI:true,gestureHandling:'greedy',
+  });
+  overlay=new ShadowOverlay();
+  overlay.setMap(map);
+  map.addListener('bounds_changed',()=>{
+    const c=map.getCenter();
+    document.getElementById('lat-v').textContent=c.lat().toFixed(4)+'°';
+    document.getElementById('lng-v').textContent=c.lng().toFixed(4)+'°';
+    document.getElementById('zoom-v').textContent=map.getZoom().toFixed(0);
+    recalc();
+  });
+  map.addListener('click',e=>{
+    const proj=overlay.getProjection();
+    const pt=proj.fromLatLngToDivPixel(e.latLng);
+    objects.push({lat:e.latLng.lat(),lng:e.latLng.lng(),x:pt.x,y:pt.y,height:objHeight});
+    document.getElementById('obj-c').textContent=objects.length;
+    document.getElementById('hint').style.opacity='0';
+    overlay.draw();
+  });
+  recalc();
+}
+
+// ═══════════════════════════════════════════
+//  DEMO MODE
+// ═══════════════════════════════════════════
+function initDemo(){
+  const wrap=document.getElementById('gmap');
+  wrap.style.background='#2d4a1e';
+  const bg=document.createElement('canvas');
+  bg.style.cssText='position:absolute;inset:0;width:100%;height:100%;';
+  wrap.appendChild(bg);
+  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;pointer-events:auto;';
+  wrap.appendChild(cv);
+  function resize(){
+    bg.width=wrap.offsetWidth;bg.height=wrap.offsetHeight;
+    cv.width=wrap.offsetWidth;cv.height=wrap.offsetHeight;
+    drawBg(bg);drawDemo();
+  }
+  function drawBg(c){
+    const ctx2=c.getContext('2d');const W=c.width,H=c.height;
+    ctx2.fillStyle='#2e4d1a';ctx2.fillRect(0,0,W,H);
+    // roads
+    ctx2.strokeStyle='rgba(200,185,150,.6)';ctx2.lineWidth=8;
+    [[0,H*.3,W,H*.3],[0,H*.55,W,H*.55],[0,H*.72,W,H*.72],
+     [W*.15,0,W*.15,H],[W*.4,0,W*.4,H],[W*.65,0,W*.65,H],[W*.85,0,W*.85,H]
+    ].forEach(([x1,y1,x2,y2])=>{ctx2.beginPath();ctx2.moveTo(x1,y1);ctx2.lineTo(x2,y2);ctx2.stroke();});
+    // buildings (white 3D boxes)
+    const blds=[[.08,.12],[.18,.1],[.3,.08],[.45,.12],[.6,.1],[.72,.08],[.1,.35],[.25,.33],
+      [.42,.37],[.58,.34],[.75,.36],[.08,.6],[.22,.58],[.38,.62],[.55,.6],[.7,.59],[.82,.61]];
+    blds.forEach(([fx,fy])=>{
+      const bx=fx*W,by=fy*H,bw=W*.06,bh=H*.07;
+      ctx2.fillStyle='#e8dfc8';ctx2.fillRect(bx,by,bw,bh);
+      ctx2.fillStyle='#c8bfa8';ctx2.fillRect(bx,by,bw,4);
+      ctx2.fillStyle='rgba(0,0,0,.15)';ctx2.fillRect(bx+bw,by+4,5,bh);
+      ctx2.strokeStyle='rgba(150,140,120,.4)';ctx2.lineWidth=0.5;ctx2.strokeRect(bx,by,bw,bh);
+    });
+  }
+  cv.addEventListener('click',e=>{
+    const r=cv.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    objects.push({lat:0,lng:0,x,y,height:objHeight});
+    document.getElementById('obj-c').textContent=objects.length;
+    document.getElementById('hint').style.opacity='0';
+    drawDemo();
+  });
+  window.addEventListener('resize',resize);
+  resize();
+}
+function drawDemo(){
+  const zoom=parseInt(document.getElementById('zoom-v').textContent)||17;
+  drawAll(null,zoom,CFG.lat);
+}
+
+// ═══════════════════════════════════════════
+//  UI HANDLERS
+// ═══════════════════════════════════════════
+function onHeight(s){
+  objHeight=parseFloat(s.value);
+  document.getElementById('h-disp').textContent=objHeight.toFixed(1)+' m';
+  document.getElementById('oh-v').textContent=objHeight.toFixed(0)+' m';
+  s.style.setProperty('--pct',((objHeight-1)/149*100).toFixed(1)+'%');
+  recalc();
+}
+function onRing(s){
+  ringMetres=parseInt(s.value);
+  document.getElementById('ring-v').textContent=ringMetres+' m';
+  s.style.setProperty('--pct',((ringMetres-50)/750*100).toFixed(1)+'%');
+  if(overlay)overlay.draw();else drawDemo();
+}
+function clearAll(){
+  objects=[];document.getElementById('obj-c').textContent='0';
+  document.getElementById('hint').style.opacity='1';
+  if(overlay)overlay.draw();else drawDemo();
+}
+function undoLast(){
+  if(!objects.length)return;
+  objects.pop();document.getElementById('obj-c').textContent=objects.length;
+  if(objects.length===0)document.getElementById('hint').style.opacity='1';
+  if(overlay)overlay.draw();else drawDemo();
+}
+function onTime(s){
+  curMin=parseInt(s.value);
+  const h=Math.floor(curMin/60),m=curMin%60;
+  const ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  document.getElementById('t-disp').textContent=ts;
+  document.getElementById('t-big').textContent=ts;
+  s.style.setProperty('--pct',(curMin/1440*100).toFixed(1)+'%');
+  recalc();
+}
+function onDatePicker(){
+  const v=document.getElementById('date-inp').value;
+  const d=new Date(v);
+  document.getElementById('date-disp').textContent=
+    d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0')+'.';
+  // Update year slider
+  const start=new Date(d.getFullYear(),0,0);
+  const diff=d-start;
+  const oneDay=1000*60*60*24;
+  const doy=Math.floor(diff/oneDay);
+  document.getElementById('year-slider').value=doy;
+  recalc();
+}
+function onYearSlider(s){
+  const doy=parseInt(s.value);
+  const now=new Date();
+  const d=new Date(now.getFullYear(),0,doy);
+  const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  document.getElementById('date-inp').value=ds;
+  onDatePicker();
+}
+let playing2=false;
+function togglePlay(){
+  playing=!playing;playing2=playing;
+  const icon=playing?'⏸':'▶';
+  document.getElementById('play-btn').textContent=icon;
+  document.getElementById('play-btn2').textContent=icon;
+  if(playing)tick();else{cancelAnimationFrame(raf);lastTs=null;}
+}
+function tick(ts){
+  if(!playing)return;
+  if(lastTs){
+    const spd=parseInt(document.getElementById('speed-sel').value);
+    curMin=(curMin+(ts-lastTs)/1000*spd/60*60)%1440;
+    const slider=document.getElementById('t-slider');
+    slider.value=Math.round(curMin);
+    const h=Math.floor(curMin/60),m=Math.floor(curMin%60);
+    const ts2=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    document.getElementById('t-disp').textContent=ts2;
+    document.getElementById('t-big').textContent=ts2;
+    slider.style.setProperty('--pct',(curMin/1440*100).toFixed(1)+'%');
+    recalc();
+  }
+  lastTs=ts;raf=requestAnimationFrame(tick);
+}
+function setMapType(t,btn){
+  document.querySelectorAll('.bm-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');if(map)map.setMapTypeId(t);
+}
+
+// day slider track drag
+const dsTrack=document.getElementById('ds-track');
+function setTimeFromTrack(e){
+  const r=dsTrack.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+  curMin=Math.round(pct*1440);
+  document.getElementById('t-slider').value=curMin;
+  const h=Math.floor(curMin/60),m=curMin%60;
+  const ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  document.getElementById('t-disp').textContent=ts;
+  document.getElementById('t-big').textContent=ts;
+  document.getElementById('t-slider').style.setProperty('--pct',(curMin/1440*100).toFixed(1)+'%');
+  recalc();
+}
+let draggingDs=false;
+dsTrack.addEventListener('mousedown',e=>{draggingDs=true;setTimeFromTrack(e);});
+window.addEventListener('mousemove',e=>{if(draggingDs)setTimeFromTrack(e);});
+window.addEventListener('mouseup',()=>{draggingDs=false;});
+dsTrack.addEventListener('touchstart',e=>{draggingDs=true;setTimeFromTrack(e.touches[0]);},{passive:true});
+window.addEventListener('touchmove',e=>{if(draggingDs)setTimeFromTrack(e.touches[0]);},{passive:true});
+window.addEventListener('touchend',()=>{draggingDs=false;});
+</script>
+
+<!-- Load Google Maps — replace YOUR_API_KEY -->
+<script>
+(function(){
+  const key='YOUR_API_KEY';
+  if(key==='YOUR_API_KEY'){
+    window.initMap=function(){};
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(initDemo,60));
+    return;
+  }
+  document.getElementById('api-warn').style.display='none';
+  const s=document.createElement('script');
+  s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap&loading=async`;
+  s.async=true;s.defer=true;document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
