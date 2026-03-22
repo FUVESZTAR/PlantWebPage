@@ -161,6 +161,14 @@ async function populate() {
       window.location.href = "NFCListPage.html";
     });
   }
+  const nfcListBtn = document.getElementById("shadow-map-btn");
+  if (nfcListBtn) {
+    nfcListBtn.addEventListener("click", () => {
+      window.location.href = "Shadowmap.html";
+    });
+  }
+
+  
 }
 
 if (document.readyState === "loading") {
