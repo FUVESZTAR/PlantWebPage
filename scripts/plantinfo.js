@@ -168,6 +168,8 @@ console.log("start1");
 
   try {
     const plants = await loadPlantData();
+    // Keep only plants active on the page and in NFC
+    plants = plants.filter(p => p.Active_in_page === 'Y');
     // Find plant by Nr (from URL param or localStorage)
     let plant;
     const lookupNr = urlPlantId || selectedNr;
