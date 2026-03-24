@@ -1,8 +1,5 @@
 import { loadPlantData } from "./csv-utils.js";
 
-// Keep only plants that are active on the page
-plants = plants.filter(p => p.Active_in_page === 'Y');
-
 document.querySelector('#nfc-button').addEventListener('click', () => {
   const nameEl = document.getElementById('plant-selector');
   const varEl = document.getElementById('plant-selector-variety');
@@ -48,7 +45,9 @@ async function populate() {
 
   try {
     plants = await loadPlantData();
-
+    // Keep only plants that are active on the page
+    plants = plants.filter(p => p.Active_in_page === 'Y');
+    
     // Populate plant selector with unique Name_HU values (sorted alphabetically)
     selector.innerHTML = '<option value="">Select a plant</option>';
     const uniqueNames = [...new Set(plants.map(p => p.Name_HU).filter(Boolean))].sort((a, b) =>
