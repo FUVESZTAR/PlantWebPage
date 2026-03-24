@@ -47,7 +47,7 @@ async function populate() {
     plants = await loadPlantData();
 
     // Keep only plants that are active on the page
-    //plants = plants.filter(p => p.Active_in_page === 'Y');
+    plants = plants.filter(p => p.Active_in_page === 'Y');
 
     // Populate plant selector with unique Name_HU values (sorted alphabetically)
     selector.innerHTML = '<option value="">Select a plant</option>';
