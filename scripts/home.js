@@ -1,5 +1,8 @@
 import { loadPlantData } from "./csv-utils.js";
 
+// Keep only plants that are active on the page
+plants = plants.filter(p => p.Active_in_page === 'Y');
+
 document.querySelector('#nfc-button').addEventListener('click', () => {
   const nameEl = document.getElementById('plant-selector');
   const varEl = document.getElementById('plant-selector-variety');
