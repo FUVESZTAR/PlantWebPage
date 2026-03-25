@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-i18n-title="page.title.detail">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -485,12 +485,15 @@ button {
 </svg>
 
 <div class="header-content">
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="hu" type="button">HU</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+
     <div class="button-row">
         <div class="back-button">
-            <button id="back-button" type="button">← Back</button>
-        </div>
-        <div class="language-button">
-            <button id="language-button" type="button">EN</button>
+            <button id="back-button" type="button" data-i18n="detail.btn.back">← Back</button>
         </div>
     </div>
 
@@ -505,7 +508,7 @@ button {
         <p id="secondary-title">Variety</p>
         <p></p>
         <div class="section">
-           <h3>NFC Link</h3>
+           <h3 data-i18n="detail.section.nfcLink">NFC Link</h3>
         <p id="nfc-link">plant://0</p>
     </div>
     </div>
@@ -515,7 +518,7 @@ button {
     <div class="row2">
         <div class="block2">
             <div class="row">
-                 <label>Names:</label>
+                 <label data-i18n="detail.label.names">Names:</label>
                  <div id="name_sz">NamesText</div>
             </div>
  <!--        <div class="row">
@@ -586,10 +589,10 @@ button {
             <!-- info: inline-use versions of the leaf symbol with colors -->
             <div class="row" id="icon-row4">
                 <div class="box-group">
-                    <label id="box-g">Green = Edible Raw</label>
-                    <label id="box-y">Yellow = Edible Prepared</label>
-                    <label id="box-r">Red = Toxic</label>
-                    <label id="box-b">Black = Inedible</label>
+                    <label id="box-g" data-i18n="detail.legend.edibleRaw">Green = Edible Raw</label>
+                    <label id="box-y" data-i18n="detail.legend.ediblePrepared">Yellow = Edible Prepared</label>
+                    <label id="box-r" data-i18n="detail.legend.toxic">Red = Toxic</label>
+                    <label id="box-b" data-i18n="detail.legend.inedible">Black = Inedible</label>
                  </div>
             </div>
    
@@ -623,25 +626,25 @@ button {
 
         <div class="row">
             <div>
-                <label>Uses:</label><br>
+                <label data-i18n="detail.label.uses">Uses:</label><br>
                 <input type="text" id="uses" style="width:500px;" readonly>
             </div>
          </div>
             <div class="row">
             <div>
-                <label>Preparation to Edibility:</label><br>
+                <label data-i18n="detail.label.preparationToEdibility">Preparation to Edibility:</label><br>
                 <input type="text" id="preparation_to_edibility" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Medicinal_parts_all:</label><br>
+                <label data-i18n="detail.label.medicinalPartsAll">Medicinal_parts_all:</label><br>
                 <input type="text" id="medicinal_parts_all" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Medicinal use:</label><br>
+                <label data-i18n="detail.label.medicinalUse">Medicinal use:</label><br>
                 <input type="text" id="medicinal_use" style="width:500px;" readonly>
             </div>
         </div>
@@ -651,14 +654,14 @@ button {
 
 
 <div class="section">
-        <h3>Naptár</h3>
-        <div id="CALENDER1" class="CALENDER1" aria-label="Naptár 1"></div>
+        <h3 data-i18n="detail.section.calendar">Naptár</h3>
+        <div id="CALENDER1" class="CALENDER1" data-i18n-aria="detail.section.calendar"></div>
     </div>
 
 
 
     <div class="section">
-        <h3>PLANNING</h3>
+        <h3 data-i18n="detail.section.planning">PLANNING</h3>
         <table class="planning-table">
             <thead>
                 <tr>
@@ -669,20 +672,20 @@ button {
                 </tr>
             </thead>
             <tbody id="planning-table-body">
-                <tr>
-                    <td>Planting in Cover</td>
+                <tr data-row-id="planting-cover">
+                    <td data-i18n="planning.plantingCover">Planting in Cover</td>
                     <td colspan="12"></td>
                 </tr>
-                <tr>
-                    <td>Planting in Ground</td>
+                <tr data-row-id="planting-ground">
+                    <td data-i18n="planning.plantingGround">Planting in Ground</td>
                     <td colspan="12"></td>
                 </tr>
-                <tr>
-                    <td>Harvesting in Cover</td>
+                <tr data-row-id="harvesting-cover">
+                    <td data-i18n="planning.harvestingCover">Harvesting in Cover</td>
                     <td colspan="12"></td>
                 </tr>
-                <tr>
-                    <td>Harvesting in Ground</td>
+                <tr data-row-id="harvesting-ground">
+                    <td data-i18n="planning.harvestingGround">Harvesting in Ground</td>
                     <td colspan="12"></td>
                 </tr>
             </tbody>
@@ -692,7 +695,7 @@ button {
 
 
     <div class="section varieties">
-        <h3>List of Varieties</h3>
+        <h3 data-i18n="detail.section.varieties">List of Varieties</h3>
         <ul id="varieties-list">
             <li>Loading varieties...</li>
         </ul>
@@ -704,7 +707,7 @@ button {
 
         <div class="row">
             <div>
-                <label>Plant flower color</label>
+                <label data-i18n="detail.label.plantFlowerColor">Plant flower color</label>
                 <input type="text" id="plant_flower_color" style="width:500px;" readonly>
             </div>
         </div>
@@ -712,39 +715,39 @@ button {
     <div class="section">
         <div class="row">
             <div>
-                <label>Plant Type:</label>
+                <label data-i18n="detail.label.plantType">Plant Type:</label>
                 <input type="text" id="plant_type" readonly>
             </div>
         </div>
    <div class="row">
             <div>
-                <label>hardiness:</label>
+                <label data-i18n="detail.label.hardiness">hardiness:</label>
                 <input type="text" id="hardiness_zone" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Edible Parts:</label>
+                <label data-i18n="detail.label.edibleParts">Edible Parts:</label>
                 <input type="text" id="edible_parts" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Prepared Edible Parts:</label>
+                <label data-i18n="detail.label.preparedEdibleParts">Prepared Edible Parts:</label>
                 <input type="text" id="prepared_edible_parts" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Medicinal Parts:</label>
+                <label data-i18n="detail.label.medicinalParts">Medicinal Parts:</label>
                 <input type="text" id="medicinal_parts" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Toxic Parts:</label>
+                <label data-i18n="detail.label.toxicParts">Toxic Parts:</label>
                 <input type="text" id="toxic_parts" style="width:500px;" readonly>
             </div>
         </div>
@@ -753,21 +756,21 @@ button {
 
         <div class="row">
             <div>
-                <label>Days to Harvest:</label>
+                <label data-i18n="detail.label.daysToHarvest">Days to Harvest:</label>
                 <input type="text" id="days_to_harvest" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Days to Maturity:</label>
+                <label data-i18n="detail.label.daysToMaturity">Days to Maturity:</label>
                 <input type="text" id="days_to_maturity" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Days to Germination:</label>
+                <label data-i18n="detail.label.daysToGermination">Days to Germination:</label>
                 <input type="text" id="days_to_germination" style="width:500px;" readonly>
             </div>
         </div>
@@ -776,87 +779,87 @@ button {
         
         <div class="row">
             <div>
-                <label>Plant_planting_seed_dept_mm:</label>
+                <label data-i18n="detail.label.seedDepth">Plant_planting_seed_dept_mm:</label>
                 <input type="text" id="plant_planting_seed_dept_mm" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant_planting_seed_soil_temperature_celsius:</label>
+                <label data-i18n="detail.label.seedSoilTemp">Plant_planting_seed_soil_temperature_celsius:</label>
                 <input type="text" id="plant_planting_seed_soil_temperature_celsius" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Plant_planting_plant_distance_mm:</label>
+                <label data-i18n="detail.label.plantDistance">Plant_planting_plant_distance_mm:</label>
                 <input type="text" id="plant_planting_plant_distance_mm" style="width:500px;" readonly>
             </div>
         </div>
 
         <div class="row">
             <div>
-                <label>Plant description:</label><br>
+                <label data-i18n="detail.label.plantDescription">Plant description:</label><br>
                 <input type="text" id="plant_description" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant height max mm:</label>
+                <label data-i18n="detail.label.plantHeightMax">Plant height max mm:</label>
 
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant height average mm:</label>
+                <label data-i18n="detail.label.plantHeightAvg">Plant height average mm:</label>
                 <input type="text" id="plant_height_average_mm" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant width average mm:</label>
+                <label data-i18n="detail.label.plantWidthAvg">Plant width average mm:</label>
                 <input type="text" id="plant_width_average_mm" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant_space_filling_mm:</label>
+                <label data-i18n="detail.label.plantSpaceFilling">Plant_space_filling_mm:</label>
                 <input type="text" id="plant_space_filling_mm" style="width:500px;" readonly>
             </div>
         </div>
          <div class="row">
             <div>
-                <label>Plant root type:</label>
+                <label data-i18n="detail.label.rootType">Plant root type:</label>
                 <input type="text" id="plant_root_type" style="width:500px;" readonly>
             </div>
         </div>
          <div class="row">
             <div>
-                <label>Plant growing lifecycle:</label>
+                <label data-i18n="detail.label.lifecycle">Plant growing lifecycle:</label>
                 <input type="text" id="plant_growing_lifecycle" style="width:500px;" readonly>
             </div>
         </div>
          <div class="row">
             <div>
-                <label>Plant growing habit:</label>
+                <label data-i18n="detail.label.growingHabit">Plant growing habit:</label>
                 <input type="text" id="plant_growing_habit" style="width:500px;" readonly>
             </div>
         </div>
          <div class="row">
             <div>
-                <label>Plant seed germination time days:</label>
+                <label data-i18n="detail.label.seedGerminationTime">Plant seed germination time days:</label>
                 <input type="text" id="plant_seed_germination_time_days" style="width:500px;" readonly>
             </div>
         </div>
          <div class="row">
             <div>
-                <label>Plant seed survival time month:</label>
+                <label data-i18n="detail.label.seedSurvivalTime">Plant seed survival time month:</label>
                 <input type="text" id="plant_seed_survival_time_month" style="width:500px;" readonly>
             </div>
         </div>
         <div class="row">
             <div>
-                <label>Plant dangers to humans:</label>
+                <label data-i18n="detail.label.dangersToHumans">Plant dangers to humans:</label>
                 <input type="text" id="plant_dangers_to_humans" style="width:500px;" readonly>
             </div>
         </div>

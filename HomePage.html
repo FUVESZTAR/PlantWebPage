@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-i18n-title="page.title.home">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,58 +43,64 @@
   </style>
   </head>
   <body>
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="hu" type="button">HU</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+
     <main class="landing-wrapper">
       <section class="card landing-card">
-        <h1>Plant Page</h1>
-        <p class="subtitle">Choose a plant and open its detailed view.</p>
+        <h1 data-i18n="home.heading">Plant Page</h1>
+        <p class="subtitle" data-i18n="home.subtitle">Choose a plant and open its detailed view.</p>
         <div class="nfc-form">
            <div class="form-group">
-              <label for="plant-selector">Plant name</label>
+              <label for="plant-selector" data-i18n="home.label.plantName">Plant name</label>
               <select id="plant-selector" aria-label="Select plant">
-                  <option value="">Loading plants…</option>
+                  <option value="" data-i18n="home.placeholder.loadingPlants">Loading plants…</option>
               </select>
            </div>
            <div class="form-group">
-              <label for="plant-selector-variety">Variety</label>
+              <label for="plant-selector-variety" data-i18n="home.label.variety">Variety</label>
               <select id="plant-selector-variety" aria-label="Select plant variety">
-                <option value="">Loading varieties…</option>
+                <option value="" data-i18n="home.placeholder.loadingVarieties">Loading varieties…</option>
               </select>
            </div>
            <div class="button-group">
-              <button id="open-view" type="button" disabled> Open Plant View</button>
-              <button id="nfc-button" type="button">NFC Generator</button>
+              <button id="open-view" type="button" disabled data-i18n="home.btn.openView">Open Plant View</button>
+              <button id="nfc-button" type="button" data-i18n="home.btn.nfcGenerator">NFC Generator</button>
            </div>
         </div>
-        <p class="subtitle">Lists</p>
+        <p class="subtitle" data-i18n="home.subtitle.lists">Lists</p>
         <div class="nfc-form">
            <div class="form-group">
-              <label for="plant-selector-family">Family</label>
+              <label for="plant-selector-family" data-i18n="home.label.family">Family</label>
               <select id="plant-selector-family" aria-label="Select plant family">
-                 <option value="">Loading families…</option>
+                 <option value="" data-i18n="home.placeholder.allFamilies">Loading families…</option>
               </select>
            </div>
            <div class="form-group">
-              <label for="plant-selector-genus">Genus</label>
+              <label for="plant-selector-genus" data-i18n="home.label.genus">Genus</label>
               <select id="plant-selector-genus" aria-label="Select plant genus">
-                 <option value="">Loading genera…</option>
+                 <option value="" data-i18n="home.placeholder.allGenera">Loading genera…</option>
               </select>
            </div>
            <div class="form-group">
-              <label for="plant-selector-latin">Latin name</label>
+              <label for="plant-selector-latin" data-i18n="home.label.latinName">Latin name</label>
               <select id="plant-selector-latin" aria-label="Select plant latin name">
-                  <option value="">Loading plants…</option>
+                  <option value="" data-i18n="home.placeholder.allLatinNames">Loading plants…</option>
               </select>
             </div>
             <div class="button-group">
-              <button id="plant-list-btn" type="button" disabled>Open Plant List</button>
+              <button id="plant-list-btn" type="button" disabled data-i18n="home.btn.openList">Open Plant List</button>
               <p class="error-message" id="error-message" aria-live="polite"></p>
             </div>
         </div>
-        <p class="Pages">Lists</p>
+        <p class="Pages" data-i18n="home.subtitle.pages">Pages</p>
         <div class="nfc-form">
             <div class="button-group">
-              <button id="nfc-list-btn" type="button">NFC List</button>
-              <button id="shadow-map-btn" type="button">Shadow Map</button>
+              <button id="nfc-list-btn" type="button" data-i18n="home.btn.nfcList">NFC List</button>
+              <button id="shadow-map-btn" type="button" data-i18n="home.btn.shadowMap">Shadow Map</button>
               <p class="error-message" id="error-message" aria-live="polite"></p>
             </div>
           </div>

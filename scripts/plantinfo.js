@@ -1,25 +1,33 @@
 import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
+import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 
-const MONTH_COLUMNS = [
-  { field: "Planting_time_in_cover_months", label: "Planting in Cover" },
-  { field: "Planting_time_in_ground_month", label: "Planting in Ground" },
-  { field: "Harvesting_time_in_cover_month", label: "Harvesting in Cover" },
-  { field: "Harvesting_time_in_ground_month", label: "Harvesting in Ground" },
-];
+function getMonthColumns() {
+  return [
+    { field: "Planting_time_in_cover_months", label: t('planning.plantingCover'), id: "planting-cover" },
+    { field: "Planting_time_in_ground_month", label: t('planning.plantingGround'), id: "planting-ground" },
+    { field: "Harvesting_time_in_cover_month", label: t('planning.harvestingCover'), id: "harvesting-cover" },
+    { field: "Harvesting_time_in_ground_month", label: t('planning.harvestingGround'), id: "harvesting-ground" },
+  ];
+}
 
 // colors to use for active cells on each row (cycle if more than length)
 
-const CALENDER1_MONTH_LABELS = ["JAN.", "FEBR.", "MÁRC.", "ÁPR.", "MÁJ.", "JÚN.", "JÚL.", "AUG.", "SZEPT.", "OKT.", "NOV.", "DEC."];
-const CALENDER1_TRACKS = [
-  { id: "planting", label: "Ültetés", color: "#3f3f3f" },
-  { id: "flowering", label: "Virágzás", color: "#b6b62d" },
-  { id: "ripe", label: "Szedésérettség", color: "#ff7d00" },
-  { id: "fruiting", label: "Gyümölcsérés", color: "#c40000" },
-  { id: "occupyingSpace", label: "Helyfoglalás", color: "#88b62d" },
-  { id: "harvesting", label: "Szedés", color: "#00ccbb" },
-  { id: "harvestStoring", label: "Tárolás", color: "#cc8f0090" },
-  { id: "seedSaving", label: "Magfogás", color: "#0018cc" },
-];
+function getCalender1MonthLabels() {
+  return t('cal.months');
+}
+
+function getCalender1Tracks() {
+  return [
+    { id: "planting",       label: t('cal.tracks.planting'),       color: "#3f3f3f" },
+    { id: "flowering",      label: t('cal.tracks.flowering'),      color: "#b6b62d" },
+    { id: "ripe",           label: t('cal.tracks.ripe'),           color: "#ff7d00" },
+    { id: "fruiting",       label: t('cal.tracks.fruiting'),       color: "#c40000" },
+    { id: "occupyingSpace", label: t('cal.tracks.occupyingSpace'), color: "#88b62d" },
+    { id: "harvesting",     label: t('cal.tracks.harvesting'),     color: "#00ccbb" },
+    { id: "harvestStoring", label: t('cal.tracks.harvestStoring'), color: "#cc8f0090" },
+    { id: "seedSaving",     label: t('cal.tracks.seedSaving'),     color: "#0018cc" },
+  ];
+}
 
 // colors to use for active cells on each row (cycle if more than length)
 const ROW_COLORS = [
@@ -106,6 +114,9 @@ function renderCALENDER1(plant) {
 
   root.innerHTML = "";
 
+  const CALENDER1_MONTH_LABELS = getCalender1MonthLabels();
+  const CALENDER1_TRACKS = getCalender1Tracks();
+
   const monthHeader = document.createElement("div");
   monthHeader.className = "CALENDER1-months";
   CALENDER1_MONTH_LABELS.forEach((label) => {
@@ -153,6 +164,8 @@ function renderCALENDER1(plant) {
 //start of main init function
 console.log("start1");
 (async function init() {
+  setupLanguageButtons();
+
   const title = document.querySelector("#primary-title");
   const subtitle = document.querySelector("#secondary-title");
   const identityfamily = document.querySelector("#identity-family");
@@ -161,14 +174,14 @@ console.log("start1");
   const identityvariety = document.querySelector("#identity-variety");
    console.log("start2");
   if (!selectedNr && !urlPlantId) {
-    title.textContent = "No plant selected";
-    subtitle.textContent = "Go back and choose a plant from the list or use a direct link with ?id=Nr";
+    title.textContent = t('detail.noPlantSelected');
+    subtitle.textContent = t('detail.noPlantSelectedMsg');
     return;
   }
 
   try {
-    const plants = await loadPlantData();
-    // Keep only plants active on the page and in NFC
+    let plants = await loadPlantData();
+    // Keep only plants active on the page
     plants = plants.filter(p => p.Active_in_page === 'Y');
     // Find plant by Nr (from URL param or localStorage)
     let plant;
@@ -177,8 +190,8 @@ console.log("start1");
     plant = plants.find((item) => String(item.Nr) === String(lookupNr));
 
     if (!plant) {
-      title.textContent = "Plant not found";
-      subtitle.textContent = "Selected identifier does not exist in CSV data.";
+      title.textContent = t('detail.plantNotFound');
+      subtitle.textContent = t('detail.plantNotFoundMsg');
       return;
     }
  
@@ -187,11 +200,17 @@ console.log("start1");
     // so developers can freely refer to any column from the loaded row.
     // Example usage below will access plant.Name_HU, plant.Edible_parts_all, etc.
 
-       // Set page title and headers using loaded variables
-       console.log("load" ,plant.Name_HU );
-       const textName =  plant.Name_HU || "Unknown";
-   // title.textContent = plant.Name_HU || "Unknown";
-    title.textContent = textName +"   |   "+plant.Name_EN;
+       // Set page title and headers using loaded variables – language-aware
+       const lang = getCurrentLang();
+       const primaryName = lang === 'en'
+         ? (plant.Name_EN || plant.Name_HU || "Unknown")
+         : (plant.Name_HU || plant.Name_EN || "Unknown");
+       const secondaryName = lang === 'en'
+         ? (plant.Name_HU || "")
+         : (plant.Name_EN || "");
+       title.textContent = secondaryName
+         ? `${primaryName}   |   ${secondaryName}`
+         : primaryName;
   setIdentityFilterLink(identityfamily, "family", plant.Family);
   setIdentityFilterLink(identitygenus, "genus", plant.Genus);
   setIdentityFilterLink(identitylatinName, "latin", plant.LatinName);
@@ -289,7 +308,7 @@ console.log("start1");
       ];
 
       const rows = Array.from(document.querySelectorAll('#planning-table-body tr'));
-      const targetRow = rows.find(r => r.firstElementChild && /harvesting in ground/i.test(r.firstElementChild.textContent));
+      const targetRow = rows.find(r => r.getAttribute('data-row-id') === 'harvesting-ground');
       if (!targetRow) {
         console.warn('planning table missing "Harvesting in Ground" row');
         return;
@@ -339,7 +358,7 @@ console.log("start1");
     if (varieties.length) {
       varietiesList.innerHTML = varieties.map((v) => `<li>${v}</li>`).join("");
     } else {
-      varietiesList.innerHTML = "<li>No varieties listed</li>";
+      varietiesList.innerHTML = `<li>${t('detail.noVarieties')}</li>`;
     }
 
     // Set NFC link
@@ -350,7 +369,7 @@ console.log("start1");
     console.log("Plant data loaded from CSV row with Nr =", plant.Nr, plant);
   } catch (error) {
     console.error("Error loading plant data:", error);
-    document.querySelector("#primary-title").textContent = "Error loading plant";
+    document.querySelector("#primary-title").textContent = t('detail.error.loadPlant');
   }
 })();
 
@@ -358,12 +377,14 @@ function populatePlanningTable(plant) {
   const tbody = document.querySelector("#planning-table-body");
   
   tbody.innerHTML = "";
-  MONTH_COLUMNS.forEach(({ field, label }, rowIndex) => {
+  const MONTH_COLUMNS = getMonthColumns();
+  MONTH_COLUMNS.forEach(({ field, label, id }, rowIndex) => {
     const rawValue = plant[field] || "";
     const monthList = monthsFromValue(rawValue);
     console.log("populatePlanningTable", field, rawValue, monthList);
     const months = new Set(monthList);
     const row = document.createElement("tr");
+    if (id) row.setAttribute('data-row-id', id);
     row.innerHTML = `<td>${label}</td>`;
     
     for (let month = 1; month <= 12; month++) {

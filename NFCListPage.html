@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-i18n-title="page.title.nfcList">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -62,23 +62,29 @@
     </style>
   </head>
   <body>
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="hu" type="button">HU</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+
     <main class="landing-wrapper">
       <section class="card landing-card" style="width: min(900px, 96vw);">
         <div class="filter-bar">
-          <button id="back-button" class="back-button" type="button">← Back</button>
-          <h1 style="margin:0; font-size:1.4rem;">NFC List</h1>
+          <button id="back-button" class="back-button" type="button" data-i18n="nfc.btn.back">← Back</button>
+          <h1 style="margin:0; font-size:1.4rem;" data-i18n="nfc.title">NFC List</h1>
         </div>
         <div style="overflow-x: auto;">
           <table class="nfc-list-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>NFC Text</th>
-                <th>Link</th>
+                <th data-i18n="nfc.table.id">ID</th>
+                <th data-i18n="nfc.table.nfcText">NFC Text</th>
+                <th data-i18n="nfc.table.link">Link</th>
               </tr>
             </thead>
             <tbody id="nfc-list-body">
-              <tr><td colspan="3">Loading…</td></tr>
+              <tr><td colspan="3" data-i18n="nfc.loading">Loading…</td></tr>
             </tbody>
           </table>
         </div>
