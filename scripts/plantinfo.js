@@ -330,7 +330,10 @@ console.log("start1");
           const cells = targetRow.querySelectorAll('td');
           const cell = cells[month];
           if (!cell) return;
-          cell.textContent = '';
+          // Only clear the "●" bullet; if icons are already present, just append
+          if (!cell.querySelector('svg')) {
+            cell.textContent = '';
+          }
 
           const svg = document.createElementNS(svgns, 'svg');
           svg.setAttribute('class', iconClass);
