@@ -2,7 +2,7 @@ function loadPlantData() {
     const sheetId = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
     const sheetName = 'PlantDataSheet';
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;  
-    console.log("laod data1");
+    console.log("laod data1 outside");
 
     return fetch(url)
         .then(response => response.text())
