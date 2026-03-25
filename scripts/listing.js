@@ -39,7 +39,7 @@ async function populate() {
   try {
     plants = await loadPlantData();
     // Keep only plants active on the page and in NFC
-   plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
+   plants = plants.filter(p => (p.Active_in_page === undefined || p.Active_in_page === '' || p.Active_in_page === 'Y') && (p.Active_in_NFC === undefined || p.Active_in_NFC === '' || p.Active_in_NFC === 'Y'));
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');

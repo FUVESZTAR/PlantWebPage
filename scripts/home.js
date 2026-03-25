@@ -47,7 +47,7 @@ async function populate() {
   try {
     plants = await loadPlantData();
     // Keep only plants that are active on the page
-    plants = plants.filter(p => p.Active_in_page === 'Y');
+    plants = plants.filter(p => p.Active_in_page === undefined || p.Active_in_page === '' || p.Active_in_page === 'Y');
 
     // Use Name_HU for Hungarian, Name_EN for English
     const lang = getCurrentLang();

@@ -182,7 +182,7 @@ console.log("start1");
   try {
     let plants = await loadPlantData();
     // Keep only plants active on the page
-    plants = plants.filter(p => p.Active_in_page === 'Y');
+    plants = plants.filter(p => p.Active_in_page === undefined || p.Active_in_page === '' || p.Active_in_page === 'Y');
     // Find plant by Nr (from URL param or localStorage)
     let plant;
     const lookupNr = urlPlantId || selectedNr;
