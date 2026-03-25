@@ -242,3 +242,37 @@ button:disabled {
     padding: 5px 6px;
   }
 }
+
+/* ── Language switcher ───────────────────────────────────────────────────── */
+.lang-switcher {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  width: auto;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 2px solid #2f7d32;
+  background: #fff;
+  color: #2f7d32;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  letter-spacing: 0.05em;
+}
+
+.lang-btn:hover {
+  background: #2f7d32;
+  color: #fff;
+}
+
+.lang-btn.active {
+  background: #2f7d32;
+  color: #fff;
+}

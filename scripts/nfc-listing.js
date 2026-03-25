@@ -1,3 +1,5 @@
+import { setupLanguageButtons, t } from './lang.js';
+
 const NFC_SHEET_ID   = '1nxRfS0k4zoX7SFlLefuUlPlgDpBZCNkRzxirR1CDGtE';
 const NFC_SHEET_NAME = 'nfc_list';
 
@@ -53,13 +55,13 @@ async function populate() {
     nfcRows = await loadNfcData();
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = 'Failed to load NFC data';
-    tbody.innerHTML = '<tr><td colspan="3">Error loading data</td></tr>';
+    errorMsg.textContent = t('nfc.error.loadFailed');
+    tbody.innerHTML = `<tr><td colspan="3">${t('nfc.error.loadData')}</td></tr>`;
     return;
   }
 
   if (!nfcRows.length) {
-    tbody.innerHTML = '<tr><td colspan="3">No NFC records found</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="3">${t('nfc.empty')}</td></tr>`;
     return;
   }
 
@@ -93,7 +95,8 @@ async function populate() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', populate);
+  document.addEventListener('DOMContentLoaded', () => { setupLanguageButtons(); populate(); });
 } else {
+  setupLanguageButtons();
   populate();
 }

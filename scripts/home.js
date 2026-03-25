@@ -1,4 +1,5 @@
 import { loadPlantData } from "./csv-utils.js";
+import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 
 document.querySelector('#nfc-button').addEventListener('click', () => {
   const nameEl = document.getElementById('plant-selector');
@@ -47,10 +48,14 @@ async function populate() {
     plants = await loadPlantData();
     // Keep only plants that are active on the page
     plants = plants.filter(p => p.Active_in_page === 'Y');
-    
-    // Populate plant selector with unique Name_HU values (sorted alphabetically)
-    selector.innerHTML = '<option value="">Select a plant</option>';
-    const uniqueNames = [...new Set(plants.map(p => p.Name_HU).filter(Boolean))].sort((a, b) =>
+
+    // Use Name_HU for Hungarian, Name_EN for English
+    const lang = getCurrentLang();
+    const nameProp = lang === 'en' ? 'Name_EN' : 'Name_HU';
+
+    // Populate plant selector with unique names (sorted alphabetically)
+    selector.innerHTML = `<option value="">${t('home.placeholder.selectPlant')}</option>`;
+    const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
     uniqueNames.forEach((name) => {
@@ -60,13 +65,13 @@ async function populate() {
       selector.appendChild(opt);
     });
 
-    fillUniqueSelector(familySelector, plants.map(p => p.Family), "All families");
-    fillUniqueSelector(genusSelector, plants.map(p => p.Genus), "All genera");
-    fillUniqueSelector(latinSelector, plants.map(p => p.LatinName), "All latin names");
+    fillUniqueSelector(familySelector, plants.map(p => p.Family), t('home.placeholder.allFamilies'));
+    fillUniqueSelector(genusSelector, plants.map(p => p.Genus), t('home.placeholder.allGenera'));
+    fillUniqueSelector(latinSelector, plants.map(p => p.LatinName), t('home.placeholder.allLatinNames'));
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = "Failed to load plant data";
-    selector.innerHTML = '<option value="">(error)</option>';
+    errorMsg.textContent = t('home.error.loadFailed');
+    selector.innerHTML = `<option value="">${t('home.error.option')}</option>`;
   }
 
   function populateVarietiesForSelection() {
@@ -80,8 +85,10 @@ async function populate() {
       return;
     }
 
-    // Find all rows for the selected Name_HU and add their varieties
-    const matchingPlants = plants.filter(p => p.Name_HU === selectedName);
+    // Find all rows for the selected name and add their varieties
+    const lang = getCurrentLang();
+    const nameProp = lang === 'en' ? 'Name_EN' : 'Name_HU';
+    const matchingPlants = plants.filter(p => p[nameProp] === selectedName);
     const seenVarieties = new Set();
     matchingPlants.forEach((plant) => {
       const variety = (plant.Name_Variety || "").trim();
@@ -116,11 +123,13 @@ async function populate() {
     const selectedName = selector.value;
     if (!selectedName) return;
 
-    // Use selected variety's Nr, or fall back to the Species row for this Name_HU
+    // Use selected variety's Nr, or fall back to the Species row for this name
     let targetNr = varietySelector.value;
     if (!targetNr) {
+      const lang = getCurrentLang();
+      const nameProp = lang === 'en' ? 'Name_EN' : 'Name_HU';
       const speciesPlant = plants.find(
-        p => p.Name_HU === selectedName && String(p.Name_Variety).trim() === "Species"
+        p => p[nameProp] === selectedName && String(p.Name_Variety).trim() === "Species"
       );
       targetNr = speciesPlant ? String(speciesPlant.Nr) : null;
     }
@@ -169,12 +178,11 @@ async function populate() {
       window.location.href = "Shadowmap.html";
     });
   }
-
-  
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", populate);
+  document.addEventListener("DOMContentLoaded", () => { setupLanguageButtons(); populate(); });
 } else {
+  setupLanguageButtons();
   populate();
 }

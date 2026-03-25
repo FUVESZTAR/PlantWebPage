@@ -1,14 +1,17 @@
 import { loadPlantData } from "./csv-utils.js";
+import { t, setupLanguageButtons } from "./lang.js";
 
 document.getElementById("back-button").addEventListener("click", () => {
   window.location.href = "HomePage.html";
 });
 
-const FILTER_LABELS = {
-  family: "Family",
-  genus: "Genus",
-  latin: "Latin Name",
-};
+function getFilterLabels() {
+  return {
+    family: t('list.filter.family'),
+    genus: t('list.filter.genus'),
+    latin: t('list.filter.latin'),
+  };
+}
 
 const FILTER_FIELDS = {
   family: "Family",
@@ -26,9 +29,10 @@ async function populate() {
   const filterValue = params.get("filterValue") || "";
 
   if (filterType && filterValue) {
+    const FILTER_LABELS = getFilterLabels();
     filterSummary.textContent = `${FILTER_LABELS[filterType] || filterType}: ${filterValue}`;
   } else {
-    filterSummary.textContent = "All plants";
+    filterSummary.textContent = t('list.allPlants');
   }
 
   let plants = [];
@@ -38,8 +42,8 @@ async function populate() {
    plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = "Failed to load plant data";
-    tbody.innerHTML = '<tr><td colspan="4">Error loading data</td></tr>';
+    errorMsg.textContent = t('list.error.loadFailed');
+    tbody.innerHTML = `<tr><td colspan="4">${t('list.error.loadData')}</td></tr>`;
     return;
   }
 
@@ -52,7 +56,7 @@ async function populate() {
   filtered.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="4">No plants found</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="4">${t('list.empty')}</td></tr>`;
     return;
   }
 
@@ -74,7 +78,8 @@ async function populate() {
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", populate);
+  document.addEventListener("DOMContentLoaded", () => { setupLanguageButtons(); populate(); });
 } else {
+  setupLanguageButtons();
   populate();
 }
