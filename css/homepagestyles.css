@@ -22,6 +22,8 @@ body {
   min-height: 100vh;
 }
 
+cursor: url('leaf.cur'),default;
+
 main {
   width: min(1200px, 94vw);
   margin: 1.25rem auto 2rem;
