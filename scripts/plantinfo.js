@@ -327,8 +327,8 @@ function setIconVisibility(type, part) {
   const def      = document.getElementById(defaultId);
   if (!svg) { console.warn("SVG not found:", svgId); return; }
 
-  svg.style.display = "none";
-
+  if (type==="med"){ svg.style.display = "none";}
+  
   const isVisible =
     type === "med"  ? medicinalText.includes(part) :
     type === "harv" ? edibilityClass(part) !== "black" : false;
