@@ -303,7 +303,7 @@ function setMedType(svgname, term) {
     console.log("Visibility change: ", svgname);
     svg.style.display = "none";
     svgDefault.style.display = "block";
-    if (medicinal_parts.includes(term.toLowerCase())){
+    if (medicinalText.includes(term.toLowerCase())){
           svg.style.display = "block";
           svgDefault.style.display = "none";
         } 
