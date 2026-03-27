@@ -286,6 +286,7 @@ console.log("start1");
 
     // perform the check for each of the harvest icons
     document.getElementById("none-med-icon").style.display = "block";
+    document.getElementById("none-harv-icon").style.display = "block";
     colourByTerm("root-harvest-icon", "root");
     colourByTerm("stem-harvest-icon", "stem");
     colourByTerm("leaf-harvest-icon", "leaf");
@@ -294,8 +295,8 @@ console.log("start1");
     colourByTerm("seed-harvest-icon", "seed");
 
      // icon visiblility Harvest, Medical
-function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
-    const svg = document.getElementById(svgname);
+function setVisibiltyHIcon(iconType,svgName,svgDefName, term) {
+    const svg = document.getElementById(svgName);
     const svgDefault = document.getElementById(svgDefName);
     if (!svg) {
         console.warn("SVG not found: ", svgName);
@@ -303,13 +304,12 @@ function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
     }
     console.log("Visibility change: ", svgName);
     svg.style.display = "none";
-    if (IconType === "med") {
+    if (iconType === "med") {
         if (medicinalText.includes(term.toLowerCase())){
            svg.style.display = "block";
            svgDefault.style.display = "none";
          } 
-    }
-   if (IconType === "harv") {
+    } else if (iconType === "harv") {
       if (toxicText.includes(term.toLowerCase())){
           svg.style.display = "block";
           svgDefault.style.display = "none";
