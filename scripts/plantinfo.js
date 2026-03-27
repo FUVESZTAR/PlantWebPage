@@ -310,14 +310,17 @@ function edibilityClass(term) {
 document.getElementById("none-med-icon").style.display  = "block";
 document.getElementById("none-harv-icon").style.display = "block";
 
-PARTS.forEach(part => {
-  const cls   = edibilityClass(part);
-  const icons = document.querySelectorAll(`.${part}-harvest-icon`);
-  icons.forEach(svg => {
-    svg.classList.remove("green", "red", "black", "yellow");
-    svg.classList.add(cls);
+// ── colour harvest icons ─────────────────────────────────
+function colourByTerm() {    
+  PARTS.forEach(part => {
+    const cls   = edibilityClass(part);
+    const icons = document.querySelectorAll(`.${part}-harvest-icon`);
+    icons.forEach(svg => {
+      svg.classList.remove("green", "red", "black", "yellow");
+      svg.classList.add(cls);
+    });
   });
-});
+}
 
 // ── visibility for med / harv icons ─────────────────────
 function setIconVisibility(type, part) {
@@ -406,7 +409,7 @@ function setIconVisibility(type, part) {
         });
 
         // apply colouring for this part
-        colourByTerm(iconClass, term);
+        colourByTerm();
       });
     })(plant);
 
