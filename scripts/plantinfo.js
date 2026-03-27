@@ -296,7 +296,6 @@ console.log("start1");
 function setMedType(svgname, term) {
     const svg = document.getElementById(svgname);
     const svgDefault = document.getElementById("none-med-icon");
-    if (!svgs.length) return;
     if (!svg) {
         console.warn("SVG not found: ", svgname);
         return { show: 0 };
