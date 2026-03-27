@@ -637,15 +637,15 @@ const humanSvg = document.getElementById("size-human-icon-1");
     svg3.style.display = "none";
 
     if (type === "Tree") {
-        svg1.style.display = "block";
+        svg1.style.display = "";
         return {show: 1};
     }
     else if (type === "Bush") {
-        svg2.style.display = "block";
+        svg2.style.display = "";
         return {show: 2};
     }
     else {
-        svg3.style.display = "block";
+        svg3.style.display = "";
         return {show: 3};
     }
 };
