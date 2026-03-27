@@ -293,28 +293,51 @@ console.log("start1");
     colourByTerm("fruit-harvest-icon", "fruit");
     colourByTerm("seed-harvest-icon", "seed");
 
-    // icon colouring
-function setMedType(svgname, term) {
+     // icon visiblility Harvest, Medical
+function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
     const svg = document.getElementById(svgname);
-    const svgDefault = document.getElementById("none-med-icon");
+    const svgDefault = document.getElementById(svgDefName);
     if (!svg) {
-        console.warn("SVG not found: ", svgname);
+        console.warn("SVG not found: ", svgName);
         return { show: 0 };
     }
-    console.log("Visibility change: ", svgname);
+    console.log("Visibility change: ", svgName);
     svg.style.display = "none";
-    if (medicinalText.includes(term.toLowerCase())){
+    if (IconType === "med") {
+        if (medicinalText.includes(term.toLowerCase())){
+           svg.style.display = "block";
+           svgDefault.style.display = "none";
+         } 
+    }
+   if (IconType === "harv") {
+      if (toxicText.includes(term.toLowerCase())){
           svg.style.display = "block";
           svgDefault.style.display = "none";
-        } 
+        } else if (ediblePreparedText.includes(term.toLowerCase()))  {
+          svg.style.display = "block";
+          svgDefault.style.display = "none";
+        } else if (edibleText.includes(term.toLowerCase())) {
+          svg.style.display = "block";
+          svgDefault.style.display = "none";
+        } else {
+          svg.classList.add("black");
+        }
+   } 
 }
     // make med icon visible
-    setMedType("root-med-icon", "root");
-    setMedType("stem-med-icon", "stem");
-    setMedType("leaf-med-icon", "leaf");
-    setMedType("flower-med-icon", "flower");
-    setMedType("fruit-med-icon", "fruit");
-    setMedType("seed-med-icon", "seed");
+    setVisibiltyHIcon("med","root-med-icon","none-med-icon","root");
+    setVisibiltyHIcon("med","stem-med-icon","none-med-icon","stem");
+    setVisibiltyHIcon("med","leaf-med-icon","none-med-icon","leaf");
+    setVisibiltyHIcon("med","flower-med-icon","none-med-icon","flower");
+    setVisibiltyHIcon("med","fruit-med-icon","none-med-icon","fruit");
+    setVisibiltyHIcon("med","seed-med-icon","none-med-icon","seed");
+    // make haqrv icon visible
+    setVisibiltyHIcon("harv","root-harv-icon","none-harv-icon","root");
+    setVisibiltyHIcon("harv","stem-harv-icon","none-harv-icon","stem");
+    setVisibiltyHIcon("harv","leaf-harv-icon","none-harv-icon","leaf");
+    setVisibiltyHIcon("harv","flower-harv-icon","none-harv-icon","flower");
+    setVisibiltyHIcon("harv","fruit-harv-icon","none-harv-icon","fruit");
+    setVisibiltyHIcon("harv","seed-harv-icon","none-harv-icon","seed");
     
     // Fill planning table with month data
     populatePlanningTable(plant);
