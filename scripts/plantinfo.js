@@ -224,13 +224,13 @@ console.log("start1");
     document.querySelector("#name_sz").value = plant.Name_SZ || "";
     document.querySelector("#plant_type").value = splitPipe(plant.Plant_type).join(", ") || "";
     document.querySelector("#uses").value = splitPipe(plant.Uses).join(", ") || "";
-    document.querySelector("#medicinal_parts").value = splitPipe(plant.Medicinal_parts_all).join(", ") || "";
+    document.querySelector("#medicinal_use").value = plant.Medicinal_use || "";
     document.querySelector("#preparation_to_edibility").value = splitPipe(plant.Preparation_all).join(", ") || "";
     
-    document.querySelector("#edible_parts").value = splitPipe(plant.Raw_edible_parts_all).join(", ") || "";
-    document.querySelector("#prepared_edible_parts").value = splitPipe(plant.Prepared_edible_parts_all).join(", ") || "";
-    document.querySelector("#toxic_parts").value = splitPipe(plant.Toxic_parts_all).join(", ") || "";
-    document.querySelector("#medicinal_use").value = plant.Medicinal_use || "";
+    //document.querySelector("#medicinal_parts").value = splitPipe(plant.Medicinal_parts_all).join(", ") || "";
+    //document.querySelector("#edible_parts").value = splitPipe(plant.Raw_edible_parts_all).join(", ") || "";
+    //document.querySelector("#prepared_edible_parts").value = splitPipe(plant.Prepared_edible_parts_all).join(", ") || "";
+    //document.querySelector("#toxic_parts").value = splitPipe(plant.Toxic_parts_all).join(", ") || "";
     
     document.querySelector("#plant_flower_color").value = plant.Plant_flower_color || "";
     document.querySelector("#plant_height_max_mm").value = plant.Plant_height_max_mm || "";
