@@ -224,11 +224,12 @@ console.log("start1");
     document.querySelector("#name_sz").value = plant.Name_SZ || "";
     document.querySelector("#plant_type").value = splitPipe(plant.Plant_type).join(", ") || "";
     document.querySelector("#uses").value = splitPipe(plant.Uses).join(", ") || "";
+    document.querySelector("#medicinal_parts").value = splitPipe(plant.Medicinal_parts_all).join(", ") || "";
+    document.querySelector("#preparation_to_edibility").value = splitPipe(plant.Preparation_all).join(", ") || "";
+    
     document.querySelector("#edible_parts").value = splitPipe(plant.Raw_edible_parts_all).join(", ") || "";
     document.querySelector("#prepared_edible_parts").value = splitPipe(plant.Prepared_edible_parts_all).join(", ") || "";
-    document.querySelector("#preparation_to_edibility").value = splitPipe(plant.Preparation_all).join(", ") || "";
     document.querySelector("#toxic_parts").value = splitPipe(plant.Toxic_parts_all).join(", ") || "";
-    document.querySelector("#medicinal_parts").value = splitPipe(plant.Medicinal_parts_all).join(", ") || "";
     document.querySelector("#medicinal_use").value = plant.Medicinal_use || "";
     
     document.querySelector("#plant_flower_color").value = plant.Plant_flower_color || "";
@@ -259,10 +260,38 @@ console.log("start1");
     // depending on whether the parts appear in the edible or toxic lists.
     // the text inputs above contain comma‑separated values, so we'll just
     // work with the lowercase string and test for the presence of keywords.
-    const edibleText = document.querySelector("#edible_parts").value.toLowerCase();
+
+   function buildSearchText(value, useSplit = false) {
+       // fallback if null/undefined
+       const raw = value ?? "";
+
+       let text;
+
+      if (useSplit && typeof raw === "string") {
+          text = splitPipe(raw)
+              .filter(Boolean)
+              .map(v => String(v).trim())
+             .filter(v => v.length > 0)
+              .join(", ");
+       } else {
+           text = String(raw).trim();
+       }
+
+       return text.toLowerCase();
+     }
+
+    // EDIBLE
+    const edibleText = buildSearchText(plant?.Raw_edible_parts_all, true);
+
+     // MEDICINAL PARTS
+     const medicinalText = buildSearchText(plant?.Medicinal_parts_all, true);
+
+
+    
+    //const edibleText = document.querySelector("#edible_parts").value.toLowerCase();
     const ediblePreparedText = document.querySelector("#prepared_edible_parts").value.toLowerCase();
     const toxicText = document.querySelector("#toxic_parts").value.toLowerCase();
-    const medicinalText = document.querySelector("#medicinal_parts").value.toLowerCase();
+    //const medicinalText = document.querySelector("#medicinal_parts").value.toLowerCase();
 
 
     // icon colouring
