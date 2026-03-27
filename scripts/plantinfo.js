@@ -282,91 +282,68 @@ console.log("start1");
 
     // EDIBLE
     const edibleText = buildSearchText(plant?.Raw_edible_parts_all, true);
-
+    const ediblePreparedText = buildSearchText(plant?.Prepared_edible_parts_all, true);
+    const toxicText = buildSearchText(plant?.Toxic_parts_all, true);
      // MEDICINAL PARTS
      const medicinalText = buildSearchText(plant?.Medicinal_parts_all, true);
 
 
     
     //const edibleText = document.querySelector("#edible_parts").value.toLowerCase();
-    const ediblePreparedText = document.querySelector("#prepared_edible_parts").value.toLowerCase();
-    const toxicText = document.querySelector("#toxic_parts").value.toLowerCase();
+    //const ediblePreparedText = document.querySelector("#prepared_edible_parts").value.toLowerCase();
+    //const toxicText = document.querySelector("#toxic_parts").value.toLowerCase();
     //const medicinalText = document.querySelector("#medicinal_parts").value.toLowerCase();
 
 
-    // icon colouring
-    function colourByTerm(iconClass, term) {
-      // update every occurrence of the icon class on the page
-      const svgs = document.querySelectorAll(`.${iconClass}`);
-      if (!svgs.length) return;
-      svgs.forEach(svg => {
-        svg.classList.remove("green", "red", "black", "yellow");
-        if (toxicText.includes(term.toLowerCase())){
-          svg.classList.add("red");
-        } else if (ediblePreparedText.includes(term.toLowerCase()))  {
-          svg.classList.add("yellow");
-        } else if (edibleText.includes(term.toLowerCase())) {
-          svg.classList.add("green");
-        } else {
-          svg.classList.add("black");
-        }
-      });
-    }
+    // ── config ──────────────────────────────────────────────
+const PARTS = ["root", "stem", "leaf", "flower", "fruit", "seed"];
 
-    // perform the check for each of the harvest icons
-    document.getElementById("none-med-icon").style.display = "block";
-    document.getElementById("none-harv-icon").style.display = "block";
-    colourByTerm("root-harvest-icon", "root");
-    colourByTerm("stem-harvest-icon", "stem");
-    colourByTerm("leaf-harvest-icon", "leaf");
-    colourByTerm("flower-harvest-icon", "flower");
-    colourByTerm("fruit-harvest-icon", "fruit");
-    colourByTerm("seed-harvest-icon", "seed");
-
-     // icon visiblility Harvest, Medical
-function setVisibiltyHIcon(iconType,svgName,svgDefName, term) {
-    const svg = document.getElementById(svgName);
-    const svgDefault = document.getElementById(svgDefName);
-    if (!svg) {
-        console.warn("SVG not found: ", svgName);
-        return { show: 0 };
-    }
-    console.log("Visibility change: ", svgName);
-    if (iconType === "med") {
-        svg.style.display = "none";
-        if (medicinalText.includes(term.toLowerCase())){
-           svg.style.display = "block";
-           svgDefault.style.display = "none";
-         } 
-    } else if (iconType === "harv") {
-      if (toxicText.includes(term.toLowerCase())){
-          svg.style.display = "block";
-          svgDefault.style.display = "none";
-        } else if (ediblePreparedText.includes(term.toLowerCase()))  {
-          svg.style.display = "block";
-          svgDefault.style.display = "none";
-        } else if (edibleText.includes(term.toLowerCase())) {
-          svg.style.display = "block";
-          svgDefault.style.display = "none";
-        } else {
-          svg.classList.add("black");
-        }
-   } 
+function edibilityClass(term) {
+  const t = term.toLowerCase();
+  if (toxicText.includes(t))          return "red";
+  if (ediblePreparedText.includes(t)) return "yellow";
+  if (edibleText.includes(t))         return "green";
+  return "black";
 }
-    // make med icon visible
-    setVisibiltyHIcon("med","root-med-icon","none-med-icon","root");
-    setVisibiltyHIcon("med","stem-med-icon","none-med-icon","stem");
-    setVisibiltyHIcon("med","leaf-med-icon","none-med-icon","leaf");
-    setVisibiltyHIcon("med","flower-med-icon","none-med-icon","flower");
-    setVisibiltyHIcon("med","fruit-med-icon","none-med-icon","fruit");
-    setVisibiltyHIcon("med","seed-med-icon","none-med-icon","seed");
-    // make haqrv icon visible
-    setVisibiltyHIcon("harv","root-harv-icon","none-harv-icon","root");
-    setVisibiltyHIcon("harv","stem-harv-icon","none-harv-icon","stem");
-    setVisibiltyHIcon("harv","leaf-harv-icon","none-harv-icon","leaf");
-    setVisibiltyHIcon("harv","flower-harv-icon","none-harv-icon","flower");
-    setVisibiltyHIcon("harv","fruit-harv-icon","none-harv-icon","fruit");
-    setVisibiltyHIcon("harv","seed-harv-icon","none-harv-icon","seed");
+
+// ── colour harvest icons ─────────────────────────────────
+document.getElementById("none-med-icon").style.display  = "block";
+document.getElementById("none-harv-icon").style.display = "block";
+
+PARTS.forEach(part => {
+  const cls   = edibilityClass(part);
+  const icons = document.querySelectorAll(`.${part}-harvest-icon`);
+  icons.forEach(svg => {
+    svg.classList.remove("green", "red", "black", "yellow");
+    svg.classList.add(cls);
+  });
+});
+
+// ── visibility for med / harv icons ─────────────────────
+function setIconVisibility(type, part) {
+  const svgId    = `${part}-${type}-icon`;
+  const defaultId = `none-${type}-icon`;
+  const svg      = document.getElementById(svgId);
+  const def      = document.getElementById(defaultId);
+  if (!svg) { console.warn("SVG not found:", svgId); return; }
+
+  svg.style.display = "none";
+
+  const isVisible =
+    type === "med"  ? medicinalText.includes(part) :
+    type === "harv" ? edibilityClass(part) !== "black" : false;
+
+  if (isVisible) {
+    svg.style.display = "block";
+    if (def) def.style.display = "none";
+  } else if (type === "harv") {
+    svg.classList.add("black");
+  }
+}
+
+["med", "harv"].forEach(type =>
+  PARTS.forEach(part => setIconVisibility(type, part))
+);
     
     // Fill planning table with month data
     populatePlanningTable(plant);
