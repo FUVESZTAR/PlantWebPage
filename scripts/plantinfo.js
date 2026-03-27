@@ -264,6 +264,8 @@ console.log("start1");
     const toxicText = document.querySelector("#toxic_parts").value.toLowerCase();
     const medicinalText = document.querySelector("#medicinal_parts").value.toLowerCase();
 
+
+    // icon colouring
     function colourByTerm(iconClass, term) {
       // update every occurrence of the icon class on the page
       const svgs = document.querySelectorAll(`.${iconClass}`);
@@ -290,6 +292,31 @@ console.log("start1");
     colourByTerm("fruit-harvest-icon", "fruit");
     colourByTerm("seed-harvest-icon", "seed");
 
+    // icon colouring
+function setMedType(svgname, term) {
+    const svg = document.getElementById(svgname);
+    const svgDefault = document.getElementById("none-med-icon");
+    if (!svgs.length) return;
+    if (!svg) {
+        console.warn("SVG not found: ", svgname);
+        return { show: 0 };
+    }
+    console.log("Visibility change: ", svgname);
+    svg.style.display = "none";
+    svgDefault.style.display = "block";
+    if (medicinal_parts.includes(term.toLowerCase())){
+          svg.style.display = "block";
+          svgDefault.style.display = "none";
+        } 
+}
+    // make med icon visible
+    setMedType("root-med-icon", "root");
+    setMedType("stem-med-icon", "stem");
+    setMedType("leaf-med-icon", "leaf");
+    setMedType("flower-med-icon", "flower");
+    setMedType("fruit-med-icon", "fruit");
+    setMedType("seed-med-icon", "seed");
+    
     // Fill planning table with month data
     populatePlanningTable(plant);
     renderCALENDER1(plant);
