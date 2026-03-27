@@ -286,7 +286,7 @@ console.log("start1");
 
     // perform the check for each of the harvest icons
     document.getElementById("none-med-icon").style.display = "block";
-    document.getElementById("none-med-icon").style.display = "block";
+    document.getElementById("none-harv-icon").style.display = "block";
     colourByTerm("root-harvest-icon", "root");
     colourByTerm("stem-harvest-icon", "stem");
     colourByTerm("leaf-harvest-icon", "leaf");
@@ -294,9 +294,9 @@ console.log("start1");
     colourByTerm("fruit-harvest-icon", "fruit");
     colourByTerm("seed-harvest-icon", "seed");
 
-    // icon visiblility Harvest, Medical
-function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
-    const svg = document.getElementById(svgname);
+     // icon visiblility Harvest, Medical
+function setVisibiltyHIcon(iconType,svgName,svgDefName, term) {
+    const svg = document.getElementById(svgName);
     const svgDefault = document.getElementById(svgDefName);
     if (!svg) {
         console.warn("SVG not found: ", svgName);
@@ -304,13 +304,12 @@ function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
     }
     console.log("Visibility change: ", svgName);
     svg.style.display = "none";
-    if (IconType === "med") {
+    if (iconType === "med") {
         if (medicinalText.includes(term.toLowerCase())){
            svg.style.display = "block";
            svgDefault.style.display = "none";
          } 
-    }
-   if (IconType === "harv") {
+    } else if (iconType === "harv") {
       if (toxicText.includes(term.toLowerCase())){
           svg.style.display = "block";
           svgDefault.style.display = "none";
@@ -332,7 +331,7 @@ function setVisibiltyHIcon(IconType,svgName,svgDefName, term) {
     setVisibiltyHIcon("med","flower-med-icon","none-med-icon","flower");
     setVisibiltyHIcon("med","fruit-med-icon","none-med-icon","fruit");
     setVisibiltyHIcon("med","seed-med-icon","none-med-icon","seed");
-    
+    // make haqrv icon visible
     setVisibiltyHIcon("harv","root-harv-icon","none-harv-icon","root");
     setVisibiltyHIcon("harv","stem-harv-icon","none-harv-icon","stem");
     setVisibiltyHIcon("harv","leaf-harv-icon","none-harv-icon","leaf");
@@ -661,15 +660,15 @@ const humanSvg = document.getElementById("size-human-icon-1");
     svg3.style.display = "none";
 
     if (type === "Tree") {
-        svg1.style.display = "block";
+        svg1.style.display = "";
         return {show: 1};
     }
     else if (type === "Bush") {
-        svg2.style.display = "block";
+        svg2.style.display = "";
         return {show: 2};
     }
     else {
-        svg3.style.display = "block";
+        svg3.style.display = "";
         return {show: 3};
     }
 };
