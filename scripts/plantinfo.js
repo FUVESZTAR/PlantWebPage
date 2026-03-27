@@ -332,8 +332,8 @@ function setVisibiltyHIcon(iconType,svgName,svgDefName, term) {
         return { show: 0 };
     }
     console.log("Visibility change: ", svgName);
-    svg.style.display = "none";
     if (iconType === "med") {
+        svg.style.display = "none";
         if (medicinalText.includes(term.toLowerCase())){
            svg.style.display = "block";
            svgDefault.style.display = "none";
