@@ -285,6 +285,7 @@ console.log("start1");
     }
 
     // perform the check for each of the harvest icons
+    document.getElementById("none-med-icon").style.display = "block";
     colourByTerm("root-harvest-icon", "root");
     colourByTerm("stem-harvest-icon", "stem");
     colourByTerm("leaf-harvest-icon", "leaf");
@@ -302,7 +303,6 @@ function setMedType(svgname, term) {
     }
     console.log("Visibility change: ", svgname);
     svg.style.display = "none";
-    svgDefault.style.display = "block";
     if (medicinalText.includes(term.toLowerCase())){
           svg.style.display = "block";
           svgDefault.style.display = "none";
