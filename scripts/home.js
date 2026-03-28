@@ -48,7 +48,7 @@ async function populate() {
     plants = await loadPlantData();
     // Keep only plants that are active on the page
     plants = plants.filter(p => p.Active_in_page === 'Y');
-
+    console.log("loading plants in home.js");
     // Use Name_HU for Hungarian, Name_EN for English
     const lang = getCurrentLang();
     const nameProp = lang === 'en' ? 'Name_EN' : 'Name_HU';
