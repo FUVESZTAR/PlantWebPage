@@ -246,13 +246,12 @@ console.log("start1");
     document.querySelector("#plant_growing_habit").value = plant.Plant_growing_habit || "";
     document.querySelector("#days_to_harvest").value = plant.Days_to_Harvest || "";
     document.querySelector("#days_to_maturity").value = plant.Days_to_Maturity || "";
-    document.querySelector("#days_to_germination").value = plant.Days_to_Germination || "";
     document.querySelector("#hardiness_zone").value = plant.Hardiness_Zone || "";
     document.querySelector("#plant_planting_seed_dept_mm").value = plant.Plant_planting_seed_dept_mm || "";
     document.querySelector("#plant_planting_seed_soil_temperature_celsius").value = plant.Plant_planting_seed_soil_temperature_celsius || "";
     document.querySelector("#plant_planting_plant_distance_mm").value = plant.Plant_planting_plant_distance_mm || "";
     document.querySelector("#plant_description").value = plant.Plant_description || "";
-    document.querySelector("#plant_seed_germination_time_days").value = plant.Plant_seed_germination_time_days || "";
+    document.querySelector("#plant_seed_germination_time_days").value = plant.Days_to_Germination || "";
     document.querySelector("#plant_seed_survival_time_month").value = plant.Plant_seed_survival_time_month || "";
     document.querySelector("#plant_dangers_to_humans").value = plant.Plant_dangers_to_humans || "";
     
