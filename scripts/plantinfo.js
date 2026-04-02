@@ -287,9 +287,7 @@ function populatePlanningTable(plant) {
 }
 
 // ── Icon colouring ───────────────────────────────────────────────────────────
-
-function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText) {
-  function edibilityClass(term) {
+function edibilityClass(term) {
     const t = term.toLowerCase();
     if (toxicText.includes(t))           return "red";
     if (ediblePreparedText.includes(t))  return "yellow";
@@ -297,6 +295,7 @@ function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalTe
     return "black";
   }
 
+function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText) {
   // Colour all harvest icons
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
@@ -333,7 +332,7 @@ function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalTe
 
 // ── Harvest part icons in planning table row ─────────────────────────────────
 
-function insertPartIconsInTable(plant, edibilityClass) {
+function insertPartIconsInTable(plant) {
   const rows      = Array.from(document.querySelectorAll('#planning-table-body tr'));
   const targetRow = rows.find(r => r.getAttribute('data-row-id') === 'harvesting-ground');
   if (!targetRow) { console.warn('planning table missing "harvesting-ground" row'); return; }
@@ -410,7 +409,14 @@ function insertCategoryIconsRow(plant, mode, vers) {
         });
     });
   }
-
+  // Colour icons after all are inserted (single pass)
+  PARTS.forEach(part => {
+    const cls   = edibilityClass(part);
+    document.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
+      svg.classList.remove("green", "red", "black", "yellow");
+      svg.classList.add(cls);
+    });
+  });
   container.innerHTML = '';
   container.appendChild(frag);
 }
@@ -569,10 +575,6 @@ document.querySelector("#back-button").addEventListener("click", () => {
     populatePlanningTable(plant);
     renderCALENDER1(plant);
 
-    // ── Harvest icons in table + category icons row (one colourByTerm pass)
-    insertPartIconsInTable(plant, edibilityClass);
-    insertCategoryIconsRow(plant,"unique","harv");
-
     // ── Varieties list ────────────────────────────────────────────────────
     const varieties     = splitPipe(plant.List_of_varieties);
     const varietiesList = document.querySelector("#varieties-list");
@@ -584,6 +586,10 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
     // ── Icon colouring (single pass) ──────────────────────────────────────
     const edibilityClass = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
+
+    // ── Harvest icons in table + category icons row (one colourByTerm pass)
+    insertPartIconsInTable(plant);
+    insertCategoryIconsRow(plant,"unique","harv");
     
     // ── Size icons ────────────────────────────────────────────────────────
     applySizeIcons(plant);
