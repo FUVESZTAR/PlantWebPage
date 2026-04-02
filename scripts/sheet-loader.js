@@ -28,7 +28,7 @@ async function fetchSheetResponse() {
 export async function loadPlantData() {
   const gvizResponse = await fetchSheetResponse();
   const { cols, rows } = gvizResponse.table;
-  console.log("laoding data from sheet");
+  console.log("loadPlantData");
   // Use column label (the sheet header row) as the property key, falling back to column id
   const headers = cols.map(col => (col.label && col.label.trim()) ? col.label.trim() : col.id);
 
