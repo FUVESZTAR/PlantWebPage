@@ -106,8 +106,8 @@ function renderCALENDER1(plant) {
     occupyingSpace: uniqueCALENDER1Slots(plant.Occuppying_space_month, plant.Ocuppying_space_month),
     flowering: uniqueCALENDER1Slots(plant.Flowering_time_month),
     ripe: uniqueCALENDER1Slots(plant.Harvesting_time_in_cover_month, plant.Harvesting_time_in_ground_month),
-    fruiting: uniqueCALENDER1Slots(plant.fruit_harv_time_month),
-    harvesting: uniqueCALENDER1Slots(plant.sap_harv_time_month, plant.nectar_harv_time_month, plant.shoot_harv_time_month, plant.seedpod_harv_time_month, plant.apicalbud_harv_time_month, plant.wood_harv_time_month, plant.pollen_harv_time_month, plant.bark_harv_time_month, plant.leaf_harv_time_month, plant.stem_harv_time_month, plant.flower_harv_time_month, plant.fruit_harv_time_month, plant.seed_harv_time_month, plant.root_harv_time_month),
+    fruiting: uniqueCALENDER1Slots(plant.fruit_Harvesting_time_month),
+    harvesting: uniqueCALENDER1Slots(plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month, plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month, plant.Apical_bud_Harvesting_time_month, plant.Wood_Harvesting_time_month, plant.Pollen_Harvesting_time_month, plant.Bark_Harvesting_time_month, plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month, plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month, plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
     harvestStoring: uniqueCALENDER1Slots(plant.Harvest_storing_month),
     seedSaving: uniqueCALENDER1Slots(plant.Seed_saving),
   };
@@ -356,20 +356,20 @@ function setIconVisibility(type, part) {
     (function insertPartIcons(p) {
       // mapping of part names to CSV column names, icon classes, and sprite symbols
       const parts = [
-        { key: 'leaf_harv_time_month', term: 'leaf', iconClass: 'leaf-harv-icon', symbol: '#icon-leaf' },
-        { key: 'stem_harv_time_month', term: 'stem', iconClass: 'stem-harvest-icon', symbol: '#icon-stem' },
-        { key: 'flower_harv_time_month', term: 'flower', iconClass: 'flower-harvest-icon', symbol: '#icon-flower' },
-        { key: 'fruit_harv_time_month', term: 'fruit', iconClass: 'fruit-harvest-icon', symbol: '#icon-fruit' },
-        { key: 'seed_harv_time_month', term: 'seed', iconClass: 'seed-harvest-icon', symbol: '#icon-seed' },
-        { key: 'root_harv_time_month', term: 'root', iconClass: 'root-harvest-icon', symbol: '#icon-root' },
-        { key: 'shoot_harv_time_month', term: 'shoot', iconClass: 'shoot-harvest-icon', symbol: '#icon-shoot' },
-        { key: 'wood_harv_time_month', term: 'wood', iconClass: 'wood-harvest-icon', symbol: '#icon-wood' },
-        { key: 'sap_harv_time_month', term: 'sap', iconClass: 'sap-harvest-icon', symbol: '#icon-sap' },
-        { key: 'apicalbud_harv_time_month', term: 'apicalbud', iconClass: 'apicalbud-harvest-icon', symbol: '#icon-apicalbud' },
-        { key: 'bark_harv_time_month', term: 'bark', iconClass: 'bark-harvest-icon', symbol: '#icon-bark' },
-        { key: 'nectar_harv_time_month', term: 'nectar', iconClass: 'nectar-harvest-icon', symbol: '#icon-nectar' },
-        { key: 'pollen_harv_time_month', term: 'pollen', iconClass: 'pollen-harvest-icon', symbol: '#icon-pollen' },
-        { key: 'seedpod_harv_time_month', term: 'seedpod', iconClass: 'seedpod-harvest-icon', symbol: '#icon-seedpod' },
+        { key: 'Leaf_Harvesting_time_month', term: 'leaf', iconClass: 'leaf-harvest-icon', symbol: '#icon-leaf' },
+        { key: 'Stem_Harvesting_time_month', term: 'stem', iconClass: 'stem-harvest-icon', symbol: '#icon-stem' },
+        { key: 'Flower_Harvesting_time_month', term: 'flower', iconClass: 'flower-harvest-icon', symbol: '#icon-flower' },
+        { key: 'Fruit_Harvesting_time_month', term: 'fruit', iconClass: 'fruit-harvest-icon', symbol: '#icon-fruit' },
+        { key: 'Seed_Harvesting_time_month', term: 'seed', iconClass: 'seed-harvest-icon', symbol: '#icon-seed' },
+        { key: 'Root_Harvesting_time_month', term: 'root', iconClass: 'root-harvest-icon', symbol: '#icon-root' },
+        { key: 'Shoot_Harvesting_time_month', term: 'shoot', iconClass: 'shoot-harvest-icon', symbol: '#icon-shoot' },
+        { key: 'Wood_Harvesting_time_month', term: 'wood', iconClass: 'wood-harvest-icon', symbol: '#icon-wood' },
+        { key: 'Sap_Harvesting_time_month', term: 'sap', iconClass: 'sap-harvest-icon', symbol: '#icon-sap' },
+        { key: 'Apical_bud_Harvesting_time_month', term: 'apicalbud', iconClass: 'apicalbud-harvest-icon', symbol: '#icon-apicalbud' },
+        { key: 'Bark_Harvesting_time_month', term: 'bark', iconClass: 'bark-harvest-icon', symbol: '#icon-bark' },
+        { key: 'Nectar_Harvesting_time_month', term: 'nectar', iconClass: 'nectar-harvest-icon', symbol: '#icon-nectar' },
+        { key: 'Pollen_Harvesting_time_month', term: 'pollen', iconClass: 'pollen-harvest-icon', symbol: '#icon-pollen' },
+        { key: 'Seedpod_Harvesting_time_month', term: 'seedpod', iconClass: 'seedpod-harvest-icon', symbol: '#icon-seedpod' },
       ];
 
       const rows = Array.from(document.querySelectorAll('#planning-table-body tr'));
