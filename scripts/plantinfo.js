@@ -146,7 +146,7 @@ function makeSvgIcon(term, id = null) {
   svg.setAttribute('aria-hidden', 'true');
   svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
   if (id) {
-    const makeID = = `${term}-${id}`;
+    const makeID = `${term}-${id}`;
     svg.setAttribute('id', makeID);
   }
   const use = document.createElementNS(svgns, 'use');
