@@ -564,13 +564,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     // NFC link
     const nfcEl = document.querySelector("#nfc-link");
     if (nfcEl) nfcEl.textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
-
-    // ── Build search texts once ───────────────────────────────────────────
-    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
-    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
-    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
-    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
-
+   
     // ── Planning table + calendar ─────────────────────────────────────────
     populatePlanningTable(plant);
     renderCALENDER1(plant);
@@ -583,9 +577,14 @@ document.querySelector("#back-button").addEventListener("click", () => {
         ? varieties.map(v => `<li>${v}</li>`).join("")
         : `<li>${t('detail.noVarieties')}</li>`;
     }
-
+        // ── Build search texts once ───────────────────────────────────────────
+    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
+    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
+    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
+    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
+    
     // ── Icon colouring (single pass) ──────────────────────────────────────
-    const edibilityClass = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
+    const edibilityClassValue = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
 
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant);
