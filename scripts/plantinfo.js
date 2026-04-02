@@ -107,7 +107,10 @@ function renderCALENDER1(plant) {
     flowering: uniqueCALENDER1Slots(plant.Flowering_time_month),
     ripe: uniqueCALENDER1Slots(plant.Harvesting_time_in_cover_month, plant.Harvesting_time_in_ground_month),
     fruiting: uniqueCALENDER1Slots(plant.fruit_Harvesting_time_month),
-    harvesting: uniqueCALENDER1Slots(plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month, plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month, plant.Apical_bud_Harvesting_time_month, plant.Wood_Harvesting_time_month, plant.Pollen_Harvesting_time_month, plant.Bark_Harvesting_time_month, plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month, plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month, plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
+    harvesting: uniqueCALENDER1Slots(plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month, plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month, 
+                                     plant.Apical_bud_Harvesting_time_month, plant.Wood_Harvesting_time_month, plant.Pollen_Harvesting_time_month, plant.Bark_Harvesting_time_month, 
+                                     plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month, plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month, 
+                                     plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
     harvestStoring: uniqueCALENDER1Slots(plant.Harvest_storing_month),
     seedSaving: uniqueCALENDER1Slots(plant.Seed_saving),
   };
