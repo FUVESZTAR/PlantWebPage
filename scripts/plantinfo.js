@@ -389,6 +389,54 @@ function insertCategoryIconsRow(plant) {
   container.appendChild(frag);
 }
 
+function insertCategoryIconsRow(plant, mode, vers) {
+  // mode = 'per-category' : one icon per part per category column (original behaviour)
+  // mode = 'unique'       : one icon per part, regardless of how many columns contain it
+  // vers = 'harv' / 'med'                 : Which version is it harv - all part, med - medicinal part
+
+  const container = document.querySelector('#part-icons-row');
+  if (!container) { console.warn('Missing #part-icons-row container'); return; }
+  const frag = document.createDocumentFragment();
+
+  if (mode === 'unique') {
+    // Collect all parts that appear in ANY category column, deduplicated
+    const seenParts = new Set();
+
+    CATEGORY_PART_COLUMNS.forEach(key => {
+      if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
+      const value = plant[key];
+      if (!value || value === '0') return;
+
+      String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
+        .forEach(part => seenParts.add(part));
+    });
+
+    seenParts.forEach(part => {
+      const id  = `${part}-${vers}-icon-r`;
+      const svg = makeSvgIcon(part, id);
+      if (svg) frag.appendChild(svg);
+    });
+
+  } else {
+    // 'per-category': one icon per part per column
+    CATEGORY_PART_COLUMNS.forEach(key => {
+      if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
+      const value = plant[key];
+      if (!value || value === '0') return;
+
+      String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
+        .forEach(part => {
+          const id  = `${part}-${vers}-icon-${key}`;
+          const svg = makeSvgIcon(part, id);
+          if (svg) frag.appendChild(svg);
+        });
+    });
+  }
+
+  container.innerHTML = '';
+  container.appendChild(frag);
+}
+
 // ── Size icons ───────────────────────────────────────────────────────────────
 
 function applySizeIcons(plant) {
