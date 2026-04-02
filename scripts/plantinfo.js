@@ -442,6 +442,100 @@ function setIconVisibility(type, part) {
     console.error("Error loading plant data:", error);
     document.querySelector("#primary-title").textContent = t('detail.error.loadPlant');
   }
+
+//new
+  (function insertCategoryIconsRow(p) {
+  // map high-level categories to the icons they should include
+  const parts = [
+    {
+      key: 'Raw_edible_parts_all',
+      icons: ['leaf', 'stem', 'flower', 'fruit', 'seed', 'root', 'shoot', 'wood', 'sap', 'apicalbud', 'bark', 'nectar', 'pollen', 'seedpod']
+    },
+    {
+      key: 'Prepared_edible_parts_all',
+      icons: ['leaf', 'stem', 'flower', 'fruit', 'seed', 'root', 'shoot', 'wood', 'sap', 'apicalbud', 'bark', 'nectar', 'pollen', 'seedpod']
+    },
+    {
+      key: 'Toxic_parts_all',
+      icons: ['leaf', 'stem', 'flower', 'fruit', 'seed', 'root', 'shoot', 'wood', 'sap', 'apicalbud', 'bark', 'nectar', 'pollen', 'seedpod']
+    },
+    {
+      key: 'Medicinal_parts_all',
+      icons: ['leaf', 'stem', 'flower', 'fruit', 'seed', 'root', 'shoot', 'wood', 'sap', 'apicalbud', 'bark', 'nectar', 'pollen', 'seedpod']
+    }
+  ];
+
+  // reusable icon definitions
+  const iconMap = {
+    leaf: { class: 'leaf-harvest-icon', symbol: '#icon-leaf' },
+    stem: { class: 'stem-harvest-icon', symbol: '#icon-stem' },
+    flower: { class: 'flower-harvest-icon', symbol: '#icon-flower' },
+    fruit: { class: 'fruit-harvest-icon', symbol: '#icon-fruit' },
+    seed: { class: 'seed-harvest-icon', symbol: '#icon-seed' },
+    root: { class: 'root-harvest-icon', symbol: '#icon-root' },
+    shoot: { class: 'shoot-harvest-icon', symbol: '#icon-shoot' },
+    wood: { class: 'wood-harvest-icon', symbol: '#icon-wood' },
+    sap: { class: 'sap-harvest-icon', symbol: '#icon-sap' },
+    apicalbud: { class: 'apicalbud-harvest-icon', symbol: '#icon-apicalbud' },
+    bark: { class: 'bark-harvest-icon', symbol: '#icon-bark' },
+    nectar: { class: 'nectar-harvest-icon', symbol: '#icon-nectar' },
+    pollen: { class: 'pollen-harvest-icon', symbol: '#icon-pollen' },
+    seedpod: { class: 'seedpod-harvest-icon', symbol: '#icon-seedpod' },
+  };
+
+  const container = document.querySelector('#part-icons-row');
+  if (!container) {
+    console.warn('Missing #part-icons-row container');
+    return;
+  }
+
+  container.innerHTML = '';
+
+  const svgns = 'http://www.w3.org/2000/svg';
+
+  parts.forEach(({ key, icons }) => {
+    if (!p.hasOwnProperty(key)) return;
+
+    const value = p[key];
+    if (!value || value === '0') return;
+
+    console.log(`processing ${key}:`, value);
+
+    // assume CSV like "leaf,root,fruit"
+    const activeParts = String(value)
+      .toLowerCase()
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean);
+
+    icons.forEach(part => {
+      if (!activeParts.includes(part)) return;
+
+      const def = iconMap[part];
+      if (!def) return;
+
+      const svg = document.createElementNS(svgns, 'svg');
+      svg.setAttribute('class', def.class);
+      svg.setAttribute('viewBox', '0 0 512 512');
+      svg.setAttribute('aria-hidden', 'true');
+
+      svg.style.width = '20px';
+      svg.style.height = '20px';
+      svg.style.display = 'inline-block';
+      svg.style.marginRight = '6px';
+
+      const use = document.createElementNS(svgns, 'use');
+      use.setAttribute('href', def.symbol);
+      use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', def.symbol);
+
+      svg.appendChild(use);
+      container.appendChild(svg);
+    });
+  });
+
+  colourByTerm();
+})(plant);
+  
 })();
 
 function populatePlanningTable(plant) {
