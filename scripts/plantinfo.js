@@ -349,7 +349,7 @@ function insertPartIconsInTable(plant, edibilityClass) {
       const cell  = cells[month];
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
-      const makeID = = `_harv_icon_-${month}`;
+      const makeID = `_harv_icon_-${month}`;
       const svg = makeSvgIcon(term,makeID);
       if (svg) cell.appendChild(svg);
     });
@@ -366,28 +366,6 @@ function insertPartIconsInTable(plant, edibilityClass) {
 }
 
 // ── Category icons row ───────────────────────────────────────────────────────
-
-function insertCategoryIconsRow(plant) {
-  const container = document.querySelector('#part-icons-row');
-  if (!container) { console.warn('Missing #part-icons-row container'); return; }
-  const frag = document.createDocumentFragment();
-
-  CATEGORY_PART_COLUMNS.forEach(key => {
-    if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
-    const value = plant[key];
-    if (!value || value === '0') return;
-
-    const activeParts = String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean);
-    activeParts.forEach(part => {
-      const makeID = = `_harv_icon_r`;
-      const svg = makeSvgIcon(part,makeID);
-      if (svg) frag.appendChild(svg);
-    });
-  });
-
-  container.innerHTML = '';
-  container.appendChild(frag);
-}
 
 function insertCategoryIconsRow(plant, mode, vers) {
   // mode = 'per-category' : one icon per part per category column (original behaviour)
@@ -593,7 +571,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant, edibilityClass);
-    insertCategoryIconsRow(plant);
+    insertCategoryIconsRow(plant,"unique","harv");
 
     // ── Varieties list ────────────────────────────────────────────────────
     const varieties     = splitPipe(plant.List_of_varieties);
