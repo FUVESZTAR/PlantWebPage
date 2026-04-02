@@ -287,6 +287,11 @@ function populatePlanningTable(plant) {
 }
 
 // ── Icon colouring ───────────────────────────────────────────────────────────
+let edibleText = "";
+let ediblePreparedText = "";
+let toxicText = "";
+let medicinalText = "";
+
 function edibilityClass(term) {
     const t = term.toLowerCase();
     if (toxicText.includes(t))           return "red";
@@ -295,7 +300,11 @@ function edibilityClass(term) {
     return "black";
   }
 
-function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText) {
+function applyIconColours(edibleTextArg, ediblePreparedTextArg, toxicTextArg, medicinalTextArg) {
+  edibleText = edibleTextArg;
+  ediblePreparedText = ediblePreparedTextArg;
+  toxicText = toxicTextArg;
+  medicinalText = medicinalTextArg;
   // Colour all harvest icons
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
