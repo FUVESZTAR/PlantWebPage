@@ -197,7 +197,7 @@ console.log("start1");
       subtitle.textContent = t('detail.plantNotFoundMsg');
       return;
     }
- 
+    console.log("The plant is" ,plant);
     // Keep the full plant object intact; all CSV columns remain accessible via plant.<colname>
     // Previously we destructured a fixed subset, which omitted many fields. Remove that
     // so developers can freely refer to any column from the loaded row.
