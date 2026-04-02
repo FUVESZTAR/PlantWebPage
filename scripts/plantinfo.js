@@ -58,12 +58,6 @@ const CATEGORY_PART_COLUMNS = [
   'Medicinal_parts_all',
 ];
 
-// ── Build search texts once ───────────────────────────────────────────
-    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
-    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
-    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
-    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
-
 // ── Pure utilities ───────────────────────────────────────────────────────────
 
 function normalizeName(name) {
@@ -520,7 +514,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       subtitle.textContent = t('detail.plantNotFoundMsg');
       return;
     }
-
+    
     // ── Title & identity ──────────────────────────────────────────────────
     const lang          = getCurrentLang();
     const primaryName   = lang === 'en' ? (plant.Name_EN || plant.Name_HU || "Unknown") : (plant.Name_HU || plant.Name_EN || "Unknown");
@@ -532,7 +526,13 @@ document.querySelector("#back-button").addEventListener("click", () => {
     setIdentityFilterLink(identitygenus,     "genus",  plant.Genus);
     setIdentityFilterLink(identitylatinName, "latin",  plant.LatinName);
     if (identityvariety) identityvariety.innerHTML = `<strong> / ${plant.Name_Variety || ""}</strong>`;
-
+    
+    // ── Build search texts once ───────────────────────────────────────────
+    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
+    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
+    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
+    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
+    
     // ── Form fields ───────────────────────────────────────────────────────
     const fieldMap = {
       "#name_sz":                                    plant.Name_SZ,
