@@ -120,9 +120,9 @@ export const TRANSLATIONS = {
     "cal.tracks.seedSaving": "Seed Saving",
 
     // ── Planning table ────────────────────────────────────────────────────────
-    "planning.plantingCover": "Planting in Cover",
+    "planning.plantingCover": "Planting under glass",
     "planning.plantingGround": "Planting in Ground",
-    "planning.harvestingCover": "Harvesting in Cover",
+    "planning.harvestingCover": "Harvesting under glass",
     "planning.harvestingGround": "Harvesting in Ground",
   },
 
@@ -243,9 +243,9 @@ export const TRANSLATIONS = {
     "cal.tracks.seedSaving": "Magfog\u00e1s",
 
     // ── Planning table ────────────────────────────────────────────────────────
-    "planning.plantingCover": "\u00dcltet\u00e9s fed\u00e9s alatt",
+    "planning.plantingCover": "\u00dcltet\u00e9s \u00fcveg alatt",
     "planning.plantingGround": "\u00dcltet\u00e9s szabadban",
-    "planning.harvestingCover": "Betakar\u00edt\u00e1s fed\u00e9s alatt",
+    "planning.harvestingCover": "Betakar\u00edt\u00e1s \u00fcveg alatt",
     "planning.harvestingGround": "Betakar\u00edt\u00e1s szabadban",
   },
 };
