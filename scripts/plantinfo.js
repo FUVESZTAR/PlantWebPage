@@ -58,6 +58,12 @@ const CATEGORY_PART_COLUMNS = [
   'Medicinal_parts_all',
 ];
 
+// ── Build search texts once ───────────────────────────────────────────
+    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
+    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
+    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
+    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
+
 // ── Pure utilities ───────────────────────────────────────────────────────────
 
 function normalizeName(name) {
@@ -547,7 +553,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       "#plant_growing_habit":                        plant.Plant_growing_habit,
       "#days_to_harvest":                            plant.Days_to_Harvest,
       "#days_to_maturity":                           plant.Days_to_Maturity,
-      "#Hardiness_Zone_USDA":                             plant.Hardiness_Zone_USDA,
+      "#Hardiness_Zone_USDA":                        plant.Hardiness_Zone_USDA,
       "#plant_planting_seed_deept_mm":                plant.Plant_planting_seed_deept_mm,
       "#plant_planting_seed_soil_temperature_celsius": plant.Plant_planting_seed_soil_temperature_celsius,
       "#plant_planting_plant_distance_mm":           plant.Plant_planting_plant_distance_mm,
@@ -577,11 +583,6 @@ document.querySelector("#back-button").addEventListener("click", () => {
         ? varieties.map(v => `<li>${v}</li>`).join("")
         : `<li>${t('detail.noVarieties')}</li>`;
     }
-        // ── Build search texts once ───────────────────────────────────────────
-    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
-    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
-    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
-    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
     
     // ── Icon colouring (single pass) ──────────────────────────────────────
     /*const edibilityClassValue = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);*/
