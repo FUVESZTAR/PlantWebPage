@@ -74,9 +74,9 @@ function buildSearchText(value, useSplit = false) {
 
 function getMonthColumns() {
   return [
-    { field: "Planting_time_in_cover_months", label: t('planning.plantingCover'),   id: "planting-cover"   },
+    { field: "Planting_time_under_glass_months", label: t('planning.plantingCover'),   id: "planting-cover"   },
     { field: "Planting_time_in_ground_month", label: t('planning.plantingGround'),  id: "planting-ground"  },
-    { field: "Harvesting_time_in_cover_month",label: t('planning.harvestingCover'), id: "harvesting-cover" },
+    { field: "Harvesting_time_under_glass_months",label: t('planning.harvestingCover'), id: "harvesting-cover" },
     { field: "Harvesting_time_in_ground_month",label: t('planning.harvestingGround'),id: "harvesting-ground"},
   ];
 }
@@ -136,7 +136,7 @@ function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize
   targetSvg.style.height = `${th}px`;
 }
 
-function makeSvgIcon(term) {
+function makeSvgIcon(term, id = null) {
   const def = PART_ICON_MAP[term];
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
@@ -145,13 +145,16 @@ function makeSvgIcon(term) {
   svg.setAttribute('viewBox', '0 0 512 512');
   svg.setAttribute('aria-hidden', 'true');
   svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
+  if (id) {
+    const makeID = = `${term}-${id}`;
+    svg.setAttribute('id', makeID);
+  }
   const use = document.createElementNS(svgns, 'use');
   use.setAttribute('href', def.symbol);
   use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', def.symbol);
   svg.appendChild(use);
   return svg;
 }
-
 // ── Identity filter links ────────────────────────────────────────────────────
 
 function setIdentityFilterLink(element, filterType, value) {
@@ -189,10 +192,10 @@ function renderCALENDER1(plant) {
   if (!root) return;
 
   const data = {
-    planting:       uniqueCALENDER1Slots(plant.Planting_time_in_cover_months, plant.Planting_time_in_ground_month),
-    occupyingSpace: uniqueCALENDER1Slots(plant.Occuppying_space_month, plant.Ocuppying_space_month),
+    planting:       uniqueCALENDER1Slots(plant.Planting_time_under_glass_months, plant.Planting_time_in_ground_month),
+    occupyingSpace: uniqueCALENDER1Slots(plant.Occupying_space_month, plant.Ocuppying_space_month),
     flowering:      uniqueCALENDER1Slots(plant.Flowering_time_month),
-    ripe:           uniqueCALENDER1Slots(plant.Harvesting_time_in_cover_month, plant.Harvesting_time_in_ground_month),
+    ripe:           uniqueCALENDER1Slots(plant.Harvesting_time_under_glass_months, plant.Harvesting_time_in_ground_month),
     fruiting:       uniqueCALENDER1Slots(plant.fruit_Harvesting_time_month),
     harvesting:     uniqueCALENDER1Slots(
                       plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month,
@@ -346,7 +349,8 @@ function insertPartIconsInTable(plant, edibilityClass) {
       const cell  = cells[month];
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
-      const svg = makeSvgIcon(term);
+      const makeID = = `_harv_icon_-${month}`;
+      const svg = makeSvgIcon(term,makeID);
       if (svg) cell.appendChild(svg);
     });
   });
@@ -375,7 +379,8 @@ function insertCategoryIconsRow(plant) {
 
     const activeParts = String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean);
     activeParts.forEach(part => {
-      const svg = makeSvgIcon(part);
+      const makeID = = `_harv_icon_r`;
+      const svg = makeSvgIcon(part,makeID);
       if (svg) frag.appendChild(svg);
     });
   });
@@ -393,7 +398,7 @@ function applySizeIcons(plant) {
   const sizeTargets = [
     { id: "size-tree-icon-2",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
     { id: "size-house-icon-1",  w: 6000,                              h: 4000                               },
-    { id: "size-root-icon-1",   w: plant.Plant_root_width_average_mm, h: plant.Plant_root_dept_average_mm   },
+    { id: "size-root-icon-1",   w: plant.Plant_root_width_average_mm, h: plant.Plant_root_deept_average_mm   },
     { id: "size-plant-icon-1",  w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
     { id: "size-bush-icon-1",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
   ];
@@ -500,7 +505,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       "#plant_flower_color":                         plant.Plant_flower_color,
       "#plant_height_max_mm":                        plant.Plant_height_max_mm,
       "#plant_width_max_mm":                         plant.Plant_width_max_mm,
-      "#plant_root_dept_average_mm":                 plant.Plant_root_dept_average_mm,
+      "#plant_root_deept_average_mm":                 plant.Plant_root_deept_average_mm,
       "#plant_root_width_average_mm":                plant.Plant_root_width_average_mm,
       "#plant_height_average_mm":                    plant.Plant_height_average_mm,
       "#plant_width_average_mm":                     plant.Plant_width_average_mm,
@@ -510,14 +515,14 @@ document.querySelector("#back-button").addEventListener("click", () => {
       "#plant_growing_habit":                        plant.Plant_growing_habit,
       "#days_to_harvest":                            plant.Days_to_Harvest,
       "#days_to_maturity":                           plant.Days_to_Maturity,
-      "#hardiness_zone":                             plant.Hardiness_Zone,
-      "#plant_planting_seed_dept_mm":                plant.Plant_planting_seed_dept_mm,
+      "#Hardiness_Zone_USDA":                             plant.Hardiness_Zone_USDA,
+      "#plant_planting_seed_deept_mm":                plant.Plant_planting_seed_deept_mm,
       "#plant_planting_seed_soil_temperature_celsius": plant.Plant_planting_seed_soil_temperature_celsius,
       "#plant_planting_plant_distance_mm":           plant.Plant_planting_plant_distance_mm,
       "#plant_description":                          plant.Plant_description,
       "#plant_seed_germination_time_days":           plant.Days_to_Germination,
       "#plant_seed_survival_time_month":             plant.Plant_seed_survival_time_month,
-      "#plant_dangers_to_humans":                    plant.Plant_dangers_to_humans,
+      "#plant_dangers_to_humans":                    plant.Dangers_of_plant,
     };
     Object.entries(fieldMap).forEach(([selector, value]) => {
       const el = document.querySelector(selector);
@@ -533,9 +538,6 @@ document.querySelector("#back-button").addEventListener("click", () => {
     const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
     const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
     const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
-
-    // ── Icon colouring (single pass) ──────────────────────────────────────
-    const edibilityClass = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
 
     // ── Planning table + calendar ─────────────────────────────────────────
     populatePlanningTable(plant);
@@ -554,6 +556,9 @@ document.querySelector("#back-button").addEventListener("click", () => {
         : `<li>${t('detail.noVarieties')}</li>`;
     }
 
+    // ── Icon colouring (single pass) ──────────────────────────────────────
+    const edibilityClass = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
+    
     // ── Size icons ────────────────────────────────────────────────────────
     applySizeIcons(plant);
 
