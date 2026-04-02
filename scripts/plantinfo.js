@@ -504,7 +504,7 @@ function setIconVisibility(type, part) {
     // assume CSV like "leaf,root,fruit"
     const activeParts = String(value)
       .toLowerCase()
-      .split(',')
+      .split('|')
       .map(v => v.trim())
       .filter(Boolean);
 
