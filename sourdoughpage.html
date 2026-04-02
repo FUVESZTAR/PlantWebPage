@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Szandi's Sourdough</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --cream: #F7F0E6;
+    --cream-dark: #EDE0CC;
+    --brown: #6B3F1F;
+    --brown-mid: #9C5E30;
+    --brown-light: #C4844A;
+    --warm-gray: #8C7B6B;
+    --charcoal: #2E2419;
+    --sage: #7A8C6E;
+    --rust: #B85C38;
+    --bg: #F9F4EC;
+    --card: #FFFDF9;
+    --border: rgba(107,63,31,0.12);
+    --shadow: 0 4px 24px rgba(46,36,25,0.08);
+    --shadow-lg: 0 12px 48px rgba(46,36,25,0.14);
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--charcoal);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== NOISE TEXTURE OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  /* ===== NAV ===== */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(249,244,236,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700; color: var(--brown);
+    text-decoration: none;
+  }
+  .nav-logo span { font-size: 1.5rem; }
+
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    font-size: 0.88rem; font-weight: 500; color: var(--warm-gray);
+    text-decoration: none; transition: color .2s;
+    letter-spacing: 0.02em;
+  }
+  .nav-links a:hover { color: var(--brown); }
+
+  .lang-toggle {
+    display: flex; background: var(--cream-dark); border-radius: 20px;
+    padding: 3px; gap: 2px; cursor: pointer;
+  }
+  .lang-btn {
+    padding: 4px 12px; border-radius: 16px; font-size: 0.78rem;
+    font-weight: 500; border: none; background: transparent;
+    color: var(--warm-gray); cursor: pointer; transition: all .2s;
+  }
+  .lang-btn.active { background: var(--brown); color: #fff; }
+
+  .mode-toggle {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.82rem; color: var(--warm-gray); font-weight: 500;
+  }
+  .toggle-switch {
+    width: 46px; height: 24px; background: var(--cream-dark);
+    border-radius: 12px; cursor: pointer; position: relative;
+    border: none; transition: background .3s;
+  }
+  .toggle-switch.pro { background: var(--brown); }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; transition: transform .3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  .toggle-switch.pro::after { transform: translateX(22px); }
+  .mode-label-pro { color: var(--brown); font-weight: 600; }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center; padding: 80px 40px 60px;
+    background: linear-gradient(160deg, var(--cream) 0%, var(--bg) 60%);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero-tag {
+    display: inline-block; background: var(--cream-dark);
+    color: var(--brown-mid); font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 16px; border-radius: 20px; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 700; color: var(--brown); line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: var(--brown-light); }
+  .hero p {
+    font-size: 1.08rem; color: var(--warm-gray); max-width: 540px;
+    margin: 0 auto 32px; font-weight: 300;
+  }
+  .hero-cta {
+    display: inline-block; background: var(--brown); color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+    padding: 14px 36px; border-radius: 50px; text-decoration: none;
+    transition: all .25s; box-shadow: 0 4px 20px rgba(107,63,31,.28);
+    letter-spacing: 0.02em;
+  }
+  .hero-cta:hover { background: var(--charcoal); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(107,63,31,.34); }
+
+  .hero-badges {
+    display: flex; gap: 20px; justify-content: center;
+    flex-wrap: wrap; margin-top: 40px;
+  }
+  .hero-badge {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 0.82rem; color: var(--warm-gray); font-weight: 400;
+  }
+  .hero-badge span { font-size: 1.1rem; }
+
+  /* ===== MAIN GRID ===== */
+  .main-section {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 28px; max-width: 1140px; margin: 0 auto;
+    padding: 48px 28px;
+  }
+
+  @media (max-width: 860px) {
+    .main-section { grid-template-columns: 1fr; }
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 50px 20px 40px; }
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+    padding: 28px;
+    transition: box-shadow .25s;
+  }
+  .card:hover { box-shadow: var(--shadow-lg); }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 600; color: var(--brown);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-subtitle { font-size: 0.83rem; color: var(--warm-gray); margin-bottom: 22px; font-weight: 300; }
+
+  /* ===== CALCULATOR ===== */
+  .input-group { margin-bottom: 20px; }
+  .input-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.83rem; font-weight: 500; color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+  .input-label .unit { color: var(--warm-gray); font-weight: 300; font-size: 0.78rem; }
+  .input-label .tooltip-icon {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--cream-dark); color: var(--warm-gray);
+    font-size: 0.62rem; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; font-weight: 700; margin-left: 4px;
+    position: relative;
+  }
+  .tooltip-icon:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%); background: var(--charcoal); color: #fff;
+    font-size: 0.72rem; padding: 6px 10px; border-radius: 8px;
+    white-space: nowrap; font-weight: 300; z-index: 50;
+    box-shadow: var(--shadow);
+  }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; }
+  input[type=range] {
+    -webkit-appearance: none; flex: 1; height: 5px;
+    background: var(--cream-dark); border-radius: 3px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--brown); cursor: pointer;
+    box-shadow: 0 2px 6px rgba(107,63,31,.3);
+    border: 2px solid var(--cream);
+  }
+  input[type=number] {
+    width: 68px; padding: 6px 8px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--charcoal); text-align: center; outline: none;
+    transition: border-color .2s;
+  }
+  input[type=number]:focus { border-color: var(--brown-light); }
+
+  .reset-btn {
+    display: flex; align-items: center; gap: 5px;
+    background: none; border: 1px solid var(--border);
+    color: var(--warm-gray); font-size: 0.78rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px; cursor: pointer;
+    transition: all .2s; margin-top: 16px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .reset-btn:hover { background: var(--cream-dark); color: var(--brown); border-color: var(--brown-light); }
+
+  /* ===== RESULTS ===== */
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .result-item {
+    background: var(--bg); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 16px 18px;
+    transition: all .3s;
+  }
+  .result-item.highlight { background: var(--brown); border-color: var(--brown); }
+  .result-item .r-icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .result-item .r-label { font-size: 0.75rem; color: var(--warm-gray); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+  .result-item.highlight .r-label { color: rgba(249,244,236,.7); }
+  .result-item .r-value { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--brown); line-height: 1; margin-top: 2px; }
+  .result-item.highlight .r-value { color: var(--cream); }
+  .result-item .r-unit { font-size: 0.75rem; color: var(--warm-gray); }
+  .result-item.highlight .r-unit { color: rgba(249,244,236,.6); }
+
+  .loaves-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    font-size: 0.85rem; color: var(--warm-gray);
+  }
+  .loaves-row .lv-btn {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--cream-dark);
+    border: 1px solid var(--border); font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brown); font-weight: 700; transition: all .2s;
+  }
+  .loaves-row .lv-btn:hover { background: var(--brown); color: var(--cream); }
+  .loaves-count { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--brown); min-width: 20px; text-align: center; }
+
+  /* ===== HYDRATION VISUAL ===== */
+  .hydration-bar-wrap { margin-top: 22px; }
+  .hydration-bar-label { font-size: 0.78rem; color: var(--warm-gray); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .hydration-bar-track { height: 10px; border-radius: 5px; background: var(--cream-dark); overflow: hidden; }
+  .hydration-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--brown-light), var(--rust)); transition: width .5s cubic-bezier(.4,0,.2,1); }
+  .hydration-desc { font-size: 0.78rem; color: var(--brown-mid); margin-top: 5px; font-weight: 500; }
+
+  /* ===== PIE CHART ===== */
+  .pie-section { margin-top: 24px; }
+  .pie-section h4 { font-size: 0.8rem; color: var(--warm-gray); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
+  .pie-container { display: flex; align-items: center; gap: 20px; }
+  .pie-svg { flex-shrink: 0; }
+  .pie-legend { display: flex; flex-direction: column; gap: 7px; }
+  .pie-legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== TIMELINE ===== */
+  .timeline-section { max-width: 1140px; margin: 0 auto; padding: 0 28px 48px; }
+  .section-heading {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: var(--brown);
+    margin-bottom: 6px;
+  }
+  .section-sub { font-size: 0.88rem; color: var(--warm-gray); margin-bottom: 28px; font-weight: 300; }
+
+  .timeline-scroll { overflow-x: auto; padding-bottom: 12px; }
+  .timeline-track {
+    display: flex; align-items: flex-start; gap: 0;
+    min-width: max-content; padding: 24px 0;
+  }
+  .timeline-item { display: flex; flex-direction: column; align-items: center; width: 130px; position: relative; }
+  .timeline-item:not(:last-child)::after {
+    content: ''; position: absolute; top: 24px; left: calc(50% + 20px);
+    width: calc(100% - 40px); height: 2px;
+    background: linear-gradient(90deg, var(--brown-light), var(--cream-dark));
+  }
+  .tl-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--card); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; box-shadow: var(--shadow); cursor: pointer;
+    transition: all .25s; position: relative; z-index: 2;
+  }
+  .timeline-item:hover .tl-icon { background: var(--brown); border-color: var(--brown); transform: scale(1.12); }
+  .tl-label { font-size: 0.78rem; font-weight: 600; color: var(--charcoal); margin-top: 10px; text-align: center; }
+  .tl-duration { font-size: 0.72rem; color: var(--warm-gray); margin-top: 2px; }
+  .tl-tip {
+    position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
+    background: var(--charcoal); color: var(--cream); font-size: 0.72rem;
+    padding: 8px 12px; border-radius: 10px; width: 140px; text-align: center;
+    opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10;
+    box-shadow: var(--shadow-lg); font-weight: 300; line-height: 1.4;
+  }
+  .timeline-item:hover .tl-tip { opacity: 1; }
+
+  /* ===== STARTER SECTION ===== */
+  .starter-section { max-width: 1140px; margin: 0 auto; padding: 0 28px 60px; }
+  .starter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media (max-width: 700px) { .starter-grid { grid-template-columns: 1fr; } }
+
+  .starter-result { background: var(--cream); border: 1px dashed var(--brown-light); border-radius: var(--radius-sm); padding: 16px; margin-top: 18px; }
+  .starter-result-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+  .starter-result-row:last-child { border-bottom: none; font-weight: 600; color: var(--brown); }
+  .starter-result-row span:first-child { color: var(--warm-gray); }
+
+  /* ===== READY INDICATOR ===== */
+  .ready-indicator { margin-top: 22px; }
+  .ready-label { font-size: 0.82rem; font-weight: 500; color: var(--warm-gray); margin-bottom: 8px; }
+  .ready-dots { display: flex; gap: 6px; }
+  .ready-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--cream-dark); transition: background .3s;
+  }
+  .ready-dot.active { background: var(--sage); }
+  .ready-dot.warn { background: var(--brown-light); }
+  .ready-dot.alert { background: var(--rust); }
+  .ready-text { font-size: 0.8rem; color: var(--warm-gray); margin-top: 6px; font-style: italic; }
+
+  /* ===== TEMP ADJUST (PRO) ===== */
+  .pro-only { display: none; }
+  .pro-mode .pro-only { display: block; }
+  .pro-mode .beginner-only { display: none; }
+  .temp-note { background: rgba(122,140,110,.12); border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 16px; font-size: 0.8rem; color: var(--sage); border-left: 3px solid var(--sage); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--border); padding: 28px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--cream); flex-wrap: wrap; gap: 12px;
+  }
+  footer .fl { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--brown); font-weight: 600; }
+  footer .fr { font-size: 0.78rem; color: var(--warm-gray); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-content { animation: fadeUp .7s ease both; }
+  .hero-badges { animation: fadeUp .7s .25s ease both; }
+  .card { animation: fadeUp .6s ease both; }
+
+  /* ===== SAVED RECIPES ===== */
+  .saved-section { max-width: 1140px; margin: 0 auto; padding: 0 28px 48px; }
+  .saved-list { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+  .saved-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 7px 14px; font-size: 0.82rem;
+    cursor: pointer; transition: all .2s;
+  }
+  .saved-chip:hover { background: var(--cream-dark); border-color: var(--brown-light); }
+  .saved-chip .del { color: var(--warm-gray); font-size: 0.7rem; margin-left: 4px; cursor: pointer; }
+  .save-btn {
+    background: var(--sage); color: #fff; border: none;
+    padding: 8px 18px; border-radius: 20px; font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer; transition: background .2s; margin-top: 14px;
+  }
+  .save-btn:hover { background: var(--brown); }
+</style>
+</head>
+<body id="app">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>🌾</span> Szandi's Sourdough</a>
+  <div class="nav-links">
+    <a href="#calculator" data-i18n="nav_calc">Calculator</a>
+    <a href="#timeline" data-i18n="nav_timeline">Timeline</a>
+    <a href="#starter" data-i18n="nav_starter">Starter</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+    <div class="mode-toggle">
+      <span data-i18n="mode_beginner">Beginner</span>
+      <button class="toggle-switch" id="modeToggle" title="Switch Mode"></button>
+      <span class="mode-label-pro" data-i18n="mode_pro">Pro</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hu')">HU</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag" data-i18n="hero_tag">Artisan Baking Tool</div>
+    <h1 data-i18n="hero_h1">Perfect Sourdough, <em>Every Time</em></h1>
+    <p data-i18n="hero_sub">Calculate, track, and master your baking process — from starter to finished loaf.</p>
+    <a href="#calculator" class="hero-cta" data-i18n="hero_cta">Start Baking</a>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge"><span>🔁</span> <span data-i18n="badge_realtime">Real-time calculation</span></div>
+    <div class="hero-badge"><span>🌡️</span> <span data-i18n="badge_temp">Temperature adjustment</span></div>
+    <div class="hero-badge"><span>💾</span> <span data-i18n="badge_save">Save your recipes</span></div>
+    <div class="hero-badge"><span>🌱</span> <span data-i18n="badge_starter">Starter tracker</span></div>
+  </div>
+</section>
+
+<!-- MAIN CALCULATOR SECTION -->
+<section id="calculator" class="main-section">
+
+  <!-- LEFT: INPUTS -->
+  <div class="card" style="animation-delay:.05s">
+    <div class="card-title">🍞 <span data-i18n="calc_title">Bread Calculator</span></div>
+    <div class="card-subtitle" data-i18n="calc_sub">Adjust the sliders or type your values</div>
+
+    <div class="loaves-row">
+      <span data-i18n="loaves_label">Loaves:</span>
+      <button class="lv-btn" onclick="changeLoaves(-1)">−</button>
+      <span class="loaves-count" id="loavesCount">1</span>
+      <button class="lv-btn" onclick="changeLoaves(1)">+</button>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        <span>🌾 <span data-i18n="flour_label">Flour</span> <span class="tooltip-icon beginner-only" data-tip="Total flour per loaf">?</span></span>
+        <span class="unit">g</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="flourSlider" min="100" max="2000" step="10" value="500" oninput="syncInput('flour')">
+        <input type="number" id="flourInput" value="500" min="100" max="2000" oninput="syncSlider('flour')">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        <span>💧 <span data-i18n="hydration_label">Hydration</span> <span class="tooltip-icon beginner-only" data-tip="Water as % of flour. 65–75% is common for beginners.">?</span></span>
+        <span class="unit">%</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="hydrationSlider" min="50" max="100" step="1" value="70" oninput="syncInput('hydration')">
+        <input type="number" id="hydrationInput" value="70" min="50" max="100" oninput="syncSlider('hydration')">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        <span>🌱 <span data-i18n="starter_pct_label">Starter</span> <span class="tooltip-icon beginner-only" data-tip="Starter as % of flour. 15–25% works for most bakes.">?</span></span>
+        <span class="unit">%</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="starterSlider" min="5" max="50" step="1" value="20" oninput="syncInput('starter')">
+        <input type="number" id="starterInput" value="20" min="5" max="50" oninput="syncSlider('starter')">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        <span>🧂 <span data-i18n="salt_label">Salt</span> <span class="tooltip-icon beginner-only" data-tip="Salt as % of flour. 1.8–2.2% is standard.">?</span></span>
+        <span class="unit">%</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="saltSlider" min="1" max="4" step="0.1" value="2" oninput="syncInput('salt')">
+        <input type="number" id="saltInput" value="2" min="1" max="4" step="0.1" oninput="syncSlider('salt')">
+      </div>
+    </div>
+
+    <!-- PRO ONLY: Temperature -->
+    <div class="pro-only input-group" id="tempGroup">
+      <div class="input-label">
+        <span>🌡️ <span data-i18n="temp_label">Kitchen Temp</span></span>
+        <span class="unit">°C</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="tempSlider" min="16" max="30" step="1" value="22" oninput="syncInput('temp')">
+        <input type="number" id="tempInput" value="22" min="16" max="30" oninput="syncSlider('temp')">
+      </div>
+      <div class="temp-note" id="tempNote"></div>
+    </div>
+
+    <button class="reset-btn" onclick="resetDefaults()">↺ <span data-i18n="reset_btn">Reset to defaults</span></button>
+    <button class="save-btn" onclick="saveRecipe()" style="margin-left:10px" data-i18n="save_btn">💾 Save Recipe</button>
+  </div>
+
+  <!-- RIGHT: RESULTS + VISUALS -->
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <div class="card" style="animation-delay:.1s">
+      <div class="card-title">📊 <span data-i18n="results_title">Your Recipe</span></div>
+      <div class="card-subtitle" data-i18n="results_sub">Auto-calculated for your loaf</div>
+      <div class="results-grid">
+        <div class="result-item">
+          <div class="r-icon">🌾</div>
+          <div class="r-label" data-i18n="flour_label">Flour</div>
+          <div class="r-value" id="rFlour">500</div>
+          <div class="r-unit">g</div>
+        </div>
+        <div class="result-item highlight">
+          <div class="r-icon">💧</div>
+          <div class="r-label" data-i18n="water_label">Water</div>
+          <div class="r-value" id="rWater">350</div>
+          <div class="r-unit">g</div>
+        </div>
+        <div class="result-item">
+          <div class="r-icon">🌱</div>
+          <div class="r-label" data-i18n="starter_pct_label">Starter</div>
+          <div class="r-value" id="rStarter">100</div>
+          <div class="r-unit">g</div>
+        </div>
+        <div class="result-item">
+          <div class="r-icon">🧂</div>
+          <div class="r-label" data-i18n="salt_label">Salt</div>
+          <div class="r-value" id="rSalt">10</div>
+          <div class="r-unit">g</div>
+        </div>
+        <div class="result-item" style="grid-column:1/-1;background:var(--cream);border-style:dashed">
+          <div class="r-label" data-i18n="total_weight_label">Total Dough Weight</div>
+          <div class="r-value" id="rTotal" style="font-size:2rem">960</div>
+          <div class="r-unit">g</div>
+        </div>
+      </div>
+
+      <!-- Hydration visual -->
+      <div class="hydration-bar-wrap">
+        <div class="hydration-bar-label">
+          <span data-i18n="hydration_level_label">Dough Hydration</span>
+          <span id="hydrationPct">70%</span>
+        </div>
+        <div class="hydration-bar-track"><div class="hydration-bar-fill" id="hydrationFill" style="width:40%"></div></div>
+        <div class="hydration-desc" id="hydrationDesc">Medium hydration — ideal for beginners 🙂</div>
+      </div>
+    </div>
+
+    <div class="card" style="animation-delay:.15s">
+      <div class="pie-section">
+        <h4 data-i18n="proportion_label">Ingredient Proportions</h4>
+        <div class="pie-container">
+          <svg class="pie-svg" width="100" height="100" viewBox="0 0 100 100" id="pieChart"></svg>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><div class="pie-dot" style="background:#C4844A"></div><span data-i18n="flour_label">Flour</span>: <strong id="legFlour">51%</strong></div>
+            <div class="pie-legend-item"><div class="pie-dot" style="background:#6B8CAE"></div><span data-i18n="water_label">Water</span>: <strong id="legWater">36%</strong></div>
+            <div class="pie-legend-item"><div class="pie-dot" style="background:#7A8C6E"></div><span data-i18n="starter_pct_label">Starter</span>: <strong id="legStarter">10%</strong></div>
+            <div class="pie-legend-item"><div class="pie-dot" style="background:#B85C38"></div><span data-i18n="salt_label">Salt</span>: <strong id="legSalt">1%</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SAVED RECIPES -->
+<section class="saved-section" id="savedSection" style="display:none">
+  <div class="section-heading" data-i18n="saved_title">💾 Saved Recipes</div>
+  <div class="saved-list" id="savedList"></div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline" class="timeline-section">
+  <div class="section-heading" data-i18n="timeline_title">⏱️ Baking Timeline</div>
+  <div class="section-sub" data-i18n="timeline_sub">Hover over each stage for tips and timing</div>
+  <div class="timeline-scroll">
+    <div class="timeline-track" id="timelineTrack"></div>
+  </div>
+</section>
+
+<!-- STARTER MAINTENANCE -->
+<section id="starter" class="starter-section">
+  <div class="section-heading" data-i18n="starter_maint_title">🌱 Starter Maintenance</div>
+  <div class="section-sub" data-i18n="starter_maint_sub">Keep your starter happy and active</div>
+  <div class="starter-grid">
+    <div class="card">
+      <div class="card-title">🥄 <span data-i18n="feeding_calc_title">Feeding Calculator</span></div>
+      <div class="card-subtitle" data-i18n="feeding_calc_sub">Calculate how much to feed your starter</div>
+
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="current_starter_label">Current Starter (g)</span></div>
+        <div class="slider-row">
+          <input type="range" id="sCurrentSlider" min="10" max="500" step="5" value="50" oninput="syncInput('sCurrent')">
+          <input type="number" id="sCurrentInput" value="50" oninput="syncSlider('sCurrent');calcStarter()">
+        </div>
+      </div>
+      <div class="input-group pro-only" id="ratioGroup">
+        <div class="input-label"><span data-i18n="feed_ratio_label">Feed Ratio (starter : flour : water)</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:0.85rem;color:var(--warm-gray)">1 :</span>
+          <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" style="width:60px" oninput="calcStarter()">
+          <span style="font-size:0.85rem;color:var(--warm-gray)">:</span>
+          <input type="number" id="ratioWater" value="1" min="0.5" max="5" step="0.5" style="width:60px" oninput="calcStarter()">
+        </div>
+      </div>
+      <div class="beginner-only" style="font-size:0.8rem;color:var(--warm-gray);margin-bottom:12px;padding:10px;background:var(--cream);border-radius:8px" data-i18n="ratio_note">
+        Using standard 1:1:1 ratio (equal parts starter, flour, water)
+      </div>
+
+      <div class="starter-result" id="starterResult">
+        <div class="starter-result-row"><span data-i18n="flour_to_add">Flour to add</span><span id="sFlour">50g</span></div>
+        <div class="starter-result-row"><span data-i18n="water_to_add">Water to add</span><span id="sWater">50g</span></div>
+        <div class="starter-result-row"><span data-i18n="total_after">Total after feeding</span><span id="sTotal">150g</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔍 <span data-i18n="ready_title">Is My Starter Ready?</span></div>
+      <div class="card-subtitle" data-i18n="ready_sub">Gauge the health and readiness of your starter</div>
+
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="hours_fed_label">Hours since last feed</span></div>
+        <div class="slider-row">
+          <input type="range" id="hoursFedSlider" min="0" max="24" step="1" value="4" oninput="syncInput('hoursFed');updateReady()">
+          <input type="number" id="hoursFedInput" value="4" min="0" max="24" oninput="syncSlider('hoursFed');updateReady()">
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="rise_pct_label">Rise since feeding (%)</span></div>
+        <div class="slider-row">
+          <input type="range" id="riseSlider" min="0" max="200" step="5" value="50" oninput="syncInput('rise');updateReady()">
+          <input type="number" id="riseInput" value="50" min="0" max="200" step="5" oninput="syncSlider('rise');updateReady()">
+        </div>
+      </div>
+
+      <div class="ready-indicator">
+        <div class="ready-label" data-i18n="readiness_label">Readiness indicator</div>
+        <div class="ready-dots" id="readyDots"></div>
+        <div class="ready-text" id="readyText"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">🌾 Szandi's Sourdough</div>
+  <div class="fr" data-i18n="footer_text">Made with love for bakers everywhere 🍞</div>
+</footer>
+
+<script>
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const i18n = {
+  en: {
+    nav_calc: "Calculator", nav_timeline: "Timeline", nav_starter: "Starter",
+    mode_beginner: "Beginner", mode_pro: "Pro",
+    hero_tag: "Artisan Baking Tool",
+    hero_h1: 'Perfect Sourdough, <em>Every Time</em>',
+    hero_sub: "Calculate, track, and master your baking process — from starter to finished loaf.",
+    hero_cta: "Start Baking",
+    badge_realtime: "Real-time calculation", badge_temp: "Temperature adjustment",
+    badge_save: "Save your recipes", badge_starter: "Starter tracker",
+    loaves_label: "Loaves:",
+    calc_title: "Bread Calculator", calc_sub: "Adjust the sliders or type your values",
+    flour_label: "Flour", hydration_label: "Hydration",
+    starter_pct_label: "Starter", salt_label: "Salt", temp_label: "Kitchen Temp",
+    reset_btn: "Reset to defaults", save_btn: "💾 Save Recipe",
+    results_title: "Your Recipe", results_sub: "Auto-calculated for your loaf",
+    water_label: "Water", total_weight_label: "Total Dough Weight",
+    hydration_level_label: "Dough Hydration",
+    proportion_label: "Ingredient Proportions",
+    saved_title: "💾 Saved Recipes",
+    timeline_title: "⏱️ Baking Timeline", timeline_sub: "Hover over each stage for tips and timing",
+    starter_maint_title: "🌱 Starter Maintenance", starter_maint_sub: "Keep your starter happy and active",
+    feeding_calc_title: "Feeding Calculator", feeding_calc_sub: "Calculate how much to feed your starter",
+    current_starter_label: "Current Starter (g)", feed_ratio_label: "Feed Ratio (starter : flour : water)",
+    ratio_note: "Using standard 1:1:1 ratio (equal parts starter, flour, water)",
+    flour_to_add: "Flour to add", water_to_add: "Water to add", total_after: "Total after feeding",
+    ready_title: "Is My Starter Ready?", ready_sub: "Gauge the health and readiness of your starter",
+    hours_fed_label: "Hours since last feed", rise_pct_label: "Rise since feeding (%)",
+    readiness_label: "Readiness indicator",
+    footer_text: "Made with love for bakers everywhere 🍞",
+    hyd_dry: "Low hydration — stiff dough, easier to shape 💪",
+    hyd_med: "Medium hydration — ideal for beginners 🙂",
+    hyd_high: "High hydration — open crumb, needs experience 🫧",
+    hyd_vhigh: "Very high hydration — ciabatta territory, sticky! 💦",
+    temp_cool: "Cool kitchen — add ~30 min to bulk fermentation",
+    temp_ideal: "Ideal temperature — standard timing applies",
+    temp_warm: "Warm kitchen — shorten bulk fermentation by ~30 min",
+    ready_not: "Not yet — give it more time to develop",
+    ready_almost: "Almost there — check for dome and bubbles",
+    ready_yes: "Ready to use! 🎉 Dome, bubbles, passes float test",
+    ready_past: "Possibly over-fermented — feed again soon",
+    tl_stages: [
+      { icon: "🍞", label: "Mix", duration: "15 min", tip: "Combine flour, water, starter and salt. Mix until no dry flour remains." },
+      { icon: "⏳", label: "Autolyse", duration: "30–60 min", tip: "Let the dough rest. Gluten develops naturally — makes shaping easier." },
+      { icon: "🤲", label: "Stretch & Fold", duration: "2–3 hrs", tip: "Do 4–6 sets every 30 min. Builds strength without overworking." },
+      { icon: "🌡️", label: "Bulk Ferment", duration: "4–8 hrs", tip: "Dough doubles in size. Warmer = faster. Look for bubbles on surface." },
+      { icon: "🔄", label: "Shape", duration: "20 min", tip: "Pre-shape, rest 20 min, then final shape. Build surface tension." },
+      { icon: "❄️", label: "Cold Proof", duration: "8–16 hrs", tip: "Refrigerate overnight. Develops flavour and makes scoring easier." },
+      { icon: "🔥", label: "Bake", duration: "45–55 min", tip: "500°F/260°C with steam first 20 min. Dutch oven works great." },
+    ]
+  },
+  hu: {
+    nav_calc: "Kalkulátor", nav_timeline: "Időrend", nav_starter: "Kovász",
+    mode_beginner: "Kezdő", mode_pro: "Profi",
+    hero_tag: "Kézműves Sütési Eszköz",
+    hero_h1: 'Tökéletes Kovászos Kenyér, <em>Minden Alkalommal</em>',
+    hero_sub: "Számítsd ki, kövesd nyomon és sajátítsd el a sütési folyamatot — a kovásztól a kész cipóig.",
+    hero_cta: "Kezdjük a Sütést",
+    badge_realtime: "Valós idejű számítás", badge_temp: "Hőmérséklet-igazítás",
+    badge_save: "Receptek mentése", badge_starter: "Kovász követő",
+    loaves_label: "Cipók:",
+    calc_title: "Kenyérkalkulátor", calc_sub: "Állítsd be a csúszkákat vagy írd be az értékeket",
+    flour_label: "Liszt", hydration_label: "Hidratáció",
+    starter_pct_label: "Kovász", salt_label: "Só", temp_label: "Konyha hőmérséklete",
+    reset_btn: "Alapértékek visszaállítása", save_btn: "💾 Recept mentése",
+    results_title: "A Te Recepted", results_sub: "Automatikus számítás a cipódhoz",
+    water_label: "Víz", total_weight_label: "Teljes tésztasúly",
+    hydration_level_label: "Tészta hidratáció",
+    proportion_label: "Összetevők aránya",
+    saved_title: "💾 Mentett receptek",
+    timeline_title: "⏱️ Sütési időrend", timeline_sub: "Vidd az egeret az egyes szakaszokra tippekért",
+    starter_maint_title: "🌱 Kovász gondozása", starter_maint_sub: "Tartsd egészségesen és aktívan a kovászodat",
+    feeding_calc_title: "Etetési kalkulátor", feeding_calc_sub: "Számítsd ki, mennyit kell etetned a kovászt",
+    current_starter_label: "Jelenlegi kovász (g)", feed_ratio_label: "Etetési arány (kovász : liszt : víz)",
+    ratio_note: "Szabványos 1:1:1 arány használata (egyenlő rész kovász, liszt, víz)",
+    flour_to_add: "Hozzáadandó liszt", water_to_add: "Hozzáadandó víz", total_after: "Teljes mennyiség etetés után",
+    ready_title: "Kész a kovászom?", ready_sub: "Mérd fel a kovászod egészségét és készenlétét",
+    hours_fed_label: "Etetés óta eltelt órák", rise_pct_label: "Kelés az etetés óta (%)",
+    readiness_label: "Készenlét jelző",
+    footer_text: "Szeretettel készítve minden pék számára 🍞",
+    hyd_dry: "Alacsony hidratáció — kemény tészta, könnyebb formázni 💪",
+    hyd_med: "Közepes hidratáció — kezdőknek ideális 🙂",
+    hyd_high: "Magas hidratáció — nyitott bélzet, tapasztalat kell 🫧",
+    hyd_vhigh: "Nagyon magas hidratáció — ciabatta tartomány, ragacsos! 💦",
+    temp_cool: "Hűvös konyha — adj hozzá ~30 percet a tömeges erjedéshez",
+    temp_ideal: "Ideális hőmérséklet — szabványos időzítés érvényes",
+    temp_warm: "Meleg konyha — rövidítsd le a tömeges erjedést ~30 perccel",
+    ready_not: "Még nem kész — adj neki több időt",
+    ready_almost: "Majdnem ott van — ellenőrizd a kupolát és a buborékokat",
+    ready_yes: "Felhasználásra kész! 🎉 Kupola, buborékok, úszáspróba sikerült",
+    ready_past: "Esetleg túlerjedt — hamarosan etess újra",
+    tl_stages: [
+      { icon: "🍞", label: "Keverés", duration: "15 perc", tip: "Keverd össze a lisztet, vizet, kovászt és sót. Keverj, amíg nem marad száraz liszt." },
+      { icon: "⏳", label: "Autolyse", duration: "30–60 perc", tip: "Hagyd pihenni a tésztát. A glutén természetesen fejlődik — könnyebbé teszi a formázást." },
+      { icon: "🤲", label: "Nyújtás & Hajtogatás", duration: "2–3 óra", tip: "Végezz 4–6 sorozatot 30 percenként. Erőt épít anélkül, hogy túldolgoznád." },
+      { icon: "🌡️", label: "Tömeges erjedés", duration: "4–8 óra", tip: "A tészta megduplázódik. Melegebb = gyorsabb. Keress buborékokat a felszínen." },
+      { icon: "🔄", label: "Formázás", duration: "20 perc", tip: "Előformázás, 20 perc pihenés, majd végleges formázás. Felületi feszültség kialakítása." },
+      { icon: "❄️", label: "Hideg kelesztés", duration: "8–16 óra", tip: "Tedd hűtőbe éjszakára. Fejleszti az ízt és megkönnyíti a bevágást." },
+      { icon: "🔥", label: "Sütés", duration: "45–55 perc", tip: "260°C gőzzel az első 20 percben. A jénai tál remekül működik." },
+    ]
+  }
+};
+
+let lang = 'en';
+let proMode = false;
+let loaves = 1;
+let savedRecipes = JSON.parse(localStorage.getItem('szandi_recipes') || '[]');
+
+function t(key) { return i18n[lang][key] || key; }
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === l));
+  applyTranslations();
+  buildTimeline();
+  updateReady();
+  calcStarter();
+  updateTempNote();
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang][key] !== undefined) el.innerHTML = i18n[lang][key];
+  });
+}
+
+// ============================================================
+// MODE TOGGLE
+// ============================================================
+document.getElementById('modeToggle').addEventListener('click', function() {
+  proMode = !proMode;
+  this.classList.toggle('pro', proMode);
+  document.body.classList.toggle('pro-mode', proMode);
+  calcStarter();
+  updateTempNote();
+  calculate();
+});
+
+// ============================================================
+// LOAVES
+// ============================================================
+function changeLoaves(d) {
+  loaves = Math.max(1, Math.min(10, loaves + d));
+  document.getElementById('loavesCount').textContent = loaves;
+  calculate();
+}
+
+// ============================================================
+// SYNC SLIDERS & INPUTS
+// ============================================================
+function syncInput(id) {
+  const s = document.getElementById(id + 'Slider');
+  const inp = document.getElementById(id + 'Input');
+  if (s && inp) inp.value = s.value;
+  calculate();
+  if (id === 'temp') updateTempNote();
+}
+function syncSlider(id) {
+  const s = document.getElementById(id + 'Slider');
+  const inp = document.getElementById(id + 'Input');
+  if (s && inp) s.value = inp.value;
+  calculate();
+}
+
+// ============================================================
+// MAIN CALCULATE
+// ============================================================
+function calculate() {
+  const flour = parseFloat(document.getElementById('flourInput').value) || 500;
+  const hydration = parseFloat(document.getElementById('hydrationInput').value) / 100 || 0.7;
+  const starterPct = parseFloat(document.getElementById('starterInput').value) / 100 || 0.2;
+  const saltPct = parseFloat(document.getElementById('saltInput').value) / 100 || 0.02;
+
+  const totalFlour = flour * loaves;
+  const water = Math.round(totalFlour * hydration);
+  const starter = Math.round(totalFlour * starterPct);
+  const salt = Math.round(totalFlour * saltPct * 10) / 10;
+  const total = totalFlour + water + starter + salt;
+
+  animateValue('rFlour', totalFlour);
+  animateValue('rWater', water);
+  animateValue('rStarter', starter);
+  animateValue('rSalt', salt);
+  animateValue('rTotal', Math.round(total));
+
+  // Hydration bar
+  const hydPct = Math.round(hydration * 100);
+  document.getElementById('hydrationPct').textContent = hydPct + '%';
+  const barWidth = Math.max(5, Math.min(100, (hydPct - 50) / 50 * 100));
+  document.getElementById('hydrationFill').style.width = barWidth + '%';
+  let hDesc = '';
+  if (hydPct < 65) hDesc = t('hyd_dry');
+  else if (hydPct < 75) hDesc = t('hyd_med');
+  else if (hydPct < 85) hDesc = t('hyd_high');
+  else hDesc = t('hyd_vhigh');
+  document.getElementById('hydrationDesc').textContent = hDesc;
+
+  // Pie chart
+  const tot = totalFlour + water + starter + salt;
+  drawPie([
+    { pct: totalFlour / tot, color: '#C4844A' },
+    { pct: water / tot, color: '#6B8CAE' },
+    { pct: starter / tot, color: '#7A8C6E' },
+    { pct: salt / tot, color: '#B85C38' }
+  ]);
+  document.getElementById('legFlour').textContent = Math.round(totalFlour / tot * 100) + '%';
+  document.getElementById('legWater').textContent = Math.round(water / tot * 100) + '%';
+  document.getElementById('legStarter').textContent = Math.round(starter / tot * 100) + '%';
+  document.getElementById('legSalt').textContent = Math.round(salt / tot * 100) + '%';
+}
+
+function animateValue(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = target % 1 === 0 ? target : target.toFixed(1);
+}
+
+// ============================================================
+// PIE CHART
+// ============================================================
+function drawPie(slices) {
+  const svg = document.getElementById('pieChart');
+  svg.innerHTML = '';
+  const cx = 50, cy = 50, r = 42;
+  let startAngle = -Math.PI / 2;
+  slices.forEach(s => {
+    const angle = s.pct * 2 * Math.PI;
+    const endAngle = startAngle + angle;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    const largeArc = angle > Math.PI ? 1 : 0;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`);
+    path.setAttribute('fill', s.color);
+    svg.appendChild(path);
+    startAngle = endAngle;
+  });
+  // Center circle
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', 22);
+  circle.setAttribute('fill', '#FFFDF9');
+  svg.appendChild(circle);
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetDefaults() {
+  [['flour', 500], ['hydration', 70], ['starter', 20], ['salt', 2]].forEach(([id, val]) => {
+    const s = document.getElementById(id + 'Slider');
+    const inp = document.getElementById(id + 'Input');
+    if (s) s.value = val;
+    if (inp) inp.value = val;
+  });
+  loaves = 1;
+  document.getElementById('loavesCount').textContent = 1;
+  calculate();
+}
+
+// ============================================================
+// TEMPERATURE NOTE
+// ============================================================
+function updateTempNote() {
+  const temp = parseFloat(document.getElementById('tempInput').value);
+  const note = document.getElementById('tempNote');
+  if (!note) return;
+  let msg = '';
+  if (temp < 20) msg = t('temp_cool');
+  else if (temp <= 24) msg = t('temp_ideal');
+  else msg = t('temp_warm');
+  note.textContent = msg;
+}
+
+// ============================================================
+// STARTER CALCULATOR
+// ============================================================
+function calcStarter() {
+  const current = parseFloat(document.getElementById('sCurrentInput').value) || 50;
+  let rf = 1, rw = 1;
+  if (proMode) {
+    rf = parseFloat(document.getElementById('ratioFlour').value) || 1;
+    rw = parseFloat(document.getElementById('ratioWater').value) || 1;
+  }
+  const flour = Math.round(current * rf);
+  const water = Math.round(current * rw);
+  const total = current + flour + water;
+  document.getElementById('sFlour').textContent = flour + 'g';
+  document.getElementById('sWater').textContent = water + 'g';
+  document.getElementById('sTotal').textContent = total + 'g';
+}
+
+// ============================================================
+// READY INDICATOR
+// ============================================================
+function updateReady() {
+  const hours = parseFloat(document.getElementById('hoursFedInput').value) || 0;
+  const rise = parseFloat(document.getElementById('riseInput').value) || 0;
+  const dotsEl = document.getElementById('readyDots');
+  const textEl = document.getElementById('readyText');
+
+  // Score: 0–10
+  let score = 0;
+  if (rise >= 50) score += 2;
+  if (rise >= 100) score += 2;
+  if (rise >= 150) score += 1;
+  if (hours >= 3 && hours <= 8) score += 3;
+  if (hours > 8 && hours <= 12) score += 1;
+
+  const dots = 10;
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < dots; i++) {
+    const d = document.createElement('div');
+    d.className = 'ready-dot';
+    if (i < score) {
+      if (score >= 7) d.classList.add('active');
+      else if (score >= 4) d.classList.add('warn');
+      else d.classList.add('alert');
+    }
+    dotsEl.appendChild(d);
+  }
+
+  let msg = '';
+  if (rise > 175 || hours > 14) msg = t('ready_past');
+  else if (score >= 7) msg = t('ready_yes');
+  else if (score >= 4) msg = t('ready_almost');
+  else msg = t('ready_not');
+  textEl.textContent = msg;
+}
+
+// ============================================================
+// TIMELINE
+// ============================================================
+function buildTimeline() {
+  const stages = i18n[lang].tl_stages;
+  const track = document.getElementById('timelineTrack');
+  track.innerHTML = '';
+  stages.forEach(stage => {
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.innerHTML = `
+      <div class="tl-icon">${stage.icon}</div>
+      <div class="tl-label">${stage.label}</div>
+      <div class="tl-duration">${stage.duration}</div>
+      <div class="tl-tip">${stage.tip}</div>
+    `;
+    track.appendChild(item);
+  });
+}
+
+// ============================================================
+// SAVE RECIPES
+// ============================================================
+function saveRecipe() {
+  const flour = document.getElementById('flourInput').value;
+  const hydration = document.getElementById('hydrationInput').value;
+  const starter = document.getElementById('starterInput').value;
+  const salt = document.getElementById('saltInput').value;
+  const name = `${flour}g · ${hydration}% · ×${loaves}`;
+  const recipe = { name, flour, hydration, starter, salt, loaves, id: Date.now() };
+  savedRecipes.push(recipe);
+  localStorage.setItem('szandi_recipes', JSON.stringify(savedRecipes));
+  renderSaved();
+}
+
+function loadRecipe(r) {
+  [['flour', r.flour], ['hydration', r.hydration], ['starter', r.starter], ['salt', r.salt]].forEach(([id, val]) => {
+    const s = document.getElementById(id + 'Slider');
+    const inp = document.getElementById(id + 'Input');
+    if (s) s.value = val;
+    if (inp) inp.value = val;
+  });
+  loaves = r.loaves;
+  document.getElementById('loavesCount').textContent = loaves;
+  calculate();
+}
+
+function deleteRecipe(id) {
+  savedRecipes = savedRecipes.filter(r => r.id !== id);
+  localStorage.setItem('szandi_recipes', JSON.stringify(savedRecipes));
+  renderSaved();
+}
+
+function renderSaved() {
+  const sec = document.getElementById('savedSection');
+  const list = document.getElementById('savedList');
+  sec.style.display = savedRecipes.length ? 'block' : 'none';
+  list.innerHTML = savedRecipes.map(r => `
+    <div class="saved-chip" onclick="loadRecipe(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+      🍞 ${r.name} <span class="del" onclick="event.stopPropagation();deleteRecipe(${r.id})">✕</span>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+applyTranslations();
+buildTimeline();
+calculate();
+calcStarter();
+updateReady();
+renderSaved();
+document.getElementById('sCurrentSlider').addEventListener('input', function() { syncInput('sCurrent'); calcStarter(); });
+</script>
+</body>
+</html>
