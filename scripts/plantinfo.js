@@ -477,7 +477,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // mode = 'per-category' : one icon per part per category column (original behaviour)
   // mode = 'unique'       : one icon per part, regardless of how many columns contain it
   // vers = 'harv' / 'med'                 : Which version is it harv - all part, med - medicinal part
-  containerName = `#part-icons-row-${vers}`;
+  const containerName = `#part-icons-row-${vers}`;
   const container = document.querySelector(containerName);
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
@@ -704,6 +704,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant);
     insertCategoryIconsRow(plant,"unique","harv");
+    insertCategoryIconsRow(plant,"unique","med");
     
     // ── Size icons ────────────────────────────────────────────────────────
     applySizeIcons(plant);
