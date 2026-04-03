@@ -304,8 +304,9 @@ function applyIconColours() {
   // Colour all harvest icons
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
+    const filter = `.${part}-harvest-icon`;
     const icons = document.querySelectorAll(`.${part}-harvest-icon`);
-    console.log("part: "+icons+" color: "+cls);
+    console.log("part: "+icons+" filter: "+filter+" color: "+cls);
     icons.forEach(svg => {
       svg.classList.remove("green", "red", "black", "yellow");
       svg.classList.add(cls);
