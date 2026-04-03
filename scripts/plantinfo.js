@@ -287,6 +287,11 @@ function populatePlanningTable(plant) {
 }
 
 // ── Icon colouring ───────────────────────────────────────────────────────────
+let edibleText = "";
+let ediblePreparedText = "";
+let toxicText = "";
+let medicinalText = "";
+
 function edibilityClass(term) {
     const t = term.toLowerCase();
     if (toxicText.includes(t))           return "red";
@@ -528,10 +533,10 @@ document.querySelector("#back-button").addEventListener("click", () => {
     if (identityvariety) identityvariety.innerHTML = `<strong> / ${plant.Name_Variety || ""}</strong>`;
     
     // ── Build search texts once ───────────────────────────────────────────
-    const edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
-    const ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
-    const toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
-    const medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
+    edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
+    ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
+    toxicText          = buildSearchText(plant.Toxic_parts_all,           true);
+    medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
     
     // ── Form fields ───────────────────────────────────────────────────────
     const fieldMap = {
