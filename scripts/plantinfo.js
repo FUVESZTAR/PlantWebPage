@@ -473,17 +473,21 @@ async function syncViewBoxes() {
         try {
             const response = await fetch(fileUrl);
             const text = await response.text();
-            
-            // Extract viewBox using a regex (faster than full DOM parsing)
-            const viewBoxMatch = text.match(/viewBox=["']([^"']+)["']/);
-            
-            if (viewBoxMatch) {
-                svg.setAttribute('viewBox', viewBoxMatch[1]);
+
+            // Use the file's explicit viewport dimensions (width/height) as the container
+            // viewBox so the full content is visible. When width/height differ from the
+            // internal viewBox (e.g. width="1080" viewBox="0 0 810 810"), using the
+            // internal viewBox would clip ~25% of the rendered content.
+            const w = text.match(/width=["']([^"']+)["']/);
+            const h = text.match(/height=["']([^"']+)["']/);
+            const wVal = w ? parseFloat(w[1]) : NaN;
+            const hVal = h ? parseFloat(h[1]) : NaN;
+            if (!isNaN(wVal) && wVal > 0 && !isNaN(hVal) && hVal > 0) {
+                svg.setAttribute('viewBox', `0 0 ${wVal} ${hVal}`);
             } else {
-                // Fallback: try to find width/height if viewBox is missing
-                const w = text.match(/width=["']([^"']+)["']/);
-                const h = text.match(/height=["']([^"']+)["']/);
-                if (w && h) svg.setAttribute('viewBox', `0 0 ${w[1]} ${h[1]}`);
+                // Fallback: use the file's own viewBox
+                const viewBoxMatch = text.match(/viewBox=["']([^"']+)["']/);
+                if (viewBoxMatch) svg.setAttribute('viewBox', viewBoxMatch[1]);
             }
         } catch (err) {
             console.error(`Could not sync viewBox for ${fileUrl}:`, err);
@@ -616,7 +620,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
 (async function init() {
   setupLanguageButtons();
-  syncViewBoxes();
+  await syncViewBoxes();
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
   const identityfamily    = document.querySelector("#identity-family");

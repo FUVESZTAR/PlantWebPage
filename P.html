@@ -49,12 +49,14 @@ body {
   height: fit-content;
   justify-items: center; /* horizontal center */ 
   align-items: flex-end; /* on line bottom */
+  align-self: end;       /* align cell to bottom of grid row */
   display:flex;
 }
 .cell-size-icons_r3 {
   padding: 0px;
   display: flex;
   align-items: flex-end; /* on line bottom */
+  align-self: end;       /* align cell to bottom of grid row */
 }
 
 .cell-size-icons_r2 {
@@ -301,6 +303,12 @@ button {
 .sap-harvest-icon.black{ color:black; }
 
 .none-harvest-icon { width:auto; height:60px; fill:currentColor; color:black;}
+
+[class*="-harvest-icon"] {
+    width: auto;
+    height: 70px;
+    overflow: visible;
+}
  
 /* .size-plant-icon-class { fill: var(--sizeObjColor)} /* width:60px; height:76px; */
 /*.size-tree-icon { fill:var(--sizeObjColor); }  /* width:60px; height:72px; */
