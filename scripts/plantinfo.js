@@ -295,7 +295,7 @@ function edibilityClass(term) {
     return "black";
   }
 
-function applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText) {
+function applyIconColours() {
   // Colour all harvest icons
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
@@ -585,10 +585,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
     }
     
     // ── Icon colouring (single pass) ──────────────────────────────────────
-    const edibilityClassValue = applyIconColours(edibleText, ediblePreparedText, toxicText, medicinalText);
+    const edibilityClassValue = applyIconColours();
     
-
-      
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant);
     insertCategoryIconsRow(plant,"unique","harv");
