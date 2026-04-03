@@ -136,16 +136,43 @@ function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize
   targetSvg.style.height = `${th}px`;
 }
 
-function makeSvgIcon(term, id = null) {
+function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   const def = PART_ICON_MAP[term];
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
+  console.log("make svg from: "+def.symbol);
+  const sourceSvg1 = document.getElementById(def.symbol);;
+  if (!sourceSvg1) { console.log("not found: "+def.symbol);return;}
+  //read size and set size
+  //const basePixels = readSvgPixelSize(baseSvg);
+ // let tw1 = basePixels.width;
+  //let th2 = basePixels.height;
+  
+  //targetSvg.style.width  = `${tw}px`;
+  //targetSvg.style.height = `${th}px`;
+
+      // 4. DYNAMICALLY take parameters from the file
+    // This ensures the icon always fits perfectly
+    const originalViewBox = sourceSvg1.getAttribute('viewBox');
+    const originalWidth = sourceSvg1.getAttribute('width');
+    const originalHeight = sourceSvg1.getAttribute('height');
+
+    if (originalViewBox) {
+      svg.setAttribute('viewBox', originalViewBox);
+    } else if (originalWidth && originalHeight) {
+      // Fallback if viewBox is missing but dimensions exist
+      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+    } else {
+      // Default fallback
+      svg.setAttribute('viewBox', '0 0 512 512');
+    }
+ //orig
   svg.setAttribute('class', def.class);
-  svg.setAttribute('viewBox', '0 0 512 512');
+  //svg.setAttribute('viewBox', '0 0 512 512');
   //svg.setAttribute('aria-hidden', 'true');
   //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
-  svg.style.cssText = 'display:inline-block';
+  svg.style.cssText = type;
   if (id) {
     const makeID = `${term}-${id}`;
     svg.setAttribute('id', makeID);
@@ -418,7 +445,7 @@ function insertPartIconsInTable(plant) {
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
       const makeID = `_harv_icon_-${month}`;
-      const svg = makeSvgIcon(term,makeID); //
+      const svg = makeSvgIcon(term,makeID,"'display:inline-block'"); //
       // Example: Adding the "bark1" icon to a div
       /*
        const container = document.getElementById('icon-container');
@@ -497,7 +524,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
     seenParts.forEach(part => {
       const id  = `${vers}-icon-r`;
-      const svg = makeSvgIcon(part, id);
+      const svg = makeSvgIcon(part, id,"'display:block'");
       if (svg) frag.appendChild(svg);
     });
 
