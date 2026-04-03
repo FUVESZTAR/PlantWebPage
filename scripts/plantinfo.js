@@ -16,20 +16,20 @@ const PARTS = [
 ];
 
 const PART_ICON_MAP = {
-  leaf:     { class: 'leaf-harvest-icon',     symbol: '#icon-leaf'     },
-  stem:     { class: 'stem-harvest-icon',     symbol: '#icon-stem'     },
-  flower:   { class: 'flower-harvest-icon',   symbol: '#icon-flower'   },
-  fruit:    { class: 'fruit-harvest-icon',    symbol: '#icon-fruit'    },
-  seed:     { class: 'seed-harvest-icon',     symbol: '#icon-seed'     },
-  root:     { class: 'root-harvest-icon',     symbol: '#icon-root'     },
-  shoot:    { class: 'shoot-harvest-icon',    symbol: '#icon-shoot'    },
-  wood:     { class: 'wood-harvest-icon',     symbol: '#icon-wood'     },
-  sap:      { class: 'sap-harvest-icon',      symbol: '#icon-sap'      },
-  apicalbud:{ class: 'apicalbud-harvest-icon',symbol: '#icon-apicalbud'},
-  bark:     { class: 'bark-harvest-icon',     symbol: '#icon-bark'     },
-  nectar:   { class: 'nectar-harvest-icon',   symbol: '#icon-nectar'   },
-  pollen:   { class: 'pollen-harvest-icon',   symbol: '#icon-pollen'   },
-  seedpod:  { class: 'seedpod-harvest-icon',  symbol: '#icon-seedpod'  },
+  leaf:     { class: 'leaf-harvest-icon',     symbol: '#icon-leaf',     symbolid: 'icon-leaf'},
+  stem:     { class: 'stem-harvest-icon',     symbol: '#icon-stem',     symbolid: 'icon-stem'     },
+  flower:   { class: 'flower-harvest-icon',   symbol: '#icon-flower',   symbolid: 'icon-flower'   },
+  fruit:    { class: 'fruit-harvest-icon',    symbol: '#icon-fruit',    symbolid: 'icon-fruit'    },
+  seed:     { class: 'seed-harvest-icon',     symbol: '#icon-seed',     symbolid: 'icon-seed'     },
+  root:     { class: 'root-harvest-icon',     symbol: '#icon-root',     symbolid: 'icon-root'     },
+  shoot:    { class: 'shoot-harvest-icon',    symbol: '#icon-shoot',    symbolid: 'icon-shoot'    },
+  wood:     { class: 'wood-harvest-icon',     symbol: '#icon-wood',     symbolid: 'icon-wood'     },
+  sap:      { class: 'sap-harvest-icon',      symbol: '#icon-sap',      symbolid: 'icon-sap'      },
+  apicalbud:{ class: 'apicalbud-harvest-icon',symbol: '#icon-apicalbud',symbolid: 'icon-apicalbud'},
+  bark:     { class: 'bark-harvest-icon',     symbol: '#icon-bark',     symbolid: 'icon-bark'     },
+  nectar:   { class: 'nectar-harvest-icon',   symbol: '#icon-nectar',   symbolid: 'icon-nectar'   },
+  pollen:   { class: 'pollen-harvest-icon',   symbol: '#icon-pollen',   symbolid: 'icon-pollen'   },
+  seedpod:  { class: 'seedpod-harvest-icon',  symbol: '#icon-seedpod',  symbolid: 'icon-seedpod'  },
 };
 
 // CSV column → part term mapping for the planning table harvest row
@@ -141,9 +141,9 @@ function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
-  console.log("make svg from: "+def.symbol);
-  const sourceSvg1 = document.getElementById(def.symbol);;
-  if (!sourceSvg1) { console.log("not found: "+def.symbol);return;}
+  console.log("make svg from: "+def.symbolid);
+  const sourceSvg1 = document.getElementById(def.symbolid);;
+  if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
   //read size and set size
   //const basePixels = readSvgPixelSize(baseSvg);
  // let tw1 = basePixels.width;
