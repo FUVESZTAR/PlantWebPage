@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Timeline Step Styling */
+.timeline-step {
+    position: relative;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    background: #FFEDD5;
+    border: 3px solid #FED7AA;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-step.active {
+    background: #F97316;
+    border-color: #FB923C;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+}
+
+.timeline-step::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 40px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #8B4513;
+    white-space: nowrap;
+}
+
+/* Slider Overrides for cleaner look */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid currentColor;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
