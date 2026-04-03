@@ -442,7 +442,35 @@ function insertPartIconsInTable(plant) {
     });
   });
 }
+// 1. Run this once when your app loads to "fix" the hidden templates
+async function syncViewBoxes() {
+    const container = document.getElementById('icon-container');
+    const svgs = container.querySelectorAll('svg');
 
+    for (let svg of svgs) {
+        const useTag = svg.querySelector('use');
+        const fileUrl = useTag.getAttribute('href');
+
+        try {
+            const response = await fetch(fileUrl);
+            const text = await response.text();
+            
+            // Extract viewBox using a regex (faster than full DOM parsing)
+            const viewBoxMatch = text.match(/viewBox=["']([^"']+)["']/);
+            
+            if (viewBoxMatch) {
+                svg.setAttribute('viewBox', viewBoxMatch[1]);
+            } else {
+                // Fallback: try to find width/height if viewBox is missing
+                const w = text.match(/width=["']([^"']+)["']/);
+                const h = text.match(/height=["']([^"']+)["']/);
+                if (w && h) svg.setAttribute('viewBox', `0 0 ${w[1]} ${h[1]}`);
+            }
+        } catch (err) {
+            console.error(`Could not sync viewBox for ${fileUrl}:`, err);
+        }
+    }
+}
 // ── Category icons row ───────────────────────────────────────────────────────
 
 function insertCategoryIconsRow(plant, mode, vers) {
@@ -569,7 +597,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
 (async function init() {
   setupLanguageButtons();
-
+  syncViewBoxes();
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
   const identityfamily    = document.querySelector("#identity-family");
@@ -582,7 +610,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     subtitle.textContent = t('detail.noPlantSelectedMsg');
     return;
   }
-
+   
   try {
     // ── Single data load ──────────────────────────────────────────────────
     const plants    = (await loadPlantData()).filter(p => p.Active_in_page === 'Y');
