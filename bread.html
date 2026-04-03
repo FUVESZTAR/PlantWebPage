@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szandi's Sourdough</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="breadstyle.css">
+</head>
+<body class="bg-[#FDFBF7] text-[#4A3728]">
+
+    <header class="border-b border-orange-100 bg-white sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#8B4513] flex items-center gap-2">
+                <i data-lucide="wheat" class="text-orange-500"></i> <span id="ui-title">Szandi's Sourdough</span>
+            </h1>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleLanguage()" class="flex items-center gap-1 hover:text-orange-600 transition font-medium">
+                    <i data-lucide="globe" size="18"></i> <span id="lang-label">EN</span>
+                </button>
+                <div class="flex items-center bg-orange-50 p-1 rounded-full border border-orange-100">
+                    <button id="btn-beginner" onclick="setMode('beginner')" class="px-4 py-1 rounded-full text-sm transition bg-orange-500 text-white shadow-md">Beginner</button>
+                    <button id="btn-pro" onclick="setMode('pro')" class="px-4 py-1 rounded-full text-sm transition">Pro</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-gradient-to-b from-orange-50 to-[#FDFBF7] py-12 px-6 text-center">
+        <h2 id="ui-subtitle" class="text-4xl md:text-5xl font-extrabold mb-4 text-[#5D4037]">Perfect Bread, Every Time</h2>
+        <p id="ui-heroSub" class="text-lg opacity-80 mb-8 max-w-2xl mx-auto">Calculate, customize, and master your baking process with smart ratios.</p>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-7 space-y-6">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-orange-50">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold flex items-center gap-2 text-[#8B4513]">
+                        <i data-lucide="settings" class="text-orange-400"></i> <span id="ui-ingredients">Ingredients</span>
+                    </h3>
+                    <select id="bread-type" onchange="updateBreadType()" class="bg-orange-50 border-none rounded-lg px-3 py-1 text-sm font-bold focus:ring-2 focus:ring-orange-200">
+                        <option value="sourdough">Sourdough Bread</option>
+                        <option value="baguette">Baguette</option>
+                        <option value="buns">Hamburger Buns</option>
+                    </select>
+                </div>
+                
+                <div class="space-y-8">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-sm font-semibold" id="ui-flour">Flour (g)</label>
+                            <span class="font-bold text-orange-700"><span id="val-flour">500</span>g</span>
+                        </div>
+                        <input type="range" id="input-flour" min="100" max="2000" step="50" value="500" 
+                            class="w-full h-2 bg-orange-100 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-sm font-semibold" id="ui-hydration">Hydration (%)</label>
+                            <span class="font-bold text-blue-600"><span id="val-hydration">70</span>%</span>
+                        </div>
+                        <input type="range" id="input-hydration" min="50" max="95" step="1" value="70" 
+                            class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-orange-50 overflow-x-auto">
+                <h3 class="text-xl font-bold mb-8 flex items-center gap-2 text-[#8B4513]">
+                    <i data-lucide="timer" class="text-orange-400"></i> <span id="ui-timeline">Timeline</span>
+                </h3>
+                <div class="flex justify-between min-w-[500px] relative px-4">
+                    <div class="absolute h-1 bg-orange-100 w-full top-4 left-0 z-0"></div>
+                    <div class="timeline-step active" data-label="Mix"></div>
+                    <div class="timeline-step" data-label="Autolyse"></div>
+                    <div class="timeline-step" data-label="Fold"></div>
+                    <div class="timeline-step" data-label="Bulk"></div>
+                    <div class="timeline-step" data-label="Shape"></div>
+                    <div class="timeline-step" data-label="Bake"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5">
+            <div class="bg-[#8B4513] text-white p-8 rounded-3xl shadow-xl sticky top-24">
+                <h3 id="ui-results" class="text-xl font-bold mb-6 border-b border-white/20 pb-4">Recipe Output</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between text-lg opacity-90">
+                        <span id="ui-res-flour">Flour</span> <span id="res-flour">500g</span>
+                    </div>
+                    <div class="flex justify-between text-lg opacity-90">
+                        <span id="ui-res-water">Water</span> <span id="res-water">350g</span>
+                    </div>
+                    <div class="flex justify-between text-lg opacity-90">
+                        <span id="ui-res-starter">Starter</span> <span id="res-starter">100g</span>
+                    </div>
+                    <div class="flex justify-between text-lg opacity-90">
+                        <span id="ui-res-salt">Salt</span> <span id="res-salt">10g</span>
+                    </div>
+                    <div class="pt-4 border-t border-white/20 mt-4 flex justify-between text-2xl font-bold">
+                        <span>Total</span> <span id="res-total">960g</span>
+                    </div>
+                </div>
+                <div class="mt-8 p-4 bg-white/10 rounded-xl text-sm italic opacity-80" id="ui-tip">
+                    Tip: Higher hydration results in a more open crumb but stickier dough.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="breadscript.js"></script>
+</body>
+</html>
