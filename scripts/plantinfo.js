@@ -143,8 +143,9 @@ function makeSvgIcon(term, id = null) {
   const svg = document.createElementNS(svgns, 'svg');
   svg.setAttribute('class', def.class);
   svg.setAttribute('viewBox', '0 0 512 512');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
+  //svg.setAttribute('aria-hidden', 'true');
+  //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
+  svg.style.cssText = 'display:inline-block';
   if (id) {
     const makeID = `${term}-${id}`;
     svg.setAttribute('id', makeID);
@@ -154,6 +155,67 @@ function makeSvgIcon(term, id = null) {
   use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', def.symbol);
   svg.appendChild(use);
   return svg;
+}
+
+/**
+ * Asynchronously creates an SVG icon by fetching it from a folder
+ * and dynamically adopting its internal viewBox.
+ * * @param {string} term - The filename (e.g., 'bark1')
+ * @param {string} folderPath - Path to your svg folder (e.g., '/assets/icons/')
+ * @param {string} id - Optional ID for the element
+ */
+async function makeSvgIconFromFile(term, folderPath = './', id = null) {
+  try {
+    // Class
+    const def = PART_ICON_MAP[term];
+    if (!def) return null;
+    
+    // 1. Fetch the SVG file from the folder
+    const response = await fetch(`${folderPath}${term}.svg`);
+    if (!response.ok) throw new Error(`SVG ${term} not found`);
+    
+    const svgText = await response.text();
+
+    // 2. Parse the text into a DOM object
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
+    const sourceSvg = xmlDoc.querySelector('svg');
+
+    if (!sourceSvg) throw new Error(`Invalid SVG content for ${term}`);
+
+    // 3. Create the new SVG element for your page
+    const svgns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgns, 'svg');
+
+    // 4. DYNAMICALLY take parameters from the file
+    // This ensures the icon always fits perfectly
+    const originalViewBox = sourceSvg.getAttribute('viewBox');
+    const originalWidth = sourceSvg.getAttribute('width');
+    const originalHeight = sourceSvg.getAttribute('height');
+
+    if (originalViewBox) {
+      svg.setAttribute('viewBox', originalViewBox);
+    } else if (originalWidth && originalHeight) {
+      // Fallback if viewBox is missing but dimensions exist
+      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+    } else {
+      // Default fallback
+      svg.setAttribute('viewBox', '0 0 512 512');
+    }
+
+    // 5. Apply styling and IDs
+    svg.setAttribute('class', def.class);
+    svg.style.cssText = 'display:inline-block; width:24px; height:24px; fill:currentColor;';
+    if (id) svg.setAttribute('id', `${term}-${id}`);
+    
+    // 6. Move the paths/content from the loaded file into your new SVG
+    svg.innerHTML = sourceSvg.innerHTML;
+
+    return svg;
+  } catch (err) {
+    console.error("Error loading SVG:", err);
+    return null;
+  }
 }
 // ── Identity filter links ────────────────────────────────────────────────────
 
@@ -356,7 +418,17 @@ function insertPartIconsInTable(plant) {
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
       const makeID = `_harv_icon_-${month}`;
-      const svg = makeSvgIcon(term,makeID);
+      const svg = makeSvgIcon(term,makeID); //
+      // Example: Adding the "bark1" icon to a div
+      /*
+       const container = document.getElementById('icon-container');
+    
+         makeSvgIcon('bark1', './icons/').then(svgElement => {
+             if (svgElement) {
+                container.appendChild(svgElement);
+                  }
+                });
+      */
       if (svg) cell.appendChild(svg);
     });
   });
