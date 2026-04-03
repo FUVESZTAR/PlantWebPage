@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Szandi's Sourdough</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream:#F7F0E6; --cream-dark:#EDE0CC; --cream-mid:#F2E8D8;
+  --brown:#6B3F1F; --brown-mid:#9C5E30; --brown-light:#C4844A;
+  --warm-gray:#8C7B6B; --charcoal:#2E2419; --sage:#7A8C6E;
+  --rust:#B85C38; --gold:#D4A853; --blue-dough:#6B8CAE;
+  --bg:#F9F4EC; --card:#FFFDF9; --border:rgba(107,63,31,.12);
+  --shadow:0 4px 24px rgba(46,36,25,.08); --shadow-lg:0 12px 48px rgba(46,36,25,.14);
+  --radius:18px; --radius-sm:10px; --radius-xs:7px;
+  --transition:.22s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");opacity:.4}
+*{position:relative;z-index:1}
+
+/* ── NAV ── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;
+  background:rgba(249,244,236,.9);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',serif;
+  font-size:1.2rem;font-weight:700;color:var(--brown);text-decoration:none}
+.nav-logo span{font-size:1.45rem}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--warm-gray);text-decoration:none;
+  transition:color var(--transition);letter-spacing:.02em}
+.nav-links a:hover{color:var(--brown)}
+.nav-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lang-toggle{display:flex;background:var(--cream-dark);border-radius:20px;padding:3px;gap:2px}
+.lang-btn{padding:4px 11px;border-radius:16px;font-size:.76rem;font-weight:500;
+  border:none;background:transparent;color:var(--warm-gray);cursor:pointer;transition:all var(--transition)}
+.lang-btn.active{background:var(--brown);color:#fff}
+.mode-toggle{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--warm-gray);font-weight:500}
+.toggle-sw{width:44px;height:23px;background:var(--cream-dark);border-radius:12px;
+  cursor:pointer;position:relative;border:none;transition:background .3s;flex-shrink:0}
+.toggle-sw.on{background:var(--brown)}
+.toggle-sw::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;
+  border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.toggle-sw.on::after{transform:translateX(21px)}
+.mode-pro{color:var(--brown);font-weight:600}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:70px 36px 52px;
+  background:linear-gradient(155deg,var(--cream) 0%,var(--bg) 65%);
+  border-bottom:1px solid var(--border)}
+.hero-tag{display:inline-block;background:var(--cream-dark);color:var(--brown-mid);
+  font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 15px;border-radius:20px;margin-bottom:18px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4.5vw,3.8rem);
+  font-weight:700;color:var(--brown);line-height:1.12;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:var(--brown-light)}
+.hero p{font-size:1.05rem;color:var(--warm-gray);max-width:520px;margin:0 auto 28px;font-weight:300}
+.hero-cta{display:inline-block;background:var(--brown);color:var(--cream);
+  font-size:.93rem;font-weight:500;padding:13px 34px;border-radius:50px;text-decoration:none;
+  transition:all .25s;box-shadow:0 4px 18px rgba(107,63,31,.28)}
+.hero-cta:hover{background:var(--charcoal);transform:translateY(-2px);box-shadow:0 8px 26px rgba(107,63,31,.34)}
+.hero-badges{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+.hero-badge{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--warm-gray)}
+.hero-badge span{font-size:1rem}
+
+/* ── BREAD TYPE SELECTOR ── */
+.bread-type-section{max-width:1140px;margin:0 auto;padding:40px 28px 0}
+.section-heading{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;
+  color:var(--brown);margin-bottom:6px}
+.section-sub{font-size:.85rem;color:var(--warm-gray);margin-bottom:22px;font-weight:300}
+.bread-tabs{display:flex;gap:10px;flex-wrap:wrap}
+.bread-tab{display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:12px 18px;border-radius:var(--radius-sm);border:2px solid var(--border);
+  background:var(--card);cursor:pointer;transition:all var(--transition);min-width:90px}
+.bread-tab:hover{border-color:var(--brown-light);background:var(--cream-mid)}
+.bread-tab.active{border-color:var(--brown);background:var(--cream-dark)}
+.bread-tab .bt-icon{font-size:1.6rem}
+.bread-tab .bt-label{font-size:.72rem;font-weight:600;color:var(--warm-gray);text-align:center;letter-spacing:.02em}
+.bread-tab.active .bt-label{color:var(--brown)}
+
+/* ── MAIN GRID ── */
+.main-section{display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  max-width:1140px;margin:0 auto;padding:28px}
+@media(max-width:860px){.main-section{grid-template-columns:1fr}.nav-links{display:none}.hero{padding:46px 20px 36px}}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:26px;transition:box-shadow var(--transition)}
+.card:hover{box-shadow:var(--shadow-lg)}
+.card-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600;
+  color:var(--brown);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-subtitle{font-size:.8rem;color:var(--warm-gray);margin-bottom:20px;font-weight:300}
+
+/* ── FLOUR BLEND ── */
+.flour-blend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+@media(max-width:500px){.flour-blend-grid{grid-template-columns:repeat(2,1fr)}}
+.flour-chip{display:flex;flex-direction:column;gap:2px;padding:8px 10px;
+  border-radius:var(--radius-xs);border:1.5px solid var(--border);
+  background:var(--bg);cursor:pointer;transition:all var(--transition)}
+.flour-chip:hover{border-color:var(--brown-light);background:var(--cream-mid)}
+.flour-chip.selected{border-color:var(--brown);background:var(--cream-dark)}
+.flour-chip .fc-name{font-size:.73rem;font-weight:600;color:var(--charcoal)}
+.flour-chip .fc-protein{font-size:.66rem;color:var(--warm-gray)}
+.flour-chip.selected .fc-protein{color:var(--brown-mid)}
+.flour-pct-row{display:flex;align-items:center;gap:8px;padding:8px 0;
+  border-bottom:1px solid var(--border)}
+.flour-pct-row:last-child{border-bottom:none}
+.flour-pct-name{flex:1;font-size:.8rem;font-weight:500}
+.flour-pct-bar{flex:2;height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden}
+.flour-pct-fill{height:100%;background:var(--brown-light);border-radius:3px;transition:width var(--transition)}
+.flour-pct-num{font-size:.78rem;font-weight:600;color:var(--brown);min-width:38px;text-align:right}
+.blend-note{font-size:.75rem;color:var(--sage);background:rgba(122,140,110,.1);
+  border-left:3px solid var(--sage);padding:8px 12px;border-radius:0 var(--radius-xs) var(--radius-xs) 0;
+  margin-top:10px;line-height:1.4}
+
+/* ── INPUTS ── */
+.input-group{margin-bottom:18px}
+.input-label{display:flex;justify-content:space-between;align-items:center;
+  font-size:.81rem;font-weight:500;color:var(--charcoal);margin-bottom:7px}
+.input-label .unit{color:var(--warm-gray);font-weight:300;font-size:.76rem}
+.tip-icon{width:15px;height:15px;border-radius:50%;background:var(--cream-dark);
+  color:var(--warm-gray);font-size:.6rem;display:inline-flex;align-items:center;
+  justify-content:center;cursor:pointer;font-weight:700;margin-left:3px;flex-shrink:0}
+.tip-icon:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);
+  left:50%;transform:translateX(-50%);background:var(--charcoal);color:#fff;
+  font-size:.7rem;padding:6px 10px;border-radius:8px;white-space:normal;max-width:180px;
+  font-weight:300;z-index:50;box-shadow:var(--shadow);line-height:1.4}
+.slider-row{display:flex;align-items:center;gap:10px}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;background:var(--cream-dark);
+  border-radius:3px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;
+  border-radius:50%;background:var(--brown);cursor:pointer;
+  box-shadow:0 2px 6px rgba(107,63,31,.28);border:2px solid var(--cream)}
+input[type=number]{width:64px;padding:5px 7px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--cream);font-family:'DM Sans',sans-serif;
+  font-size:.88rem;color:var(--charcoal);text-align:center;outline:none;transition:border-color var(--transition)}
+input[type=number]:focus{border-color:var(--brown-light)}
+select{padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:var(--cream);font-family:'DM Sans',sans-serif;font-size:.84rem;
+  color:var(--charcoal);outline:none;transition:border-color var(--transition);cursor:pointer}
+select:focus{border-color:var(--brown-light)}
+
+/* ── SEEDS/ADDINS ── */
+.seed-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.seed-item{display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;border-radius:var(--radius-xs);border:1.5px solid var(--border);
+  background:var(--bg);transition:all var(--transition)}
+.seed-item.active{border-color:var(--brown-light);background:var(--cream-mid)}
+.seed-left{display:flex;align-items:center;gap:7px}
+.seed-icon{font-size:1rem}
+.seed-name{font-size:.76rem;font-weight:500}
+.seed-toggle{width:32px;height:17px;background:var(--cream-dark);border-radius:9px;
+  cursor:pointer;position:relative;border:none;transition:background .25s;flex-shrink:0}
+.seed-toggle.on{background:var(--sage)}
+.seed-toggle::after{content:'';position:absolute;top:2.5px;left:2.5px;width:12px;height:12px;
+  border-radius:50%;background:#fff;transition:transform .25s}
+.seed-toggle.on::after{transform:translateX(15px)}
+.seed-amount{display:none}
+.seed-item.active .seed-amount{display:flex;align-items:center;gap:4px;margin-top:4px}
+
+/* ── RESULTS ── */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result-item{background:var(--bg);border-radius:var(--radius-sm);
+  border:1px solid var(--border);padding:14px 16px;transition:all .3s}
+.result-item.highlight{background:var(--brown);border-color:var(--brown)}
+.result-item.wide{grid-column:1/-1;background:var(--cream);border-style:dashed}
+.r-icon{font-size:1.3rem;margin-bottom:3px}
+.r-label{font-size:.72rem;color:var(--warm-gray);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.result-item.highlight .r-label{color:rgba(249,244,236,.7)}
+.r-value{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
+  color:var(--brown);line-height:1;margin-top:2px}
+.result-item.highlight .r-value{color:var(--cream)}
+.r-unit{font-size:.72rem;color:var(--warm-gray)}
+.result-item.highlight .r-unit{color:rgba(249,244,236,.6)}
+
+/* ── LOAVES ── */
+.loaves-row{display:flex;align-items:center;gap:9px;margin-bottom:18px;font-size:.84rem;color:var(--warm-gray)}
+.lv-btn{width:26px;height:26px;border-radius:50%;background:var(--cream-dark);
+  border:1px solid var(--border);font-size:.95rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:var(--brown);
+  font-weight:700;transition:all var(--transition)}
+.lv-btn:hover{background:var(--brown);color:var(--cream)}
+.loaves-count{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;
+  color:var(--brown);min-width:20px;text-align:center}
+
+/* ── HYDRATION BAR ── */
+.hyd-wrap{margin-top:20px}
+.hyd-header{display:flex;justify-content:space-between;font-size:.77rem;color:var(--warm-gray);margin-bottom:5px}
+.hyd-track{height:9px;border-radius:5px;background:var(--cream-dark);overflow:hidden}
+.hyd-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--brown-light),var(--rust));
+  transition:width .5s cubic-bezier(.4,0,.2,1)}
+.hyd-desc{font-size:.76rem;color:var(--brown-mid);margin-top:5px;font-weight:500}
+.dough-behavior{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.dough-tag{font-size:.7rem;padding:3px 9px;border-radius:12px;background:var(--cream-dark);
+  color:var(--brown-mid);font-weight:500;border:1px solid var(--border);transition:all var(--transition)}
+.dough-tag.active{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+
+/* ── PIE ── */
+.pie-section{margin-top:22px}
+.pie-section h4{font-size:.76rem;color:var(--warm-gray);font-weight:500;
+  letter-spacing:.05em;text-transform:uppercase;margin-bottom:11px}
+.pie-container{display:flex;align-items:center;gap:18px}
+.pie-legend{display:flex;flex-direction:column;gap:6px;flex:1}
+.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:.78rem}
+.pie-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── FLOUR IMPACT ── */
+.flour-impact{margin-top:18px;padding:14px;background:var(--cream);
+  border-radius:var(--radius-sm);border:1px solid var(--border)}
+.flour-impact h4{font-size:.76rem;font-weight:600;color:var(--brown-mid);
+  letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+.impact-row{display:flex;justify-content:space-between;align-items:center;
+  font-size:.78rem;padding:4px 0;border-bottom:1px solid var(--border)}
+.impact-row:last-child{border-bottom:none}
+.impact-label{color:var(--warm-gray)}
+.impact-val{font-weight:600;color:var(--charcoal)}
+.difficulty-stars{color:var(--gold);letter-spacing:1px}
+
+/* ── TIMELINE ── */
+.timeline-section{max-width:1140px;margin:0 auto;padding:0 28px 44px}
+.tl-scroll{overflow-x:auto;padding-bottom:10px}
+.tl-track{display:flex;align-items:flex-start;gap:0;min-width:max-content;padding:20px 0}
+.tl-item{display:flex;flex-direction:column;align-items:center;width:136px;position:relative;cursor:pointer}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:24px;left:calc(50% + 22px);
+  width:calc(100% - 44px);height:2px;background:linear-gradient(90deg,var(--brown-light),var(--cream-dark))}
+.tl-icon{width:48px;height:48px;border-radius:50%;background:var(--card);
+  border:2px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:1.25rem;box-shadow:var(--shadow);transition:all .25s;z-index:2}
+.tl-item.active .tl-icon{background:var(--brown);border-color:var(--brown);transform:scale(1.12)}
+.tl-item:hover .tl-icon{background:var(--cream-dark);border-color:var(--brown-light);transform:scale(1.08)}
+.tl-label{font-size:.76rem;font-weight:600;color:var(--charcoal);margin-top:9px;text-align:center}
+.tl-duration{font-size:.7rem;color:var(--warm-gray);margin-top:1px}
+.tl-detail{max-height:0;overflow:hidden;transition:max-height .35s ease;
+  background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);
+  margin-top:8px;width:130px;box-shadow:var(--shadow)}
+.tl-item.active .tl-detail{max-height:200px}
+.tl-detail-inner{padding:10px 12px}
+.tl-detail-inner .td-tip{font-size:.71rem;color:var(--warm-gray);line-height:1.45;margin-bottom:6px}
+.tl-detail-inner .td-temp{font-size:.69rem;color:var(--rust);font-weight:500}
+
+/* ── STARTER SECTION ── */
+.starter-section{max-width:1140px;margin:0 auto;padding:0 28px 50px}
+.starter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.starter-grid{grid-template-columns:1fr}}
+.starter-result{background:var(--cream);border:1px dashed var(--brown-light);
+  border-radius:var(--radius-sm);padding:14px;margin-top:16px}
+.sr-row{display:flex;justify-content:space-between;padding:5px 0;
+  border-bottom:1px solid var(--border);font-size:.86rem}
+.sr-row:last-child{border-bottom:none;font-weight:600;color:var(--brown)}
+.sr-row span:first-child{color:var(--warm-gray)}
+
+/* ── READY DOTS ── */
+.ready-indicator{margin-top:20px}
+.ready-label{font-size:.8rem;font-weight:500;color:var(--warm-gray);margin-bottom:7px}
+.ready-dots{display:flex;gap:5px}
+.rdot{width:11px;height:11px;border-radius:50%;background:var(--cream-dark);transition:background .3s}
+.rdot.ok{background:var(--sage)}.rdot.warn{background:var(--brown-light)}.rdot.alert{background:var(--rust)}
+.ready-text{font-size:.78rem;color:var(--warm-gray);margin-top:5px;font-style:italic}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn-reset{display:flex;align-items:center;gap:5px;background:none;
+  border:1px solid var(--border);color:var(--warm-gray);font-size:.76rem;font-weight:500;
+  padding:6px 13px;border-radius:20px;cursor:pointer;transition:all var(--transition);
+  font-family:'DM Sans',sans-serif}
+.btn-reset:hover{background:var(--cream-dark);color:var(--brown);border-color:var(--brown-light)}
+.btn-save{background:var(--sage);color:#fff;border:none;padding:7px 16px;
+  border-radius:20px;font-size:.76rem;font-weight:500;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:background var(--transition)}
+.btn-save:hover{background:var(--brown)}
+
+/* ── SAVED ── */
+.saved-section{max-width:1140px;margin:0 auto;padding:0 28px 38px}
+.saved-list{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.saved-chip{display:flex;align-items:center;gap:7px;background:var(--card);
+  border:1px solid var(--border);border-radius:20px;padding:6px 13px;
+  font-size:.8rem;cursor:pointer;transition:all var(--transition)}
+.saved-chip:hover{background:var(--cream-dark);border-color:var(--brown-light)}
+.saved-chip .del{color:var(--warm-gray);font-size:.68rem;margin-left:3px;cursor:pointer}
+
+/* ── PRO ONLY ── */
+.pro-only{display:none}
+.pro-mode .pro-only{display:block}
+.pro-mode .beginner-only{display:none}
+.temp-note{background:rgba(122,140,110,.11);border-radius:var(--radius-sm);
+  padding:10px 13px;margin-top:14px;font-size:.78rem;color:var(--sage);
+  border-left:3px solid var(--sage);line-height:1.4}
+
+/* ── SECTION DIVIDER ── */
+.divider{max-width:1140px;margin:0 auto 36px;padding:0 28px}
+.divider-line{height:1px;background:var(--border)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:26px 36px;display:flex;
+  justify-content:space-between;align-items:center;background:var(--cream);flex-wrap:wrap;gap:12px}
+footer .fl{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--brown);font-weight:600}
+footer .fr{font-size:.76rem;color:var(--warm-gray)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-content{animation:fadeUp .65s ease both}
+.hero-badges{animation:fadeUp .65s .22s ease both}
+.anim-card{animation:fadeUp .55s ease both}
+</style>
+</head>
+<body id="app">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>🌾</span> Szandi's Sourdough</a>
+  <div class="nav-links">
+    <a href="#breadtype" data-i18n="nav_type">Bread Type</a>
+    <a href="#calculator" data-i18n="nav_calc">Calculator</a>
+    <a href="#timeline" data-i18n="nav_timeline">Timeline</a>
+    <a href="#starter" data-i18n="nav_starter">Starter</a>
+  </div>
+  <div class="nav-right">
+    <div class="mode-toggle">
+      <span data-i18n="mode_beginner">Beginner</span>
+      <button class="toggle-sw" id="modeToggle"></button>
+      <span class="mode-pro" data-i18n="mode_pro">Pro</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hu')">HU</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag" data-i18n="hero_tag">Artisan Baking Tool</div>
+    <h1 data-i18n="hero_h1">Perfect Sourdough, <em>Every Time</em></h1>
+    <p data-i18n="hero_sub">Calculate, track, and master your baking — from flour blend to finished loaf.</p>
+    <a href="#breadtype" class="hero-cta" data-i18n="hero_cta">Start Baking</a>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge"><span>🔁</span><span data-i18n="badge_realtime">Real-time calculation</span></div>
+    <div class="hero-badge"><span>🌾</span><span data-i18n="badge_flour">12 flour types</span></div>
+    <div class="hero-badge"><span>🍔</span><span data-i18n="badge_breads">6 bread types</span></div>
+    <div class="hero-badge"><span>🌱</span><span data-i18n="badge_starter">Starter tracker</span></div>
+    <div class="hero-badge"><span>💾</span><span data-i18n="badge_save">Save recipes</span></div>
+  </div>
+</section>
+
+<!-- BREAD TYPE -->
+<section id="breadtype" class="bread-type-section">
+  <div class="section-heading" data-i18n="breadtype_title">🍞 Choose Your Bread</div>
+  <div class="section-sub" data-i18n="breadtype_sub">Selecting a type automatically sets recommended parameters</div>
+  <div class="bread-tabs" id="breadTabs"></div>
+</section>
+
+<!-- MAIN CALCULATOR -->
+<section id="calculator" class="main-section">
+
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <!-- Flour Blend -->
+    <div class="card anim-card" style="animation-delay:.05s">
+      <div class="card-title">🌾 <span data-i18n="flour_blend_title">Flour Blend</span></div>
+      <div class="card-subtitle" data-i18n="flour_blend_sub">Select one or more flours — percentages auto-balance to 100%</div>
+      <div class="flour-blend-grid" id="flourChips"></div>
+      <div id="flourPercentages" style="margin-top:14px;display:none">
+        <div style="font-size:.76rem;font-weight:600;color:var(--warm-gray);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px" data-i18n="blend_ratio">Blend Ratios</div>
+        <div id="flourPctRows"></div>
+      </div>
+      <div class="blend-note" id="blendNote"></div>
+    </div>
+
+    <!-- Seeds / Add-ins -->
+    <div class="card anim-card" style="animation-delay:.08s">
+      <div class="card-title">🌻 <span data-i18n="addins_title">Seeds &amp; Add-ins</span></div>
+      <div class="card-subtitle" data-i18n="addins_sub">Automatically adjusts hydration and total weight</div>
+      <div class="seed-grid" id="seedGrid"></div>
+    </div>
+
+    <!-- Main Inputs -->
+    <div class="card anim-card" style="animation-delay:.11s">
+      <div class="card-title">⚙️ <span data-i18n="calc_title">Dough Calculator</span></div>
+      <div class="card-subtitle" data-i18n="calc_sub">All values in baker's percentages relative to flour</div>
+
+      <div class="loaves-row">
+        <span data-i18n="loaves_label">Loaves:</span>
+        <button class="lv-btn" onclick="changeLoaves(-1)">−</button>
+        <span class="loaves-count" id="loavesCount">1</span>
+        <button class="lv-btn" onclick="changeLoaves(1)">+</button>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>🌾 <span data-i18n="flour_label">Total Flour</span>
+            <span class="tip-icon beginner-only" data-tip="Total flour per loaf in grams">?</span></span>
+          <span class="unit">g / loaf</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="flourSlider" min="100" max="2000" step="10" value="500" oninput="syncI('flour')">
+          <input type="number" id="flourInput" value="500" min="100" max="2000" oninput="syncS('flour');calculate()">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>💧 <span data-i18n="hydration_label">Hydration</span>
+            <span class="tip-icon beginner-only" data-tip="Water as % of flour. Automatically adjusted by flour blend & seeds.">?</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="hydrationSlider" min="40" max="105" step="1" value="70" oninput="syncI('hydration')">
+          <input type="number" id="hydrationInput" value="70" min="40" max="105" oninput="syncS('hydration');calculate()">
+        </div>
+      </div>
+
+      <!-- Sourdough starter row -->
+      <div class="input-group" id="starterRow">
+        <div class="input-label">
+          <span>🌱 <span data-i18n="starter_pct_label">Starter</span>
+            <span class="tip-icon beginner-only" data-tip="Starter as % of flour. 15–25% is common.">?</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="starterSlider" min="5" max="50" step="1" value="20" oninput="syncI('starter')">
+          <input type="number" id="starterInput" value="20" min="5" max="50" oninput="syncS('starter');calculate()">
+        </div>
+      </div>
+
+      <!-- Yeast row (non-sourdough) -->
+      <div class="input-group" id="yeastRow" style="display:none">
+        <div class="input-label">
+          <span>🧫 <span data-i18n="yeast_label">Yeast</span>
+            <span class="tip-icon beginner-only" data-tip="Instant yeast: 0.5–1%. Active dry: 1–1.5%">?</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <select id="yeastType" style="font-size:.76rem;padding:5px 8px" onchange="calculate()">
+            <option value="instant" data-i18n="yeast_instant">Instant</option>
+            <option value="active" data-i18n="yeast_active">Active Dry</option>
+            <option value="fresh" data-i18n="yeast_fresh">Fresh</option>
+          </select>
+          <input type="range" id="yeastSlider" min="0.1" max="3" step="0.1" value="0.7" oninput="syncI('yeast')">
+          <input type="number" id="yeastInput" value="0.7" min="0.1" max="3" step="0.1" style="width:56px" oninput="syncS('yeast');calculate()">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>🧂 <span data-i18n="salt_label">Salt</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="saltSlider" min="1" max="4" step="0.1" value="2" oninput="syncI('salt')">
+          <input type="number" id="saltInput" value="2" min="1" max="4" step="0.1" oninput="syncS('salt');calculate()">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>🧈 <span data-i18n="fat_label">Fat</span>
+            <span class="tip-icon beginner-only" data-tip="Butter/oil as % of flour. 0% for lean doughs, up to 10% for enriched.">?</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="fatSlider" min="0" max="15" step="0.5" value="0" oninput="syncI('fat')">
+          <input type="number" id="fatInput" value="0" min="0" max="15" step="0.5" oninput="syncS('fat');calculate()">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>🍬 <span data-i18n="sugar_label">Sugar</span>
+            <span class="tip-icon beginner-only" data-tip="Sugar as % of flour. Optional. Adds browning & sweetness.">?</span></span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="sugarSlider" min="0" max="20" step="0.5" value="0" oninput="syncI('sugar')">
+          <input type="number" id="sugarInput" value="0" min="0" max="20" step="0.5" oninput="syncS('sugar');calculate()">
+        </div>
+      </div>
+
+      <!-- PRO: Temperature -->
+      <div class="pro-only input-group" id="tempGroup">
+        <div class="input-label">
+          <span>🌡️ <span data-i18n="temp_label">Kitchen Temp</span></span>
+          <span class="unit">°C</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="tempSlider" min="16" max="32" step="1" value="22" oninput="syncI('temp')">
+          <input type="number" id="tempInput" value="22" min="16" max="32" oninput="syncS('temp');updateTempNote()">
+        </div>
+        <div class="temp-note" id="tempNote"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-reset" onclick="resetDefaults()">↺ <span data-i18n="reset_btn">Reset defaults</span></button>
+        <button class="btn-save" onclick="saveRecipe()">💾 <span data-i18n="save_btn">Save Recipe</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <div class="card anim-card" style="animation-delay:.09s">
+      <div class="card-title">📊 <span data-i18n="results_title">Your Recipe</span></div>
+      <div class="card-subtitle" data-i18n="results_sub">Baker's percentage — auto-calculated</div>
+      <div class="results-grid" id="resultsGrid">
+        <div class="result-item"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_label">Flour</div><div class="r-value" id="rFlour">500</div><div class="r-unit">g</div></div>
+        <div class="result-item highlight"><div class="r-icon">💧</div><div class="r-label" data-i18n="water_label">Water</div><div class="r-value" id="rWater">350</div><div class="r-unit">g</div></div>
+        <div class="result-item" id="rStarterCard"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_pct_label">Starter</div><div class="r-value" id="rStarter">100</div><div class="r-unit">g</div></div>
+        <div class="result-item" id="rYeastCard" style="display:none"><div class="r-icon">🧫</div><div class="r-label" data-i18n="yeast_label">Yeast</div><div class="r-value" id="rYeast">3.5</div><div class="r-unit">g</div></div>
+        <div class="result-item"><div class="r-icon">🧂</div><div class="r-label" data-i18n="salt_label">Salt</div><div class="r-value" id="rSalt">10</div><div class="r-unit">g</div></div>
+        <div class="result-item" id="rFatCard" style="display:none"><div class="r-icon">🧈</div><div class="r-label" data-i18n="fat_label">Fat</div><div class="r-value" id="rFat">0</div><div class="r-unit">g</div></div>
+        <div class="result-item" id="rSugarCard" style="display:none"><div class="r-icon">🍬</div><div class="r-label" data-i18n="sugar_label">Sugar</div><div class="r-value" id="rSugar">0</div><div class="r-unit">g</div></div>
+        <div class="result-item" id="rSeedsCard" style="display:none"><div class="r-icon">🌻</div><div class="r-label" data-i18n="seeds_label">Seeds</div><div class="r-value" id="rSeeds">0</div><div class="r-unit">g</div></div>
+        <div class="result-item wide"><div class="r-label" data-i18n="total_weight_label">Total Dough Weight</div><div class="r-value" id="rTotal" style="font-size:1.9rem">960</div><div class="r-unit">g</div></div>
+      </div>
+
+      <div class="hyd-wrap">
+        <div class="hyd-header">
+          <span data-i18n="hydration_level_label">Dough Hydration</span>
+          <span id="hydPct">70%</span>
+        </div>
+        <div class="hyd-track"><div class="hyd-fill" id="hydFill" style="width:40%"></div></div>
+        <div class="hyd-desc" id="hydDesc">Medium hydration</div>
+        <div class="dough-behavior" id="doughBehavior"></div>
+      </div>
+    </div>
+
+    <div class="card anim-card" style="animation-delay:.12s">
+      <div class="pie-section">
+        <h4 data-i18n="proportion_label">Ingredient Proportions</h4>
+        <div class="pie-container">
+          <svg width="96" height="96" viewBox="0 0 100 100" id="pieChart"></svg>
+          <div class="pie-legend" id="pieLegend"></div>
+        </div>
+      </div>
+      <div class="flour-impact" id="flourImpact">
+        <h4 data-i18n="flour_impact_title">Flour Blend Impact</h4>
+        <div class="impact-row"><span class="impact-label" data-i18n="avg_protein">Avg Protein</span><span class="impact-val" id="impProtein">12.0%</span></div>
+        <div class="impact-row"><span class="impact-label" data-i18n="absorption">Water Absorption</span><span class="impact-val" id="impAbsorption">Medium</span></div>
+        <div class="impact-row"><span class="impact-label" data-i18n="gluten_str">Gluten Strength</span><span class="impact-val" id="impGluten">Strong</span></div>
+        <div class="impact-row"><span class="impact-label" data-i18n="handling">Handling Difficulty</span><span class="impact-val difficulty-stars" id="impDifficulty">★★☆☆☆</span></div>
+        <div class="impact-row"><span class="impact-label" data-i18n="rec_hydration">Recommended Hydration</span><span class="impact-val" id="impRecHyd">65–72%</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SAVED RECIPES -->
+<section class="saved-section" id="savedSection" style="display:none">
+  <div class="section-heading" data-i18n="saved_title">💾 Saved Recipes</div>
+  <div class="saved-list" id="savedList"></div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline" class="timeline-section">
+  <div class="section-heading" data-i18n="timeline_title">⏱️ Baking Timeline</div>
+  <div class="section-sub" data-i18n="timeline_sub">Click a stage to expand tips and temperature guidance</div>
+  <div class="tl-scroll">
+    <div class="tl-track" id="tlTrack"></div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- STARTER MAINTENANCE -->
+<section id="starter" class="starter-section">
+  <div class="section-heading" data-i18n="starter_maint_title">🌱 Starter Maintenance</div>
+  <div class="section-sub" data-i18n="starter_maint_sub">Keep your starter happy and active</div>
+  <div class="starter-grid">
+    <div class="card">
+      <div class="card-title">🥄 <span data-i18n="feeding_calc_title">Feeding Calculator</span></div>
+      <div class="card-subtitle" data-i18n="feeding_calc_sub">Compute how much to feed your starter</div>
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="current_starter_label">Current Starter (g)</span></div>
+        <div class="slider-row">
+          <input type="range" id="sCurrentSlider" min="10" max="500" step="5" value="50" oninput="syncI('sCurrent');calcStarter()">
+          <input type="number" id="sCurrentInput" value="50" oninput="syncS('sCurrent');calcStarter()">
+        </div>
+      </div>
+      <div class="input-group pro-only">
+        <div class="input-label"><span data-i18n="feed_ratio_label">Ratio (starter : flour : water)</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:.82rem;color:var(--warm-gray)">1 :</span>
+          <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
+          <span style="font-size:.82rem;color:var(--warm-gray)">:</span>
+          <input type="number" id="ratioWater" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
+        </div>
+      </div>
+      <div class="beginner-only" style="font-size:.76rem;color:var(--warm-gray);padding:9px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio</div>
+      <div class="starter-result">
+        <div class="sr-row"><span data-i18n="flour_to_add">Flour to add</span><span id="sFlour">50g</span></div>
+        <div class="sr-row"><span data-i18n="water_to_add">Water to add</span><span id="sWater">50g</span></div>
+        <div class="sr-row"><span data-i18n="total_after">Total after feeding</span><span id="sTotal">150g</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 <span data-i18n="ready_title">Is My Starter Ready?</span></div>
+      <div class="card-subtitle" data-i18n="ready_sub">Gauge starter health and activity</div>
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="hours_fed_label">Hours since last feed</span></div>
+        <div class="slider-row">
+          <input type="range" id="hoursFedSlider" min="0" max="24" step="1" value="4" oninput="syncI('hoursFed');updateReady()">
+          <input type="number" id="hoursFedInput" value="4" min="0" max="24" oninput="syncS('hoursFed');updateReady()">
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span data-i18n="rise_pct_label">Rise since feeding (%)</span></div>
+        <div class="slider-row">
+          <input type="range" id="riseSlider" min="0" max="200" step="5" value="50" oninput="syncI('rise');updateReady()">
+          <input type="number" id="riseInput" value="50" min="0" max="200" step="5" oninput="syncS('rise');updateReady()">
+        </div>
+      </div>
+      <div class="ready-indicator">
+        <div class="ready-label" data-i18n="readiness_label">Readiness indicator</div>
+        <div class="ready-dots" id="readyDots"></div>
+        <div class="ready-text" id="readyText"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">🌾 Szandi's Sourdough</div>
+  <div class="fr" data-i18n="footer_text">Made with love for bakers everywhere 🍞</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════
+
+const BREAD_TYPES = [
+  { id:'sourdough', icon:'🍞', hydration:72, starter:20, fat:0, sugar:0, salt:2, useSourdough:true,
+    en:'Sourdough Bread', hu:'Kovászos kenyér' },
+  { id:'flatbread', icon:'🫓', hydration:60, starter:0, fat:3, sugar:0, salt:1.8, useSourdough:false,
+    en:'Flatbread', hu:'Lepénykenyér' },
+  { id:'burger', icon:'🍔', hydration:62, starter:0, fat:8, sugar:5, salt:1.8, useSourdough:false,
+    en:'Hamburger Buns', hu:'Hamburger zsömle' },
+  { id:'baguette', icon:'🥖', hydration:68, starter:0, fat:0, sugar:0, salt:2, useSourdough:false,
+    en:'Baguette', hu:'Baguette' },
+  { id:'kaiser', icon:'🥐', hydration:58, starter:0, fat:4, sugar:2, salt:1.8, useSourdough:false,
+    en:'Kaiser Roll', hu:'Kaiserzsemlye' },
+  { id:'roll', icon:'🍞', hydration:60, starter:0, fat:2, sugar:1, salt:1.8, useSourdough:false,
+    en:'Bread Roll', hu:'Zsemle' },
+];
+
+const FLOURS = [
+  { id:'bread',    en:'Bread Flour',    hu:'Kenyérliszt',   protein:13.0, absorption:1.04, gluten:5, minH:65, maxH:80, color:'#C4844A' },
+  { id:'ap',       en:'All-Purpose',    hu:'Finomliszt',    protein:11.5, absorption:1.00, gluten:3, minH:60, maxH:75, color:'#D4A853' },
+  { id:'ww',       en:'Whole Wheat',    hu:'Teljes kiőrlésű',protein:13.5, absorption:1.10, gluten:4, minH:68, maxH:85, color:'#9C5E30' },
+  { id:'rye',      en:'Rye',            hu:'Rozs',          protein:9.5,  absorption:1.15, gluten:1, minH:70, maxH:90, color:'#6B3F1F' },
+  { id:'spelt',    en:'Spelt',          hu:'Tönköly',       protein:12.0, absorption:1.05, gluten:3, minH:65, maxH:80, color:'#B85C38' },
+  { id:'einkorn',  en:'Einkorn',        hu:'Egyszemű búza', protein:14.0, absorption:1.08, gluten:2, minH:68, maxH:82, color:'#7A8C6E' },
+  { id:'emmer',    en:'Emmer',          hu:'Tönkebúza',     protein:14.5, absorption:1.08, gluten:2, minH:68, maxH:82, color:'#8C7B6B' },
+  { id:'kamut',    en:'Kamut',          hu:'Kamut',         protein:14.5, absorption:1.06, gluten:3, minH:65, maxH:78, color:'#C4844A' },
+  { id:'buckwheat',en:'Buckwheat',      hu:'Hajdina',       protein:10.0, absorption:1.12, gluten:0, minH:70, maxH:90, color:'#2E2419' },
+  { id:'rice',     en:'Rice Flour',     hu:'Rizsliszt',     protein:6.5,  absorption:0.90, gluten:0, minH:60, maxH:80, color:'#EDE0CC' },
+  { id:'semolina', en:'Semolina',       hu:'Búzadara',      protein:12.5, absorption:0.95, gluten:4, minH:55, maxH:68, color:'#D4A853' },
+  { id:'00',       en:'00 Flour',       hu:'00 liszt',      protein:11.0, absorption:0.98, gluten:3, minH:58, maxH:72, color:'#F7F0E6' },
+];
+
+const SEEDS = [
+  { id:'flax',      icon:'🌱', en:'Flax Seeds',      hu:'Lenmag',          absorption:0.08, pct:5 },
+  { id:'chia',      icon:'⚫', en:'Chia Seeds',       hu:'Chiamag',         absorption:0.12, pct:5 },
+  { id:'sunflower', icon:'🌻', en:'Sunflower Seeds', hu:'Napraforgómag',   absorption:0.03, pct:6 },
+  { id:'sesame',    icon:'⬜', en:'Sesame Seeds',    hu:'Szezámmag',       absorption:0.02, pct:4 },
+  { id:'poppy',     icon:'🟣', en:'Poppy Seeds',     hu:'Mákszem',         absorption:0.02, pct:3 },
+  { id:'pumpkin',   icon:'🟠', en:'Pumpkin Seeds',   hu:'Tökmag',          absorption:0.04, pct:6 },
+];
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+
+let lang = 'en';
+let proMode = false;
+let loaves = 1;
+let currentBread = 'sourdough';
+let selectedFlours = ['bread'];
+let flourPcts = { bread: 100 };
+let activeSeedIds = new Set();
+let activeTlIndex = -1;
+let savedRecipes = [];
+try { savedRecipes = JSON.parse(localStorage.getItem('szandi_v2') || '[]'); } catch(e){}
+
+// ═══════════════════════════════════════════════════
+//  TRANSLATIONS
+// ═══════════════════════════════════════════════════
+
+const i18n = {
+  en: {
+    nav_type:'Bread Type', nav_calc:'Calculator', nav_timeline:'Timeline', nav_starter:'Starter',
+    mode_beginner:'Beginner', mode_pro:'Pro',
+    hero_tag:'Artisan Baking Tool', hero_h1:'Perfect Sourdough, <em>Every Time</em>',
+    hero_sub:'Calculate, track, and master your baking — from flour blend to finished loaf.',
+    hero_cta:'Start Baking',
+    badge_realtime:'Real-time calc', badge_flour:'12 flour types', badge_breads:'6 bread types',
+    badge_starter:'Starter tracker', badge_save:'Save recipes',
+    breadtype_title:'🍞 Choose Your Bread',
+    breadtype_sub:'Selecting a type automatically sets recommended parameters',
+    flour_blend_title:'Flour Blend', flour_blend_sub:'Select one or more flours — percentages auto-balance to 100%',
+    blend_ratio:'Blend Ratios',
+    addins_title:'Seeds & Add-ins', addins_sub:'Automatically adjusts hydration and total weight',
+    calc_title:'Dough Calculator', calc_sub:"All values in baker's percentages relative to flour",
+    loaves_label:'Loaves:', flour_label:'Total Flour', hydration_label:'Hydration',
+    starter_pct_label:'Starter', yeast_label:'Yeast', salt_label:'Salt',
+    fat_label:'Fat', sugar_label:'Sugar', temp_label:'Kitchen Temp',
+    yeast_instant:'Instant', yeast_active:'Active Dry', yeast_fresh:'Fresh',
+    reset_btn:'Reset defaults', save_btn:'Save Recipe',
+    results_title:'Your Recipe', results_sub:"Baker's percentage — auto-calculated",
+    water_label:'Water', total_weight_label:'Total Dough Weight', seeds_label:'Seeds',
+    hydration_level_label:'Dough Hydration', proportion_label:'Ingredient Proportions',
+    flour_impact_title:'Flour Blend Impact', avg_protein:'Avg Protein',
+    absorption:'Water Absorption', gluten_str:'Gluten Strength',
+    handling:'Handling Difficulty', rec_hydration:'Recommended Hydration',
+    saved_title:'💾 Saved Recipes',
+    timeline_title:'⏱️ Baking Timeline', timeline_sub:'Click a stage to expand tips and temperature guidance',
+    starter_maint_title:'🌱 Starter Maintenance', starter_maint_sub:'Keep your starter happy and active',
+    feeding_calc_title:'Feeding Calculator', feeding_calc_sub:'Compute how much to feed your starter',
+    current_starter_label:'Current Starter (g)', feed_ratio_label:'Ratio (starter : flour : water)',
+    ratio_note:'Using standard 1:1:1 ratio',
+    flour_to_add:'Flour to add', water_to_add:'Water to add', total_after:'Total after feeding',
+    ready_title:'Is My Starter Ready?', ready_sub:'Gauge starter health and activity',
+    hours_fed_label:'Hours since last feed', rise_pct_label:'Rise since feeding (%)',
+    readiness_label:'Readiness indicator',
+    footer_text:'Made with love for bakers everywhere 🍞',
+    hyd_very_low:'Very stiff dough — dense crumb, great for rolls 💪',
+    hyd_low:'Low hydration — firm dough, easy to shape ✅',
+    hyd_med:'Medium hydration — ideal for beginners 🙂',
+    hyd_high:'High hydration — open crumb, needs experience 🫧',
+    hyd_vhigh:'Very high hydration — ciabatta territory, sticky! 💦',
+    temp_cool:'Cool kitchen — add ~30 min to bulk fermentation',
+    temp_ideal:'Ideal temperature — standard timing applies',
+    temp_warm:'Warm kitchen — shorten bulk fermentation by ~30 min',
+    temp_hot:'Hot kitchen! — watch carefully, ferment 1–2 hrs less',
+    ready_not:'Not yet — give it more time to develop',
+    ready_almost:'Almost there — check for dome and bubbles',
+    ready_yes:'Ready to use! 🎉 Dome, bubbles, passes float test',
+    ready_past:'Possibly over-fermented — feed again soon',
+    abs_low:'Low', abs_med:'Medium', abs_high:'High', abs_very_high:'Very High',
+    gluten_none:'Gluten-free', gluten_weak:'Weak', gluten_med:'Medium',
+    gluten_strong:'Strong', gluten_very:'Very Strong',
+    diff_1:'★☆☆☆☆', diff_2:'★★☆☆☆', diff_3:'★★★☆☆', diff_4:'★★★★☆', diff_5:'★★★★★',
+    tl_sourdough:[
+      {icon:'🥣',label:'Mix',duration:'15 min',temp:'Room temp',tip:'Combine all ingredients. Mix until no dry flour remains. Rough shaggy dough is fine.'},
+      {icon:'⏳',label:'Autolyse',duration:'30–60 min',temp:'Room temp',tip:'Cover and rest. Gluten develops passively. Makes folding much easier.'},
+      {icon:'🤲',label:'Stretch & Fold',duration:'2–3 hrs',temp:'24–26°C',tip:'Do 4–6 sets every 30 min. Wet hands, grab dough, stretch up and fold over. Rotate 90°.'},
+      {icon:'🌡️',label:'Bulk Ferment',duration:'4–8 hrs',temp:'24–26°C',tip:'Dough doubles. Look for bubbles, dome shape, and jiggly texture when moved.'},
+      {icon:'🔄',label:'Shape',duration:'20 min',temp:'Room temp',tip:'Pre-shape, rest 20 min covered, then final shape with surface tension.'},
+      {icon:'❄️',label:'Cold Proof',duration:'8–16 hrs',temp:'4–5°C fridge',tip:'Overnight cold retard deepens flavour and makes scoring much easier.'},
+      {icon:'🔥',label:'Bake',duration:'45–55 min',temp:'230–260°C',tip:'Preheat Dutch oven 1 hr. Bake covered 20 min (steam), uncovered 25 min.'},
+    ],
+    tl_flatbread:[
+      {icon:'🥣',label:'Mix',duration:'10 min',temp:'Room temp',tip:'Mix flour, water, fat and salt. Knead until smooth.'},
+      {icon:'🤲',label:'Knead',duration:'8–10 min',temp:'Room temp',tip:'Knead until elastic and smooth. Cover and rest.'},
+      {icon:'⏳',label:'Rest',duration:'30 min',temp:'Room temp',tip:'Relaxes gluten for easy rolling.'},
+      {icon:'🔄',label:'Portion & Roll',duration:'15 min',temp:'Room temp',tip:'Divide into equal balls. Roll thin (2–3mm).'},
+      {icon:'🔥',label:'Cook',duration:'2–3 min/side',temp:'High heat 220°C+',tip:'Dry pan or griddle on high. Cook until charred spots appear.'},
+    ],
+    tl_burger:[
+      {icon:'🥣',label:'Mix',duration:'10 min',temp:'Room temp',tip:'Combine flour, yeast, sugar, salt, fat. Add liquids gradually.'},
+      {icon:'🤲',label:'Knead',duration:'10–12 min',temp:'Room temp',tip:'Knead until windowpane test. Enriched doughs need more work.'},
+      {icon:'🌡️',label:'Bulk Rise',duration:'1–2 hrs',temp:'26–28°C',tip:'Until doubled. Enriched doughs rise slightly slower.'},
+      {icon:'🔄',label:'Shape',duration:'15 min',temp:'Room temp',tip:'Divide into 80–100g balls. Shape into smooth rounds.'},
+      {icon:'⏱️',label:'Proof',duration:'45–60 min',temp:'26–28°C',tip:'Until puffy and nearly doubled. Egg-wash before baking.'},
+      {icon:'🔥',label:'Bake',duration:'14–16 min',temp:'190°C',tip:'Steam first 5 min for shine. Watch for golden brown colour.'},
+    ],
+    tl_baguette:[
+      {icon:'🥣',label:'Mix',duration:'5 min',temp:'Room temp',tip:'Mix flour, water, yeast, salt loosely. Rest is key — do not over-mix.'},
+      {icon:'⏳',label:'Autolyse',duration:'30 min',temp:'Room temp',tip:'Rest allows hydration and gluten formation.'},
+      {icon:'🤲',label:'Fold',duration:'2 hrs',temp:'Room temp',tip:'Coil folds every 30 min. Four sets total.'},
+      {icon:'🌡️',label:'Bulk / Retard',duration:'12–16 hrs',temp:'4°C fridge',tip:'Overnight retard develops complex flavour. The French way!'},
+      {icon:'🔄',label:'Shape',duration:'20 min',temp:'Room temp',tip:'Pre-shape into rounds. Rest 20 min. Roll into baguette shape.'},
+      {icon:'⏱️',label:'Final Proof',duration:'45–75 min',temp:'22–24°C',tip:'In couche flour. Score with lame before baking.'},
+      {icon:'🔥',label:'Bake',duration:'22–25 min',temp:'250°C + steam',tip:'Maximum oven + steam first 10 min. Crack-open door last 5 min.'},
+    ],
+    tl_kaiser:[
+      {icon:'🥣',label:'Mix',duration:'10 min',temp:'Room temp',tip:'Combine all ingredients. Enriched dough.'},
+      {icon:'🤲',label:'Knead',duration:'10 min',temp:'Room temp',tip:'Until smooth and elastic.'},
+      {icon:'🌡️',label:'Bulk Rise',duration:'1–1.5 hrs',temp:'26°C',tip:'Until doubled.'},
+      {icon:'🔄',label:'Shape',duration:'20 min',temp:'Room temp',tip:'Use kaiser stamp or fold technique for classic pattern.'},
+      {icon:'⏱️',label:'Proof',duration:'45 min',temp:'26°C',tip:'Until puffy. Brush with water before baking.'},
+      {icon:'🔥',label:'Bake',duration:'16–18 min',temp:'210°C + steam',tip:'Steam for crisp crust. Rolls should sound hollow when tapped.'},
+    ],
+    tl_roll:[
+      {icon:'🥣',label:'Mix',duration:'8 min',temp:'Room temp',tip:'Mix all ingredients until combined.'},
+      {icon:'🤲',label:'Knead',duration:'8–10 min',temp:'Room temp',tip:'Until smooth dough forms.'},
+      {icon:'🌡️',label:'Bulk Rise',duration:'1–1.5 hrs',temp:'26°C',tip:'Until doubled in size.'},
+      {icon:'🔄',label:'Shape',duration:'15 min',temp:'Room temp',tip:'Divide and shape into smooth balls. Space on tray.'},
+      {icon:'⏱️',label:'Proof',duration:'30–45 min',temp:'26°C',tip:'Until puffy. Egg wash for shine.'},
+      {icon:'🔥',label:'Bake',duration:'18–20 min',temp:'200°C',tip:'Golden crust. Steam in first 5 min for shine.'},
+    ],
+  },
+  hu: {}
+};
+
+// Hungarian — copy from EN, override text strings
+const huOverrides = {
+  nav_type:'Kenyérfajta', nav_calc:'Kalkulátor', nav_timeline:'Időrend', nav_starter:'Kovász',
+  mode_beginner:'Kezdő', mode_pro:'Profi',
+  hero_tag:'Kézműves Sütési Eszköz', hero_h1:'Tökéletes Kenyér, <em>Minden Alkalommal</em>',
+  hero_sub:'Számítsd ki és kövesd nyomon a sütési folyamatot — a lisztkeveréktől a kész cipóig.',
+  hero_cta:'Kezdjük a Sütést',
+  badge_realtime:'Valós idejű számítás', badge_flour:'12 liszttípus', badge_breads:'6 kenyérfajta',
+  badge_starter:'Kovász követő', badge_save:'Receptek mentése',
+  breadtype_title:'🍞 Válaszd ki a kenyérfajtát',
+  breadtype_sub:'A kiválasztott típus automatikusan beállítja az ajánlott paramétereket',
+  flour_blend_title:'Lisztkeverék', flour_blend_sub:'Válassz egy vagy több lisztet — az arányok automatikusan 100%-ra igazodnak',
+  blend_ratio:'Keverési arányok',
+  addins_title:'Magvak és kiegészítők', addins_sub:'Automatikusan igazítja a hidratációt és a teljes súlyt',
+  calc_title:'Tésztakalkulátor', calc_sub:'Minden érték pékarányszámban (liszt%-ban) megadva',
+  loaves_label:'Cipók:', flour_label:'Teljes liszt', hydration_label:'Hidratáció',
+  starter_pct_label:'Kovász', yeast_label:'Élesztő', salt_label:'Só',
+  fat_label:'Zsír', sugar_label:'Cukor', temp_label:'Konyha hőmérséklete',
+  yeast_instant:'Instant', yeast_active:'Száraz', yeast_fresh:'Friss',
+  reset_btn:'Alapértékek visszaállítása', save_btn:'Recept mentése',
+  results_title:'A Te Recepted', results_sub:'Automatikus számítás — pékarányszámban',
+  water_label:'Víz', total_weight_label:'Teljes tésztasúly', seeds_label:'Magvak',
+  hydration_level_label:'Tészta hidratáció', proportion_label:'Összetevők aránya',
+  flour_impact_title:'Lisztkeverék hatása', avg_protein:'Átlagos fehérje',
+  absorption:'Vízfelszívás', gluten_str:'Glutenerősség',
+  handling:'Kezelési nehézség', rec_hydration:'Ajánlott hidratáció',
+  saved_title:'💾 Mentett receptek',
+  timeline_title:'⏱️ Sütési időrend', timeline_sub:'Kattints egy szakaszra a tippek és hőmérsékleti útmutatók megtekintéséhez',
+  starter_maint_title:'🌱 Kovász gondozása', starter_maint_sub:'Tartsd egészségesen és aktívan a kovászodat',
+  feeding_calc_title:'Etetési kalkulátor', feeding_calc_sub:'Számítsd ki, mennyit kell etetned',
+  current_starter_label:'Jelenlegi kovász (g)', feed_ratio_label:'Arány (kovász : liszt : víz)',
+  ratio_note:'Szabványos 1:1:1 arány használata',
+  flour_to_add:'Hozzáadandó liszt', water_to_add:'Hozzáadandó víz', total_after:'Összesen etetés után',
+  ready_title:'Kész a kovászom?', ready_sub:'Mérd fel a kovász egészségét',
+  hours_fed_label:'Etetés óta eltelt órák', rise_pct_label:'Kelés az etetés óta (%)',
+  readiness_label:'Készenlét jelző',
+  footer_text:'Szeretettel minden pék számára 🍞',
+  hyd_very_low:'Nagyon kemény tészta — sűrű bélzet, jó zsemléhez 💪',
+  hyd_low:'Alacsony hidratáció — könnyű formázni ✅',
+  hyd_med:'Közepes hidratáció — kezdőknek ideális 🙂',
+  hyd_high:'Magas hidratáció — nyitott bélzet, tapasztalat kell 🫧',
+  hyd_vhigh:'Nagyon magas hidratáció — ciabatta tartomány! 💦',
+  temp_cool:'Hűvös konyha — adj +30 percet a kelesztéshez',
+  temp_ideal:'Ideális hőmérséklet — normál időzítés',
+  temp_warm:'Meleg konyha — rövidítsd a kelesztést ~30 perccel',
+  temp_hot:'Forró konyha! — figyelj, 1–2 órával kevesebb kelesztés',
+  ready_not:'Még nem kész — adj több időt',
+  ready_almost:'Majdnem ott van — ellenőrizd a kupolát',
+  ready_yes:'Felhasználásra kész! 🎉',
+  ready_past:'Esetleg túlerjedt — hamarosan etess újra',
+  abs_low:'Alacsony', abs_med:'Közepes', abs_high:'Magas', abs_very_high:'Nagyon magas',
+  gluten_none:'Gluténmentes', gluten_weak:'Gyenge', gluten_med:'Közepes',
+  gluten_strong:'Erős', gluten_very:'Nagyon erős',
+  diff_1:'★☆☆☆☆', diff_2:'★★☆☆☆', diff_3:'★★★☆☆', diff_4:'★★★★☆', diff_5:'★★★★★',
+};
+// Copy timelines for HU (same structure, just keys shared)
+Object.assign(i18n.hu, i18n.en, huOverrides);
+
+function t(k){ return (i18n[lang][k] !== undefined ? i18n[lang][k] : (i18n.en[k] || k)); }
+function tl(){ return i18n[lang]['tl_'+currentBread] || i18n.en['tl_sourdough']; }
+
+// ═══════════════════════════════════════════════════
+//  LANG
+// ═══════════════════════════════════════════════════
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
+  applyTranslations();
+  buildBreadTabs();
+  buildFlourChips();
+  buildSeeds();
+  buildTimeline();
+  updateReady();
+  calcStarter();
+  updateTempNote();
+  calculate();
+}
+
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(i18n[lang][k]!==undefined) el.innerHTML=i18n[lang][k];
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  MODE
+// ═══════════════════════════════════════════════════
+
+document.getElementById('modeToggle').addEventListener('click',function(){
+  proMode=!proMode;
+  this.classList.toggle('on',proMode);
+  document.body.classList.toggle('pro-mode',proMode);
+  updateTempNote();
+  calcStarter();
+  calculate();
+});
+
+// ═══════════════════════════════════════════════════
+//  BREAD TABS
+// ═══════════════════════════════════════════════════
+
+function buildBreadTabs(){
+  const c=document.getElementById('breadTabs');
+  c.innerHTML='';
+  BREAD_TYPES.forEach(b=>{
+    const d=document.createElement('div');
+    d.className='bread-tab'+(b.id===currentBread?' active':'');
+    d.innerHTML=`<span class="bt-icon">${b.icon}</span><span class="bt-label">${b[lang]||b.en}</span>`;
+    d.onclick=()=>selectBread(b.id);
+    c.appendChild(d);
+  });
+}
+
+function selectBread(id){
+  currentBread=id;
+  const b=BREAD_TYPES.find(x=>x.id===id);
+  document.querySelectorAll('.bread-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.bread-tab')[BREAD_TYPES.findIndex(x=>x.id===id)].classList.add('active');
+  // Update inputs
+  setVal('hydration',b.hydration);
+  setVal('fat',b.fat);
+  setVal('sugar',b.sugar);
+  setVal('salt',b.salt);
+  // Sourdough vs yeast
+  const isSour=b.useSourdough;
+  document.getElementById('starterRow').style.display=isSour?'':'none';
+  document.getElementById('yeastRow').style.display=isSour?'none':'';
+  document.getElementById('rStarterCard').style.display=isSour?'':'none';
+  document.getElementById('rYeastCard').style.display=isSour?'none':'';
+  if(!isSour) setVal('starter',0);
+  else setVal('starter',b.starter||20);
+  buildTimeline();
+  calculate();
+}
+
+// ═══════════════════════════════════════════════════
+//  FLOUR CHIPS
+// ═══════════════════════════════════════════════════
+
+function buildFlourChips(){
+  const c=document.getElementById('flourChips');
+  c.innerHTML='';
+  FLOURS.forEach(f=>{
+    const d=document.createElement('div');
+    d.className='flour-chip'+(selectedFlours.includes(f.id)?' selected':'');
+    d.innerHTML=`<span class="fc-name">${f[lang]||f.en}</span><span class="fc-protein">P: ${f.protein}%</span>`;
+    d.onclick=()=>toggleFlour(f.id);
+    c.appendChild(d);
+  });
+  renderFlourPcts();
+}
+
+function toggleFlour(id){
+  const idx=selectedFlours.indexOf(id);
+  if(idx>=0){
+    if(selectedFlours.length===1) return; // must have at least 1
+    selectedFlours.splice(idx,1);
+    delete flourPcts[id];
+  } else {
+    selectedFlours.push(id);
+  }
+  rebalanceFlourPcts();
+  buildFlourChips();
+  calculate();
+}
+
+function rebalanceFlourPcts(){
+  const eq=Math.floor(100/selectedFlours.length);
+  const rem=100-eq*selectedFlours.length;
+  selectedFlours.forEach((id,i)=>{ flourPcts[id]=eq+(i===0?rem:0); });
+}
+
+function renderFlourPcts(){
+  const wrap=document.getElementById('flourPercentages');
+  const rows=document.getElementById('flourPctRows');
+  if(selectedFlours.length<=1){ wrap.style.display='none'; return; }
+  wrap.style.display='block'; rows.innerHTML='';
+  selectedFlours.forEach(id=>{
+    const f=FLOURS.find(x=>x.id===id);
+    const pct=flourPcts[id]||0;
+    rows.innerHTML+=`<div class="flour-pct-row">
+      <span class="flour-pct-name">${f[lang]||f.en}</span>
+      <div class="flour-pct-bar"><div class="flour-pct-fill" style="width:${pct}%;background:${f.color}"></div></div>
+      <span class="flour-pct-num">${pct}%
+        <span style="cursor:pointer;font-size:.7rem;margin-left:4px;color:var(--warm-gray)" onclick="adjFlourPct('${id}',-5)">−</span>
+        <span style="cursor:pointer;font-size:.7rem;color:var(--warm-gray)" onclick="adjFlourPct('${id}',5)">+</span>
+      </span>
+    </div>`;
+  });
+  updateBlendNote();
+}
+
+function adjFlourPct(id, delta){
+  const cur=flourPcts[id]||0;
+  const newVal=Math.max(5,Math.min(95,cur+delta));
+  const diff=newVal-cur;
+  // distribute the diff among others
+  const others=selectedFlours.filter(x=>x!==id);
+  if(others.length===0) return;
+  flourPcts[id]=newVal;
+  let leftover=diff;
+  others.forEach((oid,i)=>{
+    const adj=i===others.length-1?-leftover:Math.round(-diff/others.length);
+    flourPcts[oid]=Math.max(5,(flourPcts[oid]||0)+adj);
+    leftover+=adj; // track what remains... simplified
+  });
+  // normalize to 100
+  const total=selectedFlours.reduce((s,x)=>s+(flourPcts[x]||0),0);
+  if(total!==100){
+    const last=selectedFlours[selectedFlours.length-1];
+    flourPcts[last]=(flourPcts[last]||0)+(100-total);
+  }
+  renderFlourPcts();
+  calculate();
+}
+
+function getBlendAvg(prop){
+  return selectedFlours.reduce((sum,id)=>{
+    const f=FLOURS.find(x=>x.id===id);
+    return sum+(f[prop]*(flourPcts[id]||0)/100);
+  },0);
+}
+
+function updateBlendNote(){
+  const hasGlutenFree=selectedFlours.some(id=>FLOURS.find(x=>x.id===id).gluten===0);
+  const note=document.getElementById('blendNote');
+  const avgProt=getBlendAvg('protein').toFixed(1);
+  const avgAbs=getBlendAvg('absorption').toFixed(2);
+  note.textContent=`Avg protein: ${avgProt}% · Water absorption factor: ${avgAbs}${hasGlutenFree?' · ⚠️ Contains gluten-free flour — expect different texture':''}`;
+}
+
+// ═══════════════════════════════════════════════════
+//  SEEDS
+// ═══════════════════════════════════════════════════
+
+function buildSeeds(){
+  const c=document.getElementById('seedGrid');
+  c.innerHTML='';
+  SEEDS.forEach(s=>{
+    const isOn=activeSeedIds.has(s.id);
+    const d=document.createElement('div');
+    d.className='seed-item'+(isOn?' active':'');
+    d.id='seed_'+s.id;
+    d.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <div class="seed-left">
+          <span class="seed-icon">${s.icon}</span>
+          <span class="seed-name">${s[lang]||s.en}</span>
+        </div>
+        <button class="seed-toggle${isOn?' on':''}" id="stoggle_${s.id}" onclick="toggleSeed('${s.id}')"></button>
+      </div>
+      <div class="seed-amount" id="samount_${s.id}" style="${isOn?'display:flex':'display:none'};align-items:center;gap:6px;margin-top:6px">
+        <span style="font-size:.72rem;color:var(--warm-gray)">%:</span>
+        <input type="number" id="spct_${s.id}" value="${s.pct}" min="1" max="20" step="1"
+          style="width:52px;font-size:.8rem" oninput="calculate()">
+      </div>
+    `;
+    c.appendChild(d);
+  });
+}
+
+function toggleSeed(id){
+  if(activeSeedIds.has(id)) activeSeedIds.delete(id);
+  else activeSeedIds.add(id);
+  const item=document.getElementById('seed_'+id);
+  const tog=document.getElementById('stoggle_'+id);
+  const amt=document.getElementById('samount_'+id);
+  const isOn=activeSeedIds.has(id);
+  item.classList.toggle('active',isOn);
+  tog.classList.toggle('on',isOn);
+  amt.style.display=isOn?'flex':'none';
+  calculate();
+}
+
+// ═══════════════════════════════════════════════════
+//  SLIDER SYNC
+// ═══════════════════════════════════════════════════
+
+function syncI(id){
+  const s=document.getElementById(id+'Slider');
+  const n=document.getElementById(id+'Input');
+  if(s&&n){n.value=s.value;calculate();}
+  if(id==='temp') updateTempNote();
+}
+function syncS(id){
+  const s=document.getElementById(id+'Slider');
+  const n=document.getElementById(id+'Input');
+  if(s&&n){s.value=n.value;}
+}
+function setVal(id,val){
+  const s=document.getElementById(id+'Slider');
+  const n=document.getElementById(id+'Input');
+  if(s) s.value=val;
+  if(n) n.value=val;
+}
+function getVal(id){ return parseFloat(document.getElementById(id+'Input')?.value)||0; }
+
+// ═══════════════════════════════════════════════════
+//  LOAVES
+// ═══════════════════════════════════════════════════
+
+function changeLoaves(d){
+  loaves=Math.max(1,Math.min(10,loaves+d));
+  document.getElementById('loavesCount').textContent=loaves;
+  calculate();
+}
+
+// ═══════════════════════════════════════════════════
+//  CALCULATE
+// ═══════════════════════════════════════════════════
+
+function calculate(){
+  const flourPerLoaf=getVal('flour');
+  let hydPct=getVal('hydration')/100;
+  const starterPct=getVal('starter')/100;
+  const yeastPct=getVal('yeast')/100;
+  const saltPct=getVal('salt')/100;
+  const fatPct=getVal('fat')/100;
+  const sugarPct=getVal('sugar')/100;
+
+  // Seed absorption adjustment
+  let seedAbsAdj=0, seedGrams=0;
+  activeSeedIds.forEach(id=>{
+    const s=SEEDS.find(x=>x.id===id);
+    const pct=(parseFloat(document.getElementById('spct_'+id)?.value)||s.pct)/100;
+    seedGrams+=flourPerLoaf*loaves*pct;
+    seedAbsAdj+=pct*s.absorption;
+  });
+
+  // Flour absorption adjustment
+  const flourAbsFactor=getBlendAvg('absorption');
+  // Adjust hydration: if average absorption > 1, we might nudge recommended hydration
+  // but we don't override the user's input — just show the impact
+  
+  const totalFlour=flourPerLoaf*loaves;
+  const water=Math.round(totalFlour*hydPct);
+  const starter=Math.round(totalFlour*starterPct);
+  const yeast=Math.round(totalFlour*yeastPct*10)/10;
+  const salt=Math.round(totalFlour*saltPct*10)/10;
+  const fat=Math.round(totalFlour*fatPct*10)/10;
+  const sugar=Math.round(totalFlour*sugarPct*10)/10;
+  const seedTotal=Math.round(seedGrams*10)/10;
+  const total=totalFlour+water+starter+yeast+salt+fat+sugar+seedTotal;
+
+  // DOM updates
+  setText('rFlour',totalFlour);
+  setText('rWater',water);
+  setText('rStarter',starter);
+  setText('rYeast',yeast||0);
+  setText('rSalt',salt);
+  setText('rFat',fat);
+  setText('rSugar',sugar);
+  setText('rSeeds',seedTotal);
+  setText('rTotal',Math.round(total));
+
+  // Show/hide optional result cards
+  document.getElementById('rFatCard').style.display=fatPct>0?'':'none';
+  document.getElementById('rSugarCard').style.display=sugarPct>0?'':'none';
+  document.getElementById('rSeedsCard').style.display=seedTotal>0?'':'none';
+
+  // Hydration visual
+  const hydDisplay=Math.round(hydPct*100);
+  document.getElementById('hydPct').textContent=hydDisplay+'%';
+  const barW=Math.max(3,Math.min(100,(hydDisplay-40)/65*100));
+  document.getElementById('hydFill').style.width=barW+'%';
+  let hDesc='', tags=[];
+  if(hydDisplay<55){hDesc=t('hyd_very_low');tags=['Stiff','Dense','Easy to shape'];}
+  else if(hydDisplay<65){hDesc=t('hyd_low');tags=['Firm','Good crust','Beginner-friendly'];}
+  else if(hydDisplay<75){hDesc=t('hyd_med');tags=['Balanced','Open crumb','Versatile'];}
+  else if(hydDisplay<85){hDesc=t('hyd_high');tags=['Sticky','Open crumb','Experienced'];}
+  else{hDesc=t('hyd_vhigh');tags=['Very wet','Ciabatta','Expert level'];}
+  document.getElementById('hydDesc').textContent=hDesc;
+  const bh=document.getElementById('doughBehavior');
+  bh.innerHTML=tags.map(t=>`<span class="dough-tag active">${t}</span>`).join('');
+
+  // Pie chart
+  const ingredients=[
+    {label:lang==='hu'?'Liszt':'Flour',val:totalFlour,color:'#C4844A'},
+    {label:lang==='hu'?'Víz':'Water',val:water,color:'#6B8CAE'},
+    {label:lang==='hu'?'Kovász/Élesztő':'Starter/Yeast',val:starter+yeast,color:'#7A8C6E'},
+    {label:lang==='hu'?'Só':'Salt',val:salt,color:'#B85C38'},
+    ...(fatPct>0?[{label:lang==='hu'?'Zsír':'Fat',val:fat,color:'#D4A853'}]:[]),
+    ...(sugarPct>0?[{label:lang==='hu'?'Cukor':'Sugar',val:sugar,color:'#9C5E30'}]:[]),
+    ...(seedTotal>0?[{label:lang==='hu'?'Magvak':'Seeds',val:seedTotal,color:'#8C7B6B'}]:[]),
+  ].filter(x=>x.val>0);
+  drawPie(ingredients,total);
+
+  // Flour blend impact
+  updateBlendImpact(hydDisplay);
+  renderFlourPcts();
+}
+
+function setText(id,val){
+  const el=document.getElementById(id);
+  if(el) el.textContent=(val%1===0)?val:parseFloat(val).toFixed(1);
+}
+
+// ═══════════════════════════════════════════════════
+//  BLEND IMPACT
+// ═══════════════════════════════════════════════════
+
+function updateBlendImpact(hydDisplay){
+  const avgProtein=getBlendAvg('protein');
+  const avgAbs=getBlendAvg('absorption');
+  const avgGluten=getBlendAvg('gluten');
+  const minH=Math.round(selectedFlours.reduce((s,id)=>{
+    const f=FLOURS.find(x=>x.id===id);return s+f.minH*(flourPcts[id]||0)/100;
+  },0));
+  const maxH=Math.round(selectedFlours.reduce((s,id)=>{
+    const f=FLOURS.find(x=>x.id===id);return s+f.maxH*(flourPcts[id]||0)/100;
+  },0));
+
+  document.getElementById('impProtein').textContent=avgProtein.toFixed(1)+'%';
+  // Absorption label
+  let absLabel;
+  if(avgAbs<0.95) absLabel=t('abs_low');
+  else if(avgAbs<1.03) absLabel=t('abs_med');
+  else if(avgAbs<1.10) absLabel=t('abs_high');
+  else absLabel=t('abs_very_high');
+  document.getElementById('impAbsorption').textContent=absLabel;
+  // Gluten
+  let glutLabel;
+  if(avgGluten<0.5) glutLabel=t('gluten_none');
+  else if(avgGluten<2) glutLabel=t('gluten_weak');
+  else if(avgGluten<3.5) glutLabel=t('gluten_med');
+  else if(avgGluten<4.5) glutLabel=t('gluten_strong');
+  else glutLabel=t('gluten_very');
+  document.getElementById('impGluten').textContent=glutLabel;
+  // Difficulty (based on gluten and hydration)
+  const diff=Math.min(5,Math.max(1,Math.round(1+(5-avgGluten/1.2)*0.6+(hydDisplay>80?1.5:hydDisplay>70?0.8:0))));
+  const diffStars=['','★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'];
+  document.getElementById('impDifficulty').textContent=diffStars[diff];
+  document.getElementById('impRecHyd').textContent=minH+'–'+maxH+'%';
+}
+
+// ═══════════════════════════════════════════════════
+//  PIE CHART
+// ═══════════════════════════════════════════════════
+
+function drawPie(slices, total){
+  const svg=document.getElementById('pieChart');
+  svg.innerHTML='';
+  const cx=50,cy=50,r=44;
+  let start=-Math.PI/2;
+  slices.forEach(s=>{
+    const angle=(s.val/total)*2*Math.PI;
+    if(angle<0.01) return;
+    const end=start+angle;
+    const x1=cx+r*Math.cos(start),y1=cy+r*Math.sin(start);
+    const x2=cx+r*Math.cos(end),y2=cy+r*Math.sin(end);
+    const la=angle>Math.PI?1:0;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${la} 1 ${x2} ${y2}Z`);
+    path.setAttribute('fill',s.color);
+    svg.appendChild(path);
+    start=end;
+  });
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',20);
+  c.setAttribute('fill','#FFFDF9');svg.appendChild(c);
+  // Legend
+  const leg=document.getElementById('pieLegend');
+  leg.innerHTML=slices.map(s=>`
+    <div class="pie-legend-item">
+      <div class="pie-dot" style="background:${s.color}"></div>
+      <span>${s.label}: <strong>${Math.round(s.val/total*100)}%</strong></span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMELINE
+// ═══════════════════════════════════════════════════
+
+function buildTimeline(){
+  const stages=tl();
+  const track=document.getElementById('tlTrack');
+  track.innerHTML='';
+  stages.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='tl-item'+(i===activeTlIndex?' active':'');
+    d.innerHTML=`
+      <div class="tl-icon">${s.icon}</div>
+      <div class="tl-label">${s.label}</div>
+      <div class="tl-duration">${s.duration}</div>
+      <div class="tl-detail">
+        <div class="tl-detail-inner">
+          <div class="td-tip">${s.tip}</div>
+          <div class="td-temp">🌡️ ${s.temp}</div>
+        </div>
+      </div>`;
+    d.onclick=()=>{
+      activeTlIndex=(activeTlIndex===i)?-1:i;
+      buildTimeline();
+    };
+    track.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  TEMP NOTE
+// ═══════════════════════════════════════════════════
+
+function updateTempNote(){
+  const temp=getVal('temp');
+  const note=document.getElementById('tempNote');
+  if(!note) return;
+  let msg='';
+  if(temp<20) msg=t('temp_cool');
+  else if(temp<=24) msg=t('temp_ideal');
+  else if(temp<=28) msg=t('temp_warm');
+  else msg=t('temp_hot');
+  note.textContent=msg;
+}
+
+// ═══════════════════════════════════════════════════
+//  STARTER CALCULATOR
+// ═══════════════════════════════════════════════════
+
+function calcStarter(){
+  const cur=parseFloat(document.getElementById('sCurrentInput').value)||50;
+  let rf=1,rw=1;
+  if(proMode){
+    rf=parseFloat(document.getElementById('ratioFlour')?.value)||1;
+    rw=parseFloat(document.getElementById('ratioWater')?.value)||1;
+  }
+  const flour=Math.round(cur*rf);
+  const water=Math.round(cur*rw);
+  const total=cur+flour+water;
+  document.getElementById('sFlour').textContent=flour+'g';
+  document.getElementById('sWater').textContent=water+'g';
+  document.getElementById('sTotal').textContent=total+'g';
+}
+
+// ═══════════════════════════════════════════════════
+//  READY INDICATOR
+// ═══════════════════════════════════════════════════
+
+function updateReady(){
+  const hours=getVal('hoursFed');
+  const rise=getVal('rise');
+  let score=0;
+  if(rise>=50) score+=2;
+  if(rise>=100) score+=2;
+  if(rise>=150) score+=1;
+  if(hours>=3&&hours<=8) score+=3;
+  if(hours>8&&hours<=12) score+=1;
+  const dots=document.getElementById('readyDots');
+  dots.innerHTML='';
+  for(let i=0;i<10;i++){
+    const d=document.createElement('div');
+    d.className='rdot';
+    if(i<score){d.classList.add(score>=7?'ok':score>=4?'warn':'alert');}
+    dots.appendChild(d);
+  }
+  let msg='';
+  if(rise>175||hours>14) msg=t('ready_past');
+  else if(score>=7) msg=t('ready_yes');
+  else if(score>=4) msg=t('ready_almost');
+  else msg=t('ready_not');
+  document.getElementById('readyText').textContent=msg;
+}
+
+// ═══════════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════════
+
+function resetDefaults(){
+  const b=BREAD_TYPES.find(x=>x.id===currentBread);
+  setVal('flour',500);
+  setVal('hydration',b.hydration);
+  setVal('starter',b.starter||20);
+  setVal('yeast',0.7);
+  setVal('salt',b.salt||2);
+  setVal('fat',b.fat||0);
+  setVal('sugar',b.sugar||0);
+  setVal('temp',22);
+  loaves=1;
+  document.getElementById('loavesCount').textContent=1;
+  selectedFlours=['bread']; flourPcts={bread:100};
+  activeSeedIds.clear();
+  buildFlourChips(); buildSeeds(); calculate();
+}
+
+// ═══════════════════════════════════════════════════
+//  SAVE RECIPES
+// ═══════════════════════════════════════════════════
+
+function saveRecipe(){
+  const flour=getVal('flour'), hydration=getVal('hydration');
+  const name=`${BREAD_TYPES.find(x=>x.id===currentBread)[lang]} · ${flour}g · ${hydration}% · ×${loaves}`;
+  const recipe={name,bread:currentBread,flour,hydration,
+    starter:getVal('starter'),yeast:getVal('yeast'),salt:getVal('salt'),
+    fat:getVal('fat'),sugar:getVal('sugar'),loaves,
+    selectedFlours:[...selectedFlours],flourPcts:{...flourPcts},
+    seeds:[...activeSeedIds],id:Date.now()};
+  savedRecipes.push(recipe);
+  try{localStorage.setItem('szandi_v2',JSON.stringify(savedRecipes));}catch(e){}
+  renderSaved();
+}
+
+function loadRecipe(r){
+  currentBread=r.bread||'sourdough';
+  buildBreadTabs();
+  selectBread(currentBread);
+  setVal('flour',r.flour); setVal('hydration',r.hydration);
+  setVal('starter',r.starter||20); setVal('yeast',r.yeast||0.7);
+  setVal('salt',r.salt||2); setVal('fat',r.fat||0); setVal('sugar',r.sugar||0);
+  loaves=r.loaves||1;
+  document.getElementById('loavesCount').textContent=loaves;
+  if(r.selectedFlours){selectedFlours=[...r.selectedFlours];flourPcts={...r.flourPcts};}
+  if(r.seeds){activeSeedIds.clear();r.seeds.forEach(s=>activeSeedIds.add(s));}
+  buildFlourChips(); buildSeeds(); calculate();
+}
+
+function deleteRecipe(id){
+  savedRecipes=savedRecipes.filter(r=>r.id!==id);
+  try{localStorage.setItem('szandi_v2',JSON.stringify(savedRecipes));}catch(e){}
+  renderSaved();
+}
+
+function renderSaved(){
+  const sec=document.getElementById('savedSection');
+  const list=document.getElementById('savedList');
+  sec.style.display=savedRecipes.length?'block':'none';
+  list.innerHTML=savedRecipes.map(r=>`
+    <div class="saved-chip" onclick='loadRecipe(${JSON.stringify(r).replace(/'/g,"\\'")})'> 
+      ${BREAD_TYPES.find(x=>x.id===r.bread)?.icon||'🍞'} ${r.name}
+      <span class="del" onclick="event.stopPropagation();deleteRecipe(${r.id})">✕</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+
+applyTranslations();
+buildBreadTabs();
+buildFlourChips();
+buildSeeds();
+buildTimeline();
+calculate();
+calcStarter();
+updateReady();
+renderSaved();
+updateTempNote();
+</script>
+</body>
+</html>
