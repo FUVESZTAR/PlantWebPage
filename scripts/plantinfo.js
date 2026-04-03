@@ -436,7 +436,7 @@ function insertPartIconsInTable(plant) {
       const cell  = cells[month];
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
-      const makeID = `-harv-icon-${month}`;
+      const makeID = `harv-icon-${month}`;
       const svg = makeSvgIcon(term,makeID,'display:inline-block'); //
       // Example: Adding the "bark1" icon to a div
       /*
