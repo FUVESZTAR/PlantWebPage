@@ -686,17 +686,15 @@ document.querySelector("#back-button").addEventListener("click", () => {
         // ── Varieties list ────────────────────────────────────────────────────
     const varieties     = splitPipe(plant.List_of_varieties);
     const varietiesList = document.querySelector("#varieties-list");
-    if (varietiesList) {
-      const speciesKey = plant.LatinName || plant.Name_HU;
+        if (varietiesList) {
+      const speciesKey = plant.LatinName;
       const varieties  = speciesKey
-        ? [...new Set(
-            plants
-              .filter(p => (p.LatinName || p.Name_HU) === speciesKey && p.Name_Variety)
-              .map(p => p.Name_Variety)
-          )]
+        ? plants
+            .filter(p => (p.LatinName) === speciesKey && p.Name_Variety)
+            .filter((p, i, a) => a.findIndex(x => x.Name_Variety === p.Name_Variety) === i)
         : [];
       varietiesList.innerHTML = varieties.length
-              ? varieties.map(v => `<li>${v}</li>`).join("")
+              ? varieties.map(v => `<li><a href="P.html?id=${v.Nr}">${v.Name_Variety}</a></li>`).join("")
         : `<li>${t('detail.noVarieties')}</li>`;
     }
     
