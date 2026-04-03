@@ -142,22 +142,14 @@ function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
   console.log("make svg from: "+def.symbolid);
-  const sourceSvg1 = document.getElementById(def.symbolid);;
-  if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
-  //read size and set size
-  //const basePixels = readSvgPixelSize(baseSvg);
- // let tw1 = basePixels.width;
-  //let th2 = basePixels.height;
-  
-  //targetSvg.style.width  = `${tw}px`;
-  //targetSvg.style.height = `${th}px`;
 
       // 4. DYNAMICALLY take parameters from the file
+      const sourceSvg1 = document.getElementById(def.symbolid);;
+     if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
     const originalWidth = sourceSvg1.getAttribute('width');
     const originalHeight = sourceSvg1.getAttribute('height');
-
     if (originalViewBox) {
       svg.setAttribute('viewBox', originalViewBox);
     } else if (originalWidth && originalHeight) {
@@ -167,7 +159,7 @@ function makeSvgIcon(term, id = null, type = 'display:inline-block') {
       // Default fallback
       svg.setAttribute('viewBox', '0 0 512 512');
     }
- //orig
+   //setting
   svg.setAttribute('class', def.class);
   //svg.setAttribute('viewBox', '0 0 512 512');
   //svg.setAttribute('aria-hidden', 'true');
@@ -444,8 +436,8 @@ function insertPartIconsInTable(plant) {
       const cell  = cells[month];
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
-      const makeID = `_harv_icon_-${month}`;
-      const svg = makeSvgIcon(term,makeID,"'display:inline-block'"); //
+      const makeID = `-harv-icon-${month}`;
+      const svg = makeSvgIcon(term,makeID,'display:inline-block'); //
       // Example: Adding the "bark1" icon to a div
       /*
        const container = document.getElementById('icon-container');
@@ -523,8 +515,8 @@ function insertCategoryIconsRow(plant, mode, vers) {
     });
 
     seenParts.forEach(part => {
-      const id  = `${vers}-icon-r`;
-      const svg = makeSvgIcon(part, id,"'display:block'");
+      const id  = `${vers}-icon`;
+      const svg = makeSvgIcon(part, id,'display:block');
       if (svg) frag.appendChild(svg);
     });
 
