@@ -520,7 +520,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
     seenParts.forEach(part => {
       const id  = `${vers}-icon`;
-      const svg = makeSvgIcon(part, id,'display:block');
+      const svg = makeSvgIcon(part, id,'display:inline-block');
       if (svg) frag.appendChild(svg);
     });
 
@@ -534,7 +534,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
       String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
         .forEach(part => {
           const id  = `${vers}-icon-${key}`;
-          const svg = makeSvgIcon(part, id);
+          const svg = makeSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
         });
     });
