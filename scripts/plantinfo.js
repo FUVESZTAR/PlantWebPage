@@ -462,6 +462,7 @@ function applySizeIcons(plant) {
   [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
 
   const type = splitPipe(plant.Plant_type).join(", ");
+  console.warn("Plant Type: "+ type + " data: "+ plant.Plant_type);
   if      (type === "Tree")  { if (treeSvg)  treeSvg.style.display  = ""; }
   else if (type === "Bush")  { if (bushSvg)  bushSvg.style.display  = ""; }
   else                       { if (plantSvg) plantSvg.style.display = ""; }
