@@ -477,11 +477,11 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // mode = 'per-category' : one icon per part per category column (original behaviour)
   // mode = 'unique'       : one icon per part, regardless of how many columns contain it
   // vers = 'harv' / 'med'                 : Which version is it harv - all part, med - medicinal part
-
-  const container = document.querySelector('#part-icons-row');
+  containerName = `#part-icons-row-${vers}`;
+  const container = document.querySelector(containerName);
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
-
+   
   if (mode === 'unique') {
     // Collect all parts that appear in ANY category column, deduplicated
     const seenParts = new Set();
