@@ -39,6 +39,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(1, 1fr);
   gap: 0px;
+  align-items: end;
   /*justify-items: center; /* horizontal center */
   /*align-items: flex-end; /* on line bottom */
 }
@@ -301,6 +302,12 @@ button {
 .sap-harvest-icon.black{ color:black; }
 
 .none-harvest-icon { width:auto; height:60px; fill:currentColor; color:black;}
+
+[class*="-harvest-icon"] {
+    width: min(70px, 12vw);
+    height: min(70px, 12vw);
+    overflow: visible;
+}
  
 /* .size-plant-icon-class { fill: var(--sizeObjColor)} /* width:60px; height:76px; */
 /*.size-tree-icon { fill:var(--sizeObjColor); }  /* width:60px; height:72px; */
