@@ -584,9 +584,16 @@ document.querySelector("#back-button").addEventListener("click", () => {
     renderCALENDER1(plant);
 
     // ── Varieties list ────────────────────────────────────────────────────
-    const varieties     = splitPipe(plant.List_of_varieties);
     const varietiesList = document.querySelector("#varieties-list");
     if (varietiesList) {
+      const speciesKey = plant.LatinName || plant.Name_HU;
+      const varieties  = speciesKey
+        ? [...new Set(
+            plants
+              .filter(p => (p.LatinName || p.Name_HU) === speciesKey && p.Name_Variety)
+              .map(p => p.Name_Variety)
+          )]
+        : [];
       varietiesList.innerHTML = varieties.length
         ? varieties.map(v => `<li>${v}</li>`).join("")
         : `<li>${t('detail.noVarieties')}</li>`;
