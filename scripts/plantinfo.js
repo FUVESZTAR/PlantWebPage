@@ -51,6 +51,61 @@ const HARVEST_PART_COLUMNS = [
   { key: 'Seedpod_Harvesting_time_month',   term: 'seedpod'   },
 ];
 
+  const data = {
+    planting:       uniqueCALENDER1Slots(plant.Planting_time_under_glass_months, plant.Planting_time_in_ground_month),
+    occupyingSpace: uniqueCALENDER1Slots(plant.Occupying_space_month),
+    flowering:      uniqueCALENDER1Slots(plant.Flowering_time_month),
+    harvestMaturity:uniqueCALENDER1Slots(plant.Fruit_Harvesting_time_month),
+    eatingMaturity: uniqueCALENDER1Slots(plant.Eating_Maturity_time_month),
+    harvesting:     uniqueCALENDER1Slots(
+                      plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month,
+                      plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month,
+                      plant.Apical_bud_Harvesting_time_month, plant.Wood_Harvesting_time_month,
+                      plant.Pollen_Harvesting_time_month, plant.Bark_Harvesting_time_month,
+                      plant.Leaf_Harvesting_time_month, plant.Stem_Harvesting_time_month,
+                      plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month,
+                      plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
+    harvestStoring: uniqueCALENDER1Slots(plant.Harvest_storing_month),
+    seedSaving:     uniqueCALENDER1Slots(plant.Seed_Harvesting_time_month),
+  };
+  const iconSizeTargets = [
+    { id: "size-tree-icon-2",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
+    { id: "size-house-icon-1",  w: 6000,                              h: 4000                               },
+    { id: "size-root-icon-1",   w: plant.Plant_root_width_average_mm, h: plant.Plant_root_depth_average_mm   },
+    { id: "size-plant-icon-1",  w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
+    { id: "size-bush-icon-1",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
+  ];
+
+    const fieldMap = {
+      "#name_sz":                                    plant.Name_SZ,
+      "#plant_type":                                 splitPipe(plant.Plant_type).join(", "),
+      "#uses":                                       splitPipe(plant.Uses).join(", "),
+      "#medicinal_use":                              plant.Medicinal_use,
+      "#preparation_to_edibility":                   splitPipe(plant.Preparation_all).join(", "),
+      "#plant_flower_color":                         plant.Plant_flower_color,
+      "#plant_height_max_mm":                        plant.Plant_height_max_mm,
+      "#plant_width_max_mm":                         plant.Plant_width_max_mm,
+      "#plant_root_depth_average_mm":                 plant.Plant_root_depth_average_mm,
+      "#plant_root_width_average_mm":                plant.Plant_root_width_average_mm,
+      "#plant_height_average_mm":                    plant.Plant_height_average_mm,
+      "#plant_width_average_mm":                     plant.Plant_width_average_mm,
+      "#plant_space_filling_mm":                     plant.Plant_space_filling_mm,
+      "#plant_root_type":                            plant.Plant_root_type,
+      "#plant_growing_lifecycle":                    plant.Plant_growing_lifecycle,
+      "#plant_growing_habit":                        plant.Plant_growing_habit,
+      "#days_to_harvest":                            plant.Days_to_Harvest,
+      "#days_to_maturity":                           plant.Days_to_Maturity,
+      "#Hardiness_Zone_USDA":                        plant.Hardiness_Zone_USDA,
+      "#plant_planting_seed_depth_mm":                plant.Plant_planting_seed_depth_mm,
+      "#plant_planting_seed_soil_temperature_celsius": plant.Plant_planting_seed_soil_temperature_celsius,
+      "#plant_planting_plant_distance_mm":           plant.Plant_planting_plant_distance_mm,
+      "#plant_description":                          plant.Plant_description,
+      "#plant_seed_germination_time_days":           plant.Days_to_Germination,
+      "#plant_seed_survival_time_month":             plant.Plant_seed_survival_time_month,
+      "#plant_dangers_to_humans":                    plant.Dangers_of_plant,
+    };
+//aal col
+;LatinName;Name_Variety;Name_HU;Name_EN;Genus;Family;Name_SZ;Plant_type;Raw_edible_parts_all;Prepared_edible_parts_all;Preparation_all;Toxic_parts_all;Medicinal_parts_all;Medicinal_use;Dangers_of_plant;Uses;Cultivation_type;Planting_style;Planting_time_under_glass_months;Planting_time_in_ground_month;Occupying_space_month;Flowering_time_month;Harvesting_time_under_glass_month;Harvesting_time_in_ground_month;Root_Harvesting_time_month;Stem_Harvesting_time_month;Leaf_Harvesting_time_month;Flower_Harvesting_time_month;Fruit_Harvesting_time_month;Seed_Harvesting_time_month;Bark_Harvesting_time_month;Pollen_Harvesting_time_month;Wood_Harvesting_time_month;Apical_bud_Harvesting_time_month;Seedpod_Harvesting_time_month;Manna_Harvesting_time_month;Shoot_Harvesting_time_month;Nectar_Harvesting_time_month;Sap_Harvesting_time_month;Eating_Maturity_time_in_month;Harvest_storing_month;Plant_flower_color;Days_to_Germination;Days_to_Maturity;Days_to_Harvest;Hardiness_Zone_USDA;Minimum_temperature;Benefits;Plant_planting_seed_dept_mm;Plant_planting_seed_soil_temperature_celsius;Plant_planting_plant_distance_mm;Plant_description;Edible_parts_description;Plant_height_max_mm;Plant_height_average_mm;Plant_width_max_mm;Plant_width_average_mm;Plant_space_filling_mm;Plant_root_depth_average_mm;Plant_root_width_average_mm;Plant_root_type;Plant_growing_lifecycle;Plant_growing_habit;Plant_seed_survival_time_month;Native_range;Fruit_length_mm;Fruit_width_mm;Fruit_weight_mm;Shade_tolerance;Moisture_need;Soil_need;PH_need;Growth_rate;Plants_per_square_meter;Planting_location;Propagation;Foliage_type;Flower_type;Needed_polinators;Leaf_color;Storage_duration_month;Yield_per_plant;Watering_regime;Companion_plants;Allopatic_effect;Allopatic_sensitivity;Allopatic_tolerance;Pest_resistance;Soil_microbiology;Wind_tolerance;Source_of_plant;Status/datasource;Active_in_page;Active_in_NFC;List_of_varieties;Egyéb
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
   'Raw_edible_parts_all',
@@ -58,6 +113,30 @@ const CATEGORY_PART_COLUMNS = [
   'Toxic_parts_all',
   'Medicinal_parts_all',
 ];
+
+// ── Fieled dependent utilities ───────────────────────────────────────────────────────────
+
+function getMonthColumns() {
+  return [
+    { field: "Planting_time_under_glass_months", label: t('planning.plantingCover'),   id: "planting-cover"   },
+    { field: "Planting_time_in_ground_month", label: t('planning.plantingGround'),  id: "planting-ground"  },
+    { field: "Harvesting_time_under_glass_months",label: t('planning.harvestingCover'), id: "harvesting-cover" },
+    { field: "Harvesting_time_in_ground_month",label: t('planning.harvestingGround'),id: "harvesting-ground"},
+  ];
+}
+
+function getCalender1Tracks() {
+  return [
+    { id: "planting",       label: t('cal.tracks.planting'),       color: "#3f3f3f"   },
+    { id: "flowering",      label: t('cal.tracks.flowering'),      color: "#b6b62d"   },
+    { id: "occupyingSpace", label: t('cal.tracks.occupyingSpace'), color: "#88b62d"   },
+    { id: "harvestMaturity",label: t('cal.tracks.harvestMaturity'),color: "#ff7d00"   },
+    { id: "harvesting",     label: t('cal.tracks.harvesting'),     color: "#00ccbb"   },
+    { id: "eatingMaturity", label: t('cal.tracks.eatingMaturity'), color: "#c40000"   },
+    { id: "harvestStoring", label: t('cal.tracks.harvestStoring'), color: "#cc8f0090" },
+    { id: "seedSaving",     label: t('cal.tracks.seedSaving'),     color: "#0018cc"   },
+  ];
+}
 
 // ── Pure utilities ───────────────────────────────────────────────────────────
 
@@ -73,30 +152,8 @@ function buildSearchText(value, useSplit = false) {
   return String(raw).trim().toLowerCase();
 }
 
-function getMonthColumns() {
-  return [
-    { field: "Planting_time_under_glass_months", label: t('planning.plantingCover'),   id: "planting-cover"   },
-    { field: "Planting_time_in_ground_month", label: t('planning.plantingGround'),  id: "planting-ground"  },
-    { field: "Harvesting_time_under_glass_months",label: t('planning.harvestingCover'), id: "harvesting-cover" },
-    { field: "Harvesting_time_in_ground_month",label: t('planning.harvestingGround'),id: "harvesting-ground"},
-  ];
-}
-
 function getCalender1MonthLabels() {
   return t('cal.months');
-}
-
-function getCalender1Tracks() {
-  return [
-    { id: "planting",       label: t('cal.tracks.planting'),       color: "#3f3f3f"   },
-    { id: "flowering",      label: t('cal.tracks.flowering'),      color: "#b6b62d"   },
-    { id: "occupyingSpace", label: t('cal.tracks.occupyingSpace'), color: "#88b62d"   },
-    { id: "harvestMaturity",label: t('cal.tracks.harvestMaturity'),color: "#ff7d00"   },
-    { id: "harvesting",     label: t('cal.tracks.harvesting'),     color: "#00ccbb"   },
-    { id: "eatingMaturity", label: t('cal.tracks.eatingMaturity'), color: "#c40000"   },
-    { id: "harvestStoring", label: t('cal.tracks.harvestStoring'), color: "#cc8f0090" },
-    { id: "seedSaving",     label: t('cal.tracks.seedSaving'),     color: "#0018cc"   },
-  ];
 }
 
 // ── SVG helpers ──────────────────────────────────────────────────────────────
