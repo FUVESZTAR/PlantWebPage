@@ -348,49 +348,49 @@ function renderCALENDER1(plant,FM) {
 
   const data = {
   planting: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'planting_time_under_glass_months').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'planting_time_in_ground_month').data]
+    plant[FM.planting_time_under_glass_months],
+    plant[FM.planting_time_in_ground_month]
   ),
 
   occupyingSpace: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'occupying_space_month').data]
+    plant[FM.occupying_space_month]
   ),
 
   flowering: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'flowering_time_month').data]
+    plant[FM.flowering_time_month]
   ),
 
   harvestMaturity: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'fruit_harvesting_time_month').data]
+    plant[FM.fruit_harvesting_time_month]
   ),
 
   eatingMaturity: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'eating_maturity_time_in_month').data]
+    plant[FM.eating_maturity_time_in_month]
   ),
 
   harvesting: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'sap_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'nectar_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'shoot_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'seedpod_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'apical_bud_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'wood_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'pollen_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'bark_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'leaf_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'stem_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'flower_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'fruit_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'seed_harvesting_time_month').data],
-    plant[BASIC_FIED_MAP.find(f => f.key === 'root_harvesting_time_month').data]
+    plant[FM.sap_harvesting_time_month],
+    plant[FM.nectar_harvesting_time_month],
+    plant[FM.shoot_harvesting_time_month],
+    plant[FM.seedpod_harvesting_time_month],
+    plant[FM.apical_bud_harvesting_time_month],
+    plant[FM.wood_harvesting_time_month],
+    plant[FM.pollen_harvesting_time_month],
+    plant[FM.bark_harvesting_time_month],
+    plant[FM.leaf_harvesting_time_month],
+    plant[FM.stem_harvesting_time_month],
+    plant[FM.flower_harvesting_time_month],
+    plant[FM.fruit_harvesting_time_month],
+    plant[FM.seed_harvesting_time_month],
+    plant[FM.root_harvesting_time_month]
   ),
 
   harvestStoring: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'harvest_storing_month').data]
+    plant[FM.harvest_storing_month]
   ),
 
   seedSaving: uniqueCALENDER1Slots(
-    plant[BASIC_FIED_MAP.find(f => f.key === 'seed_harvesting_time_month').data]
+    plant[FM.seed_harvesting_time_month]
   ),
 };
 
@@ -889,7 +889,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     
     // ── Cache data once ─────────────────────────────────────────── 
     const FM = Object.fromEntries(BASIC_FIED_MAP.map(f => [f.key, f.data]));
-    consol.log("cache ready);
+    consol.log("cache ready");
                
     // ── Title & identity ──────────────────────────────────────────────────
     const lang          = getCurrentLang();
