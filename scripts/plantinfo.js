@@ -889,7 +889,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
     
     // ── Cache data once ─────────────────────────────────────────── 
     const FM = Object.fromEntries(BASIC_FIED_MAP.map(f => [f.key, f.data]));
-    consol.log("cache ready");
+    console.log("cache ready");
+    console.log("example data, plant width av: "+plant[FM.plant_width_average_mm]);
                
     // ── Title & identity ──────────────────────────────────────────────────
     const lang          = getCurrentLang();
