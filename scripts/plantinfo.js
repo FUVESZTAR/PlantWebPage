@@ -90,8 +90,8 @@ function getCalender1Tracks() {
   return [
     { id: "planting",       label: t('cal.tracks.planting'),       color: "#3f3f3f"   },
     { id: "flowering",      label: t('cal.tracks.flowering'),      color: "#b6b62d"   },
-    { id: "ripe",           label: t('cal.tracks.ripe'),           color: "#ff7d00"   },
-    { id: "fruiting",       label: t('cal.tracks.fruiting'),       color: "#c40000"   },
+    { id: "harvestMaturity",           label: t('cal.tracks.harvestMaturity'),           color: "#ff7d00"   },
+    { id: "eatingMaturity",       label: t('cal.tracks.eatingMaturity'),       color: "#c40000"   },
     { id: "occupyingSpace", label: t('cal.tracks.occupyingSpace'), color: "#88b62d"   },
     { id: "harvesting",     label: t('cal.tracks.harvesting'),     color: "#00ccbb"   },
     { id: "harvestStoring", label: t('cal.tracks.harvestStoring'), color: "#cc8f0090" },
@@ -217,8 +217,8 @@ function renderCALENDER1(plant) {
     planting:       uniqueCALENDER1Slots(plant.Planting_time_under_glass_months, plant.Planting_time_in_ground_month),
     occupyingSpace: uniqueCALENDER1Slots(plant.Occupying_space_month),
     flowering:      uniqueCALENDER1Slots(plant.Flowering_time_month),
-    ripe:           uniqueCALENDER1Slots(plant.Ripeness_time_in_month),
-    fruiting:       uniqueCALENDER1Slots(plant.Fruit_Harvesting_time_month),
+    harvestMaturity:uniqueCALENDER1Slots(plant.Fruit_Harvesting_time_month),
+    eatingMaturity: uniqueCALENDER1Slots(plant.Eating_Maturity_time_month),
     harvesting:     uniqueCALENDER1Slots(
                       plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month,
                       plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month,
@@ -228,7 +228,7 @@ function renderCALENDER1(plant) {
                       plant.Flower_Harvesting_time_month, plant.Fruit_Harvesting_time_month,
                       plant.Seed_Harvesting_time_month, plant.Root_Harvesting_time_month),
     harvestStoring: uniqueCALENDER1Slots(plant.Harvest_storing_month),
-    seedSaving:     uniqueCALENDER1Slots(plant.Seed_saving),
+    seedSaving:     uniqueCALENDER1Slots(plant.Seed_Harvesting_time_month),
   };
 
   const tracks  = getCalender1Tracks();
