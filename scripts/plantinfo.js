@@ -539,8 +539,9 @@ async function loadPlantImage(plant) {
   
   //Build your local search key
   const imgText  = `${plant.Nr}_${searchLatin}_${searchVariety}`;
+  cons.log("seach image text: "+imgText)
   const searchId = normalizeName(imgText);
-
+ cons.log("seach image norm text: "+searchId)
   try {
     //Try local image first
     const response = await fetch("images/images.json");
@@ -548,9 +549,12 @@ async function loadPlantImage(plant) {
 
     if (data[searchId] && data[searchId][0]) {
       imgEl.src = `images/${data[searchId][0]}`;
+      cons.log("find image: "+`images/${data[searchId][0]}`)
       return; // stop if found locally
     }
-
+   
+    
+    //images/1_malus_domestica_species.jpg
     //Fallback to Wikipedia API
     const wikiResponse = await fetch(
       `https://en.wikipedia.org/api/rest_v1/page/summary/${searchLatin}`
