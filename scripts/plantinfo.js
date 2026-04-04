@@ -30,6 +30,7 @@ const PART_ICON_MAP = {
   nectar:   { class: 'nectar-harvest-icon',   symbol: '#icon-nectar',   symbolid: 'icon-nectar'   },
   pollen:   { class: 'pollen-harvest-icon',   symbol: '#icon-pollen',   symbolid: 'icon-pollen'   },
   seedpod:  { class: 'seedpod-harvest-icon',  symbol: '#icon-seedpod',  symbolid: 'icon-seedpod'  },
+  none:  { class: 'none-harvest-icon',  symbol: '#icon-none',  symbolid: 'icon-none'  },
 };
 
 // CSV column → part term mapping for the planning table harvest row
@@ -395,7 +396,7 @@ function applyIconColours() {
   });
 
   // Med / harv icon visibility — fix: hide default only when at least one part is visible
-  ["med", "harv"].forEach(type => {
+ /* ["med", "harv"].forEach(type => {
     const defaultIcon = document.getElementById(`none-${type}-icon`);
     let anyVisible = false;
 
@@ -414,6 +415,7 @@ function applyIconColours() {
 
     if (defaultIcon) defaultIcon.style.display = anyVisible ? "none" : "block";
   });
+  */
 
   return edibilityClass; // expose for callers that need it
 }
@@ -502,6 +504,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // vers = 'harv' / 'med'                 : Which version is it harv - all part, med - medicinal part
   const containerName = `#part-icons-row-${vers}`;
   const container = document.querySelector(containerName);
+  const iconsmade = 0;
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
    
@@ -522,6 +525,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
       const id  = `${vers}-icon`;
       const svg = makeSvgIcon(part, id,'display:inline-block');
       if (svg) frag.appendChild(svg);
+      iconsmade = i+1;
     });
 
   } else {
@@ -536,9 +540,17 @@ function insertCategoryIconsRow(plant, mode, vers) {
           const id  = `${vers}-icon-${key}`;
           const svg = makeSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
+          iconsmade = i+1;
         });
     });
   }
+  // none icon
+  if (iconsmade == 0) {
+    const id  = `none-${vers}-icon`;
+    const svg = makeSvgIcon('none', id,'display:inline-block');
+    if (svg) frag.appendChild(svg);
+  }
+  
   // Colour icons after all are inserted (single pass)
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
@@ -547,6 +559,9 @@ function insertCategoryIconsRow(plant, mode, vers) {
       svg.classList.add(cls);
     });
   });
+
+  
+  
   container.innerHTML = '';
   container.appendChild(frag);
 }
