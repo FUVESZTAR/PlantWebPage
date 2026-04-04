@@ -482,7 +482,7 @@ function applySizeIcons(plant) {
   const sizeTargets = [
     { id: "size-tree-icon-2",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
     { id: "size-house-icon-1",  w: 6000,                              h: 4000                               },
-    { id: "size-root-icon-1",   w: plant.Plant_root_width_average_mm, h: plant.Plant_root_deept_average_mm   },
+    { id: "size-root-icon-1",   w: plant.Plant_root_width_average_mm, h: plant.Plant_root_depth_average_mm   },
     { id: "size-plant-icon-1",  w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
     { id: "size-bush-icon-1",   w: plant.Plant_width_average_mm,      h: plant.Plant_height_average_mm      },
   ];
@@ -742,7 +742,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       "#plant_flower_color":                         plant.Plant_flower_color,
       "#plant_height_max_mm":                        plant.Plant_height_max_mm,
       "#plant_width_max_mm":                         plant.Plant_width_max_mm,
-      "#plant_root_deept_average_mm":                 plant.Plant_root_deept_average_mm,
+      "#plant_root_depth_average_mm":                 plant.Plant_root_depth_average_mm,
       "#plant_root_width_average_mm":                plant.Plant_root_width_average_mm,
       "#plant_height_average_mm":                    plant.Plant_height_average_mm,
       "#plant_width_average_mm":                     plant.Plant_width_average_mm,
@@ -753,7 +753,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       "#days_to_harvest":                            plant.Days_to_Harvest,
       "#days_to_maturity":                           plant.Days_to_Maturity,
       "#Hardiness_Zone_USDA":                        plant.Hardiness_Zone_USDA,
-      "#plant_planting_seed_deept_mm":                plant.Plant_planting_seed_deept_mm,
+      "#plant_planting_seed_depth_mm":                plant.Plant_planting_seed_depth_mm,
       "#plant_planting_seed_soil_temperature_celsius": plant.Plant_planting_seed_soil_temperature_celsius,
       "#plant_planting_plant_distance_mm":           plant.Plant_planting_plant_distance_mm,
       "#plant_description":                          plant.Plant_description,
