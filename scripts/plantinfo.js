@@ -90,10 +90,10 @@ function getCalender1Tracks() {
   return [
     { id: "planting",       label: t('cal.tracks.planting'),       color: "#3f3f3f"   },
     { id: "flowering",      label: t('cal.tracks.flowering'),      color: "#b6b62d"   },
-    { id: "harvestMaturity",           label: t('cal.tracks.harvestMaturity'),           color: "#ff7d00"   },
-    { id: "eatingMaturity",       label: t('cal.tracks.eatingMaturity'),       color: "#c40000"   },
     { id: "occupyingSpace", label: t('cal.tracks.occupyingSpace'), color: "#88b62d"   },
+    { id: "harvestMaturity",label: t('cal.tracks.harvestMaturity'),color: "#ff7d00"   },
     { id: "harvesting",     label: t('cal.tracks.harvesting'),     color: "#00ccbb"   },
+    { id: "eatingMaturity", label: t('cal.tracks.eatingMaturity'), color: "#c40000"   },
     { id: "harvestStoring", label: t('cal.tracks.harvestStoring'), color: "#cc8f0090" },
     { id: "seedSaving",     label: t('cal.tracks.seedSaving'),     color: "#0018cc"   },
   ];
