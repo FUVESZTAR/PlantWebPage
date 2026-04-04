@@ -215,10 +215,10 @@ function renderCALENDER1(plant) {
 
   const data = {
     planting:       uniqueCALENDER1Slots(plant.Planting_time_under_glass_months, plant.Planting_time_in_ground_month),
-    occupyingSpace: uniqueCALENDER1Slots(plant.Occupying_space_month, plant.Ocuppying_space_month),
+    occupyingSpace: uniqueCALENDER1Slots(plant.Occupying_space_month),
     flowering:      uniqueCALENDER1Slots(plant.Flowering_time_month),
-    ripe:           uniqueCALENDER1Slots(plant.Harvesting_time_under_glass_months, plant.Harvesting_time_in_ground_month),
-    fruiting:       uniqueCALENDER1Slots(plant.fruit_Harvesting_time_month),
+    ripe:           uniqueCALENDER1Slots(plant.Ripeness_time_in_month),
+    fruiting:       uniqueCALENDER1Slots(plant.Fruit_Harvesting_time_month),
     harvesting:     uniqueCALENDER1Slots(
                       plant.sap_Harvesting_time_month, plant.Nectar_Harvesting_time_month,
                       plant.Shoot_Harvesting_time_month, plant.Seedpod_Harvesting_time_month,
