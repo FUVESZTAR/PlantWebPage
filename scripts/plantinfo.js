@@ -52,134 +52,134 @@ const HARVEST_PART_COLUMNS = [
 ];
 
 const BASIC_FIED_MAP = [
-  { key:'latin_name', symbol:"#latin_name", data:"LatinName", icon:"", typ:'normal', use:"" },
-  { key:'name_variety', symbol:"#name_variety", data:"Name_Variety", icon:"", typ:'normal', use:"" },
-  { key:'name_hu', symbol:"#name_hu", data:"Name_HU", icon:"", typ:'normal',use:"" },
-  { key:'name_en', symbol:"#name_en", data:"Name_EN", icon:"", typ:'normal',use:"" },
-  { key:'genus', symbol:"#genus", data:"Genus", icon:"", typ:'normal',use:"" },
-  { key:'family', symbol:"#family", data:"Family", icon:"", typ:'normal',use:"" },
-  { key:'name_sz', symbol:"#name_sz", data:"Name_SZ", icon:"", typ:'normal', use:"" },
+  { key:'latin_name', symbol:"#latin_name", data:"LatinName", icon:"", typ:'normal', use:"", i18n:"lb_latinname" },
+  { key:'name_variety', symbol:"#name_variety", data:"Name_Variety", icon:"", typ:'normal', use:"", i18n:"lb_namevariety" },
+  { key:'name_hu', symbol:"#name_hu", data:"Name_HU", icon:"", typ:'normal', use:"", i18n:"lb_namehu" },
+  { key:'name_en', symbol:"#name_en", data:"Name_EN", icon:"", typ:'normal', use:"", i18n:"lb_nameen" },
+  { key:'genus', symbol:"#genus", data:"Genus", icon:"", typ:'normal', use:"", i18n:"lb_genus" },
+  { key:'family', symbol:"#family", data:"Family", icon:"", typ:'normal', use:"", i18n:"lb_family" },
+  { key:'name_sz', symbol:"#name_sz", data:"Name_SZ", icon:"", typ:'normal', use:"", i18n:"lb_namesz" },
 
-  { key:'plant_type', symbol:"#plant_type", data:"Plant_type", icon:"", typ:'split', use:"" },
+  { key:'plant_type', symbol:"#plant_type", data:"Plant_type", icon:"", typ:'split', use:"", i18n:"lb_planttype" },
 
-  { key:'raw_edible_parts_all', symbol:"#raw_edible_parts_all", data:"Raw_edible_parts_all", icon:"", typ:'split', use:"" },
-  { key:'prepared_edible_parts_all', symbol:"#prepared_edible_parts_all", data:"Prepared_edible_parts_all", icon:"", typ:'split', use:"" },
-  { key:'preparation_all', symbol:"#preparation_all", data:"Preparation_all", icon:"", typ:'split', use:"" },
-  { key:'toxic_parts_all', symbol:"#toxic_parts_all", data:"Toxic_parts_all", icon:"", typ:'split', use:"" },
-  { key:'medicinal_parts_all', symbol:"#medicinal_parts_all", data:"Medicinal_parts_all", icon:"", typ:'split', use:"" },
+  { key:'raw_edible_parts_all', symbol:"#raw_edible_parts_all", data:"Raw_edible_parts_all", icon:"", typ:'split', use:"", i18n:"lb_rawediblepartsall" },
+  { key:'prepared_edible_parts_all', symbol:"#prepared_edible_parts_all", data:"Prepared_edible_parts_all", icon:"", typ:'split', use:"", i18n:"lb_preparedediblepartsall" },
+  { key:'preparation_all', symbol:"#preparation_all", data:"Preparation_all", icon:"", typ:'split', use:"", i18n:"lb_preparationall" },
+  { key:'toxic_parts_all', symbol:"#toxic_parts_all", data:"Toxic_parts_all", icon:"", typ:'split', use:"", i18n:"lb_toxicpartsall" },
+  { key:'medicinal_parts_all', symbol:"#medicinal_parts_all", data:"Medicinal_parts_all", icon:"", typ:'split', use:"", i18n:"lb_medicinalpartsall" },
 
-  { key:'medicinal_use', symbol:"#medicinal_use", data:"Medicinal_use", icon:"", typ:'split', use:"" },
-  { key:'dangers_of_plant', symbol:"#dangers_of_plant", data:"Dangers_of_plant", icon:"", typ:'split', use:"" },
-  { key:'uses', symbol:"#uses", data:"Uses", icon:"", typ:'split', use:"" },
+  { key:'medicinal_use', symbol:"#medicinal_use", data:"Medicinal_use", icon:"", typ:'split', use:"", i18n:"lb_medicinaluse" },
+  { key:'dangers_of_plant', symbol:"#dangers_of_plant", data:"Dangers_of_plant", icon:"", typ:'split', use:"", i18n:"lb_dangersofplant" },
+  { key:'uses', symbol:"#uses", data:"Uses", icon:"", typ:'split', use:"", i18n:"lb_uses" },
 
-  { key:'cultivation_type', symbol:"#cultivation_type", data:"Cultivation_type", icon:"", typ:'normal', use:"" },
-  { key:'planting_style', symbol:"#planting_style", data:"Planting_style", icon:"", typ:'normal', use:"" },
+  { key:'cultivation_type', symbol:"#cultivation_type", data:"Cultivation_type", icon:"", typ:'normal', use:"", i18n:"lb_cultivationtype" },
+  { key:'planting_style', symbol:"#planting_style", data:"Planting_style", icon:"", typ:'normal', use:"", i18n:"lb_plantingstyle" },
 
-  { key:'planting_time_under_glass_months', symbol:"#planting_time_under_glass_months", data:"Planting_time_under_glass_months", icon:"", typ:'normal', use:"" },
-  { key:'planting_time_in_ground_month', symbol:"#planting_time_in_ground_month", data:"Planting_time_in_ground_month", icon:"", typ:'normal', use:"" },
-  { key:'occupying_space_month', symbol:"#occupying_space_month", data:"Occupying_space_month", icon:"", typ:'normal', use:"" },
-  { key:'flowering_time_month', symbol:"#flowering_time_month", data:"Flowering_time_month", icon:"", typ:'normal', use:"" },
+  { key:'planting_time_under_glass_months', symbol:"#planting_time_under_glass_months", data:"Planting_time_under_glass_months", icon:"", typ:'normal', use:"", i18n:"lb_plantingtimeunderglassmonths" },
+  { key:'planting_time_in_ground_month', symbol:"#planting_time_in_ground_month", data:"Planting_time_in_ground_month", icon:"", typ:'normal', use:"", i18n:"lb_plantingtimeingroundmonth" },
+  { key:'occupying_space_month', symbol:"#occupying_space_month", data:"Occupying_space_month", icon:"", typ:'normal', use:"", i18n:"lb_occupyingspacemonth" },
+  { key:'flowering_time_month', symbol:"#flowering_time_month", data:"Flowering_time_month", icon:"", typ:'normal', use:"", i18n:"lb_floweringtimemonth" },
 
-  { key:'harvesting_time_under_glass_month', symbol:"#harvesting_time_under_glass_month", data:"Harvesting_time_under_glass_month", icon:"", typ:'normal', use:"" },
-  { key:'harvesting_time_in_ground_month', symbol:"#harvesting_time_in_ground_month", data:"Harvesting_time_in_ground_month", icon:"", typ:'normal', use:"" },
+  { key:'harvesting_time_under_glass_month', symbol:"#harvesting_time_under_glass_month", data:"Harvesting_time_under_glass_month", icon:"", typ:'normal', use:"", i18n:"lb_harvestingtimeunderglassmonth" },
+  { key:'harvesting_time_in_ground_month', symbol:"#harvesting_time_in_ground_month", data:"Harvesting_time_in_ground_month", icon:"", typ:'normal', use:"", i18n:"lb_harvestingtimeingroundmonth" },
 
-  { key:'root_harvesting_time_month', symbol:"#root_harvesting_time_month", data:"Root_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'stem_harvesting_time_month', symbol:"#stem_harvesting_time_month", data:"Stem_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'leaf_harvesting_time_month', symbol:"#leaf_harvesting_time_month", data:"Leaf_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'flower_harvesting_time_month', symbol:"#flower_harvesting_time_month", data:"Flower_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'fruit_harvesting_time_month', symbol:"#fruit_harvesting_time_month", data:"Fruit_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'seed_harvesting_time_month', symbol:"#seed_harvesting_time_month", data:"Seed_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'bark_harvesting_time_month', symbol:"#bark_harvesting_time_month", data:"Bark_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'pollen_harvesting_time_month', symbol:"#pollen_harvesting_time_month", data:"Pollen_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'wood_harvesting_time_month', symbol:"#wood_harvesting_time_month", data:"Wood_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'apical_bud_harvesting_time_month', symbol:"#apical_bud_harvesting_time_month", data:"Apical_bud_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'seedpod_harvesting_time_month', symbol:"#seedpod_harvesting_time_month", data:"Seedpod_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'manna_harvesting_time_month', symbol:"#manna_harvesting_time_month", data:"Manna_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'shoot_harvesting_time_month', symbol:"#shoot_harvesting_time_month", data:"Shoot_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'nectar_harvesting_time_month', symbol:"#nectar_harvesting_time_month", data:"Nectar_Harvesting_time_month", icon:"", typ:'normal', use:"" },
-  { key:'sap_harvesting_time_month', symbol:"#sap_harvesting_time_month", data:"Sap_Harvesting_time_month", icon:"", typ:'normal', use:"" },
+  { key:'root_harvesting_time_month', symbol:"#root_harvesting_time_month", data:"Root_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_rootharvestingtimemonth" },
+  { key:'stem_harvesting_time_month', symbol:"#stem_harvesting_time_month", data:"Stem_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_stemharvestingtimemonth" },
+  { key:'leaf_harvesting_time_month', symbol:"#leaf_harvesting_time_month", data:"Leaf_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_leafharvestingtimemonth" },
+  { key:'flower_harvesting_time_month', symbol:"#flower_harvesting_time_month", data:"Flower_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_flowerharvestingtimemonth" },
+  { key:'fruit_harvesting_time_month', symbol:"#fruit_harvesting_time_month", data:"Fruit_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_fruitharvestingtimemonth" },
+  { key:'seed_harvesting_time_month', symbol:"#seed_harvesting_time_month", data:"Seed_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_seedharvestingtimemonth" },
+  { key:'bark_harvesting_time_month', symbol:"#bark_harvesting_time_month", data:"Bark_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_barkharvestingtimemonth" },
+  { key:'pollen_harvesting_time_month', symbol:"#pollen_harvesting_time_month", data:"Pollen_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_pollenharvestingtimemonth" },
+  { key:'wood_harvesting_time_month', symbol:"#wood_harvesting_time_month", data:"Wood_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_woodharvestingtimemonth" },
+  { key:'apical_bud_harvesting_time_month', symbol:"#apical_bud_harvesting_time_month", data:"Apical_bud_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_apicalbudharvestingtimemonth" },
+  { key:'seedpod_harvesting_time_month', symbol:"#seedpod_harvesting_time_month", data:"Seedpod_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_seedpodharvestingtimemonth" },
+  { key:'manna_harvesting_time_month', symbol:"#manna_harvesting_time_month", data:"Manna_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_mannaharvestingtimemonth" },
+  { key:'shoot_harvesting_time_month', symbol:"#shoot_harvesting_time_month", data:"Shoot_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_shootharvestingtimemonth" },
+  { key:'nectar_harvesting_time_month', symbol:"#nectar_harvesting_time_month", data:"Nectar_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_nectarharvestingtimemonth" },
+  { key:'sap_harvesting_time_month', symbol:"#sap_harvesting_time_month", data:"Sap_Harvesting_time_month", icon:"", typ:'normal', use:"", i18n:"lb_sapharvestingtimemonth" },
 
-  { key:'eating_maturity_time_in_month', symbol:"#eating_maturity_time_in_month", data:"Eating_Maturity_time_in_month", icon:"", typ:'normal', use:"" },
-  { key:'harvest_storing_month', symbol:"#harvest_storing_month", data:"Harvest_storing_month", icon:"", typ:'normal', use:"" },
+  { key:'eating_maturity_time_in_month', symbol:"#eating_maturity_time_in_month", data:"Eating_Maturity_time_in_month", icon:"", typ:'normal', use:"", i18n:"lb_eatingmaturitytimeinmonth" },
+  { key:'harvest_storing_month', symbol:"#harvest_storing_month", data:"Harvest_storing_month", icon:"", typ:'normal', use:"", i18n:"lb_harveststoringmonth" },
 
-  { key:'plant_flower_color', symbol:"#plant_flower_color", data:"Plant_flower_color", icon:"", typ:'normal', use:"" },
+  { key:'plant_flower_color', symbol:"#plant_flower_color", data:"Plant_flower_color", icon:"", typ:'normal', use:"", i18n:"lb_plantflowercolor" },
 
-  { key:'days_to_germination', symbol:"#days_to_germination", data:"Days_to_Germination", icon:"", typ:'normal', use:"" },
-  { key:'days_to_maturity', symbol:"#days_to_maturity", data:"Days_to_Maturity", icon:"", typ:'normal', use:"" },
-  { key:'days_to_harvest', symbol:"#days_to_harvest", data:"Days_to_Harvest", icon:"", typ:'normal', use:"" },
+  { key:'days_to_germination', symbol:"#days_to_germination", data:"Days_to_Germination", icon:"", typ:'normal', use:"", i18n:"lb_daystogermination" },
+  { key:'days_to_maturity', symbol:"#days_to_maturity", data:"Days_to_Maturity", icon:"", typ:'normal', use:"", i18n:"lb_daystomaturity" },
+  { key:'days_to_harvest', symbol:"#days_to_harvest", data:"Days_to_Harvest", icon:"", typ:'normal', use:"", i18n:"lb_daystoharvest" },
 
-  { key:'hardiness_zone_usda', symbol:"#hardiness_zone_usda", data:"Hardiness_Zone_USDA", icon:"", typ:'split', use:"" },
-  { key:'minimum_temperature', symbol:"#minimum_temperature", data:"Minimum_temperature", icon:"", typ:'split', use:"" },
-  { key:'benefits', symbol:"#benefits", data:"Benefits", icon:"", typ:'split', use:"" },
+  { key:'hardiness_zone_usda', symbol:"#hardiness_zone_usda", data:"Hardiness_Zone_USDA", icon:"", typ:'split', use:"", i18n:"lb_hardinesszoneusda" },
+  { key:'minimum_temperature', symbol:"#minimum_temperature", data:"Minimum_temperature", icon:"", typ:'split', use:"", i18n:"lb_minimumtemperature" },
+  { key:'benefits', symbol:"#benefits", data:"Benefits", icon:"", typ:'split', use:"", i18n:"lb_benefits" },
 
-  { key:'plant_planting_seed_dept_mm', symbol:"#plant_planting_seed_dept_mm", data:"Plant_planting_seed_dept_mm", icon:"", typ:'splitminus', use:"" },
+  { key:'plant_planting_seed_dept_mm', symbol:"#plant_planting_seed_dept_mm", data:"Plant_planting_seed_dept_mm", icon:"", typ:'splitminus', use:"", i18n:"lb_plantplantingseeddeptmm" },
 
-  { key:'plant_planting_seed_soil_temperature_celsius', symbol:"#plant_planting_seed_soil_temperature_celsius", data:"Plant_planting_seed_soil_temperature_celsius", icon:"", typ:'splitminus', use:"" },
-  { key:'plant_planting_plant_distance_mm', symbol:"#plant_planting_plant_distance_mm", data:"Plant_planting_plant_distance_mm", icon:"", typ:'splitminus', use:"" },
+  { key:'plant_planting_seed_soil_temperature_celsius', symbol:"#plant_planting_seed_soil_temperature_celsius", data:"Plant_planting_seed_soil_temperature_celsius", icon:"", typ:'splitminus', use:"", i18n:"lb_seedsoiltemperature" },
+  { key:'plant_planting_plant_distance_mm', symbol:"#plant_planting_plant_distance_mm", data:"Plant_planting_plant_distance_mm", icon:"", typ:'splitminus', use:"", i18n:"lb_plantdistance" },
 
-  { key:'plant_description', symbol:"#plant_description", data:"Plant_description", icon:"", typ:'split', use:"" },
-  { key:'edible_parts_description', symbol:"#edible_parts_description", data:"Edible_parts_description", icon:"", typ:'split', use:"" },
+  { key:'plant_description', symbol:"#plant_description", data:"Plant_description", icon:"", typ:'split', use:"", i18n:"lb_plantdescription" },
+  { key:'edible_parts_description', symbol:"#edible_parts_description", data:"Edible_parts_description", icon:"", typ:'split', use:"", i18n:"lb_ediblepartsdescription" },
 
-  { key:'plant_height_max_mm', symbol:"#plant_height_max_mm", data:"Plant_height_max_mm", icon:"", typ:'normal', use:"" },
-  { key:'plant_height_average_mm', symbol:"#plant_height_average_mm", data:"Plant_height_average_mm", icon:"", typ:'normal', use:"" },
-  { key:'plant_width_max_mm', symbol:"#plant_width_max_mm", data:"Plant_width_max_mm", icon:"", typ:'normal', use:"" },
-  { key:'plant_width_average_mm', symbol:"#plant_width_average_mm", data:"Plant_width_average_mm", icon:"", typ:'normal', use:"" },
+  { key:'plant_height_max_mm', symbol:"#plant_height_max_mm", data:"Plant_height_max_mm", icon:"", typ:'normal', use:"", i18n:"lb_plantheightmax" },
+  { key:'plant_height_average_mm', symbol:"#plant_height_average_mm", data:"Plant_height_average_mm", icon:"", typ:'normal', use:"", i18n:"lb_plantheightavg" },
+  { key:'plant_width_max_mm', symbol:"#plant_width_max_mm", data:"Plant_width_max_mm", icon:"", typ:'normal', use:"", i18n:"lb_plantwidthmax" },
+  { key:'plant_width_average_mm', symbol:"#plant_width_average_mm", data:"Plant_width_average_mm", icon:"", typ:'normal', use:"", i18n:"lb_plantwidthavg" },
 
-  { key:'plant_space_filling_mm', symbol:"#plant_space_filling_mm", data:"Plant_space_filling_mm", icon:"", typ:'normal', use:"" },
+  { key:'plant_space_filling_mm', symbol:"#plant_space_filling_mm", data:"Plant_space_filling_mm", icon:"", typ:'normal', use:"", i18n:"lb_plantspacefilling" },
 
-  { key:'plant_root_depth_average_mm', symbol:"#plant_root_depth_average_mm", data:"Plant_root_depth_average_mm", icon:"", typ:'normal', use:"" },
-  { key:'plant_root_width_average_mm', symbol:"#plant_root_width_average_mm", data:"Plant_root_width_average_mm", icon:"", typ:'normal', use:"" },
+  { key:'plant_root_depth_average_mm', symbol:"#plant_root_depth_average_mm", data:"Plant_root_depth_average_mm", icon:"", typ:'normal', use:"", i18n:"lb_rootdepthavg" },
+  { key:'plant_root_width_average_mm', symbol:"#plant_root_width_average_mm", data:"Plant_root_width_average_mm", icon:"", typ:'normal', use:"", i18n:"lb_rootwidthavg" },
 
-  { key:'plant_root_type', symbol:"#plant_root_type", data:"Plant_root_type", typ:'split', icon:"", use:"" },
-  { key:'plant_growing_lifecycle', symbol:"#plant_growing_lifecycle", data:"Plant_growing_lifecycle", icon:"", typ:'split', use:"" },
-  { key:'plant_growing_habit', symbol:"#plant_growing_habit", data:"Plant_growing_habit", icon:"", typ:'split', use:"" },
+  { key:'plant_root_type', symbol:"#plant_root_type", data:"Plant_root_type", typ:'split', icon:"", use:"show", i18n:"lb_roottype" },
+  { key:'plant_growing_lifecycle', symbol:"#plant_growing_lifecycle", data:"Plant_growing_lifecycle", icon:"", typ:'split', use:"show", i18n:"lb_lifecycle" },
+  { key:'plant_growing_habit', symbol:"#plant_growing_habit", data:"Plant_growing_habit", icon:"", typ:'split', use:"show", i18n:"lb_growthhabit" },
 
-  { key:'plant_seed_survival_time_month', symbol:"#plant_seed_survival_time_month", data:"Plant_seed_survival_time_month", icon:"", typ:'splitminus', use:"" },
+  { key:'plant_seed_survival_time_month', symbol:"#plant_seed_survival_time_month", data:"Plant_seed_survival_time_month", icon:"", typ:'splitminus', use:"show", i18n:"lb_seedsurvivaltime" },
 
-  { key:'native_range', symbol:"#native_range", data:"Native_range", icon:"", typ:'split', use:"" },
+  { key:'native_range', symbol:"#native_range", data:"Native_range", icon:"", typ:'split', use:"show", i18n:"lb_nativerange" },
 
-  { key:'fruit_length_mm', symbol:"#fruit_length_mm", data:"Fruit_length_mm", icon:"", typ:'splitminus', use:"" },
-  { key:'fruit_width_mm', symbol:"#fruit_width_mm", data:"Fruit_width_mm", icon:"", typ:'splitminus', use:"" },
-  { key:'fruit_weight_mm', symbol:"#fruit_weight_mm", data:"Fruit_weight_mm", icon:"", typ:'splitminus', use:"" },
+  { key:'fruit_length_mm', symbol:"#fruit_length_mm", data:"Fruit_length_mm", icon:"", typ:'splitminus', use:"show", i18n:"lb_fruitlength" },
+  { key:'fruit_width_mm', symbol:"#fruit_width_mm", data:"Fruit_width_mm", icon:"", typ:'splitminus', use:"show", i18n:"lb_fruitwidth" },
+  { key:'fruit_weight_mm', symbol:"#fruit_weight_mm", data:"Fruit_weight_mm", icon:"", typ:'splitminus', use:"show", i18n:"lb_fruitweight" },
 
-  { key:'shade_tolerance', symbol:"#shade_tolerance", data:"Shade_tolerance", icon:"", typ:'normal', use:"" },
-  { key:'moisture_need', symbol:"#moisture_need", data:"Moisture_need", icon:"", typ:'normal', use:"" },
-  { key:'soil_need', symbol:"#soil_need", data:"Soil_need", icon:"", typ:'normal', use:"" },
-  { key:'ph_need', symbol:"#ph_need", data:"PH_need", icon:"", typ:'normal', use:"" },
-  { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'normal', use:"" },
-  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"", typ:'normal', use:"" },
-  
-  { key:'plants_per_square_meter', symbol:"#plants_per_square_meter", data:"Plants_per_square_meter", icon:"", typ:'splitminus', use:"" },
-  { key:'planting_location', symbol:"#planting_location", data:"Planting_location", icon:"", typ:'normal', use:"" },
-  { key:'propagation', symbol:"#propagation", data:"Propagation", icon:"", typ:'normal', use:"" },
+  { key:'shade_tolerance', symbol:"#shade_tolerance", data:"Shade_tolerance", icon:"", typ:'normal', use:"show", i18n:"lb_shadetolerance" },
+  { key:'moisture_need', symbol:"#moisture_need", data:"Moisture_need", icon:"", typ:'normal', use:"show", i18n:"lb_moistureneed" },
+  { key:'soil_need', symbol:"#soil_need", data:"Soil_need", icon:"", typ:'normal', use:"show", i18n:"lb_soilneed" },
+  { key:'ph_need', symbol:"#ph_need", data:"PH_need", icon:"", typ:'normal', use:"show", i18n:"lb_phneed" },
+  { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'normal', use:"show", i18n:"lb_windtolerance" },
+  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"", typ:'normal', use:"show", i18n:"lb_growthrate" },
 
-  { key:'foliage_type', symbol:"#foliage_type", data:"Foliage_type", icon:"", typ:'split', use:"" },
-  { key:'flower_type', symbol:"#flower_type", data:"Flower_type", icon:"", typ:'split', use:"" },
-  { key:'needed_polinators', symbol:"#needed_polinators", data:"Needed_polinators", icon:"", typ:'split', use:"" },
-  { key:'leaf_color', symbol:"#leaf_color", data:"Leaf_color", icon:"", typ:'split', use:"" },
+  { key:'plants_per_square_meter', symbol:"#plants_per_square_meter", data:"Plants_per_square_meter", icon:"", typ:'splitminus', use:"show", i18n:"lb_plantsperm2" },
+  { key:'planting_location', symbol:"#planting_location", data:"Planting_location", icon:"", typ:'normal', use:"show", i18n:"lb_plantinglocation" },
+  { key:'propagation', symbol:"#propagation", data:"Propagation", icon:"", typ:'normal', use:"show", i18n:"lb_propagation" },
 
-  { key:'storage_duration_month', symbol:"#storage_duration_month", data:"Storage_duration_month", icon:"", typ:'normal', use:"" },
-  { key:'yield_per_plant', symbol:"#yield_per_plant", data:"Yield_per_plant", icon:"", typ:'split', use:"" },
-  { key:'watering_regime', symbol:"#watering_regime", data:"Watering_regime", icon:"", typ:'split', use:"" },
+  { key:'foliage_type', symbol:"#foliage_type", data:"Foliage_type", icon:"", typ:'split', use:"show", i18n:"lb_foliagetype" },
+  { key:'flower_type', symbol:"#flower_type", data:"Flower_type", icon:"", typ:'split', use:"show", i18n:"lb_flowertype" },
+  { key:'needed_polinators', symbol:"#needed_polinators", data:"Needed_polinators", icon:"", typ:'split', use:"show", i18n:"lb_neededpolinators" },
+  { key:'leaf_color', symbol:"#leaf_color", data:"Leaf_color", icon:"", typ:'split', use:"show", i18n:"lb_leafcolor" },
 
-  { key:'companion_plants', symbol:"#companion_plants", data:"Companion_plants", icon:"", typ:'split', use:"" },
+  { key:'storage_duration_month', symbol:"#storage_duration_month", data:"Storage_duration_month", icon:"", typ:'normal', use:"show", i18n:"lb_storageduration" },
+  { key:'yield_per_plant', symbol:"#yield_per_plant", data:"Yield_per_plant", icon:"", typ:'split', use:"show", i18n:"lb_yieldperplant" },
+  { key:'watering_regime', symbol:"#watering_regime", data:"Watering_regime", icon:"", typ:'split', use:"show", i18n:"lb_wateringregime" },
 
-  { key:'allopatic_effect', symbol:"#allopatic_effect", data:"Allopatic_effect", icon:"", typ:'split', use:"" },
-  { key:'allopatic_sensitivity', symbol:"#allopatic_sensitivity", data:"Allopatic_sensitivity", icon:"", typ:'split', use:"" },
-  { key:'allopatic_tolerance', symbol:"#allopatic_tolerance", data:"Allopatic_tolerance", icon:"", typ:'split', use:"" },
+  { key:'companion_plants', symbol:"#companion_plants", data:"Companion_plants", icon:"", typ:'split', use:"show", i18n:"lb_companionplants" },
 
-  { key:'pest_resistance', symbol:"#pest_resistance", data:"Pest_resistance", icon:"", typ:'split', use:"" },
-  { key:'soil_microbiology', symbol:"#soil_microbiology", data:"Soil_microbiology", icon:"", typ:'split', use:"field" },
+  { key:'allopatic_effect', symbol:"#allopatic_effect", data:"Allopatic_effect", icon:"", typ:'split', use:"show", i18n:"lb_allopaticeffect" },
+  { key:'allopatic_sensitivity', symbol:"#allopatic_sensitivity", data:"Allopatic_sensitivity", icon:"", typ:'split', use:"show", i18n:"lb_allopaticsensitivity" },
+  { key:'allopatic_tolerance', symbol:"#allopatic_tolerance", data:"Allopatic_tolerance", icon:"", typ:'split', use:"show", i18n:"lb_allopatictolerance" },
 
-  { key:'source_of_plant', symbol:"#source_of_plant", data:"Source_of_plant", icon:"", typ:'normal', use:"not" },
-  { key:'status_datasource', symbol:"#status_datasource", data:"Status/datasource", icon:"", typ:'normal', use:"not" },
+  { key:'pest_resistance', symbol:"#pest_resistance", data:"Pest_resistance", icon:"", typ:'split', use:"show", i18n:"lb_pestresistance" },
+  { key:'soil_microbiology', symbol:"#soil_microbiology", data:"Soil_microbiology", icon:"", typ:'split', use:"show", i18n:"lb_soilmicrobiology" },
 
-  { key:'active_in_page', symbol:"#active_in_page", data:"Active_in_page", icon:"", typ:'normal', use:"calc" },
-  { key:'active_in_nfc', symbol:"#active_in_nfc", data:"Active_in_NFC", icon:"", typ:'normal', use:"calc" },
+  { key:'source_of_plant', symbol:"#source_of_plant", data:"Source_of_plant", icon:"", typ:'normal', use:"not", i18n:"lb_sourceofplant" },
+  { key:'status_datasource', symbol:"#status_datasource", data:"Status/datasource", icon:"", typ:'normal', use:"not", i18n:"lb_statusdatasource" },
 
-  { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not" },
+  { key:'active_in_page', symbol:"#active_in_page", data:"Active_in_page", icon:"", typ:'normal', use:"calc", i18n:"lb_activeinpage" },
+  { key:'active_in_nfc', symbol:"#active_in_nfc", data:"Active_in_NFC", icon:"", typ:'normal', use:"calc", i18n:"lb_activeinnfc" },
 
-  { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not" }
+  { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not", i18n:"lb_listofvarieties" },
+
+  { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"lb_egyeb" }
 ];
 
 // Category CSV columns to render icons for
@@ -849,6 +849,60 @@ async function makeSvgIconFromFile(term, folderPath = './', id = null) {
   }
 }
 */
+// ── Field ganerator  ─────────────────────────────────────────────────────────────────────
+function renderFields(containerId, map, plant) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // Clear previous content
+  container.innerHTML = "";
+
+  // Helper formatter
+  const formatValue = (value, type) => {
+    if (!value) return "";
+
+    switch (type) {
+      case "split":
+        return splitPipe(value).join(", ");
+      case "splitminus":
+        return splitPipe(value).join(" - ");
+      case "normal":
+      default:
+        return value;
+    }
+  };
+
+  map
+    .filter(item => item.use === "show")
+    .forEach(item => {
+      const rawValue = plant[item.data];
+      const formattedValue = formatValue(rawValue, item.typ);
+
+      // Create elements
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const wrapper = document.createElement("div");
+
+      const label = document.createElement("label");
+      label.setAttribute("data-i18n", `detail.label.${item.i18n}`);
+      label.textContent = `${item.i18n}:`; // fallback text
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.id = item.key;
+      input.style.width = "500px";
+      input.readOnly = true;
+      input.value = formattedValue;
+
+      // Build structure
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      row.appendChild(wrapper);
+      container.appendChild(row);
+    });
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 const selectedNr  = localStorage.getItem("selectedPlantNr");
@@ -911,7 +965,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
     
     // ── Form fields ───────────────────────────────────────────────────────
-    const fieldMap = {
+    /*const fieldMap = {
       "#name_sz":                                    plant.Name_SZ,
       "#plant_type":                                 splitPipe(plant.Plant_type).join(", "),
       "#uses":                                       splitPipe(plant.Uses).join(", "),
@@ -942,8 +996,9 @@ document.querySelector("#back-button").addEventListener("click", () => {
     Object.entries(fieldMap).forEach(([selector, value]) => {
       const el = document.querySelector(selector);
       if (el) el.value = value || "";
-    });
-
+    });*/
+    renderFields(fields1, BASIC_FIED_MAP, plant);
+    
     // NFC link
     const nfcEl = document.querySelector("#nfc-link");
     if (nfcEl) nfcEl.textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
