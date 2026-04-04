@@ -342,7 +342,7 @@ function uniqueCALENDER1Slots(...values) {
   return slots;
 }
 
-function renderCALENDER1(plant) {
+function renderCALENDER1(plant,FM) {
   const root = document.querySelector("#CALENDER1");
   if (!root) return;
 
@@ -638,7 +638,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
 // ── Size icons ───────────────────────────────────────────────────────────────
 
-function applySizeIcons(plant) {
+function applySizeIcons(plant,FM) {
   const type = splitPipe(plant[FM.Plant_type]).join(", ");
   
   const humanSvg = document.getElementById("size-human-icon-1");
@@ -887,6 +887,10 @@ document.querySelector("#back-button").addEventListener("click", () => {
       return;
     }
     
+    // ── Cache data once ─────────────────────────────────────────── 
+    const FM = Object.fromEntries(BASIC_FIED_MAP.map(f => [f.key, f.data]));
+    consol.log("cache ready);
+               
     // ── Title & identity ──────────────────────────────────────────────────
     const lang          = getCurrentLang();
     const primaryName   = lang === 'en' ? (plant.Name_EN || plant.Name_HU || "Unknown") : (plant.Name_HU || plant.Name_EN || "Unknown");
@@ -898,9 +902,6 @@ document.querySelector("#back-button").addEventListener("click", () => {
     setIdentityFilterLink(identitygenus,     "genus",  plant.Genus);
     setIdentityFilterLink(identitylatinName, "latin",  plant.LatinName);
     if (identityvariety) identityvariety.innerHTML = `<strong> / ${plant.Name_Variety || ""}</strong>`;
-    
-    // ── Cache data once ─────────────────────────────────────────── 
-    const FM = Object.fromEntries(BASIC_FIED_MAP.map(f => [f.key, f.data]));
     
     // ── Build search texts once ───────────────────────────────────────────
     edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
@@ -948,7 +949,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
    
     // ── Planning table + calendar ─────────────────────────────────────────
     populatePlanningTable(plant);
-    renderCALENDER1(plant);
+    renderCALENDER1(plant,FM);
 
         // ── Varieties list ────────────────────────────────────────────────────
     const varieties     = splitPipe(plant.List_of_varieties);
@@ -974,7 +975,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     insertCategoryIconsRow(plant,"unique","med");
     
     // ── Size icons ────────────────────────────────────────────────────────
-    applySizeIcons(plant);
+    applySizeIcons(plant,FM);
 
     // ── Image (non-blocking) ──────────────────────────────────────────────
     loadPlantImage(plant); // intentionally not awaited — fires & forgets
