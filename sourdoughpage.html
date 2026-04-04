@@ -615,10 +615,23 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
   <div class="section-heading" data-i18n="sm_title">🌱 Starter Maintenance</div>
   <div class="section-sub" data-i18n="sm_sub">Keep your starter happy and active</div>
   <div class="starter-grid">
-    <div class="card">
-      <div class="card-title">🥄 <span data-i18n="feed_title">Feeding Calculator</span></div>
-      <div class="card-subtitle" data-i18n="feed_sub">Compute how much flour and water to add</div>
-      <div class="input-group">
+
+
+      <!-- COL 5: Feeder -->
+  <div class="panel open anim" id="panelStarterFeeding" style="animation-delay:.13s">
+    <div class="panel-header" onclick="togglePanel('panelStarterFeeding')">
+      <div class="panel-header-left">
+        <span style="font-size:1.1rem">🥄 </span>
+        <div>
+          <div class="panel-title" data-i18n="feed_title">Feeding Calculator</div>
+          <div class="panel-subtitle" data-i18n="feed_sub">Compute how much flour and water to add</div>
+        </div>
+      </div>
+      <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
+    </div>
+    <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+
+       <div class="input-group">
         <div class="input-label"><span data-i18n="cur_starter_lbl">Current Starter (g)</span></div>
         <div class="slider-row">
           <input type="range" id="sCurrentSl" min="10" max="500" step="5" value="50" oninput="sI('sCurrent');calcStarter()">
@@ -640,11 +653,25 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
         <div class="sr-row"><span data-i18n="w_to_add">Water to add</span><span id="sWater">50g</span></div>
         <div class="sr-row"><span data-i18n="total_after">Total after feeding</span><span id="sTotal">150g</span></div>
       </div>
+
+    </div></div></div><!-- /panel-body -->
+  </div><!-- /panelStarterFeeding -->
+
+  <!-- COL 6: Starter state -->
+  <div class="panel open anim" id="panelStarterReady" style="animation-delay:.13s">
+    <div class="panel-header" onclick="togglePanel('panelStarterReady')">
+      <div class="panel-header-left">
+        <span style="font-size:1.1rem">🔍 </span>
+        <div>
+          <div class="panel-title" data-i18n="ready_title">Is My Starter Ready?</div>
+          <div class="panel-subtitle" data-i18n="ready_sub">Gauge health and readiness</div>
+        </div>
+      </div>
+      <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
     </div>
-    <div class="card">
-      <div class="card-title">🔍 <span data-i18n="ready_title">Is My Starter Ready?</span></div>
-      <div class="card-subtitle" data-i18n="ready_sub">Gauge health and readiness</div>
-      <div class="input-group">
+    <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+
+       <div class="input-group">
         <div class="input-label"><span data-i18n="hrs_fed_lbl">Hours since last feed</span></div>
         <div class="slider-row">
           <input type="range" id="hoursFedSl" min="0" max="24" step="1" value="4" oninput="sI('hoursFed');updateReady()">
@@ -663,7 +690,10 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
         <div class="ready-dots" id="readyDots"></div>
         <div class="ready-text" id="readyText"></div>
       </div>
-    </div>
+
+    </div></div></div><!-- /panel-body -->
+  </div><!-- /panelStarterState -->
+
   </div>
 </section>
 
