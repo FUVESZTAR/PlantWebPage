@@ -177,66 +177,6 @@ function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   return svg;
 }
 
-/**
- * Asynchronously creates an SVG icon by fetching it from a folder
- * and dynamically adopting its internal viewBox.
- * * @param {string} term - The filename (e.g., 'bark1')
- * @param {string} folderPath - Path to your svg folder (e.g., '/assets/icons/')
- * @param {string} id - Optional ID for the element
- */
-async function makeSvgIconFromFile(term, folderPath = './', id = null) {
-  try {
-    // Class
-    const def = PART_ICON_MAP[term];
-    if (!def) return null;
-    
-    // 1. Fetch the SVG file from the folder
-    const response = await fetch(`${folderPath}${term}.svg`);
-    if (!response.ok) throw new Error(`SVG ${term} not found`);
-    
-    const svgText = await response.text();
-
-    // 2. Parse the text into a DOM object
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
-    const sourceSvg = xmlDoc.querySelector('svg');
-
-    if (!sourceSvg) throw new Error(`Invalid SVG content for ${term}`);
-
-    // 3. Create the new SVG element for your page
-    const svgns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgns, 'svg');
-
-    // 4. DYNAMICALLY take parameters from the file
-    // This ensures the icon always fits perfectly
-    const originalViewBox = sourceSvg.getAttribute('viewBox');
-    const originalWidth = sourceSvg.getAttribute('width');
-    const originalHeight = sourceSvg.getAttribute('height');
-
-    if (originalViewBox) {
-      svg.setAttribute('viewBox', originalViewBox);
-    } else if (originalWidth && originalHeight) {
-      // Fallback if viewBox is missing but dimensions exist
-      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
-    } else {
-      // Default fallback
-      svg.setAttribute('viewBox', '0 0 512 512');
-    }
-
-    // 5. Apply styling and IDs
-    svg.setAttribute('class', def.class);
-    svg.style.cssText = 'display:inline-block; width:24px; height:24px; fill:currentColor;';
-    if (id) svg.setAttribute('id', `${term}-${id}`);
-    
-    // 6. Move the paths/content from the loaded file into your new SVG
-    svg.innerHTML = sourceSvg.innerHTML;
-
-    return svg;
-  } catch (err) {
-    console.error("Error loading SVG:", err);
-    return null;
-  }
-}
 // ── Identity filter links ────────────────────────────────────────────────────
 
 function setIdentityFilterLink(element, filterType, value) {
@@ -463,39 +403,6 @@ function insertPartIconsInTable(plant) {
     });
   });
 }
-// 1. Run this once when your app loads to "fix" the hidden templates
-async function syncViewBoxes() {
-    const container = document.getElementById('icon-container');
-    const svgs = container.querySelectorAll('svg');
-
-    for (let svg of svgs) {
-        const useTag = svg.querySelector('use');
-        const fileUrl = useTag.getAttribute('href');
-
-        try {
-            const response = await fetch(fileUrl);
-            const text = await response.text();
-
-            // Use the file's explicit viewport dimensions (width/height) as the container
-            // viewBox so the full content is visible. When width/height differ from the
-            // internal viewBox (e.g. width="1080" viewBox="0 0 810 810"), using the
-            // internal viewBox would clip ~25% of the rendered content.
-            const w = text.match(/width=["']([^"']+)["']/);
-            const h = text.match(/height=["']([^"']+)["']/);
-            const wVal = w ? parseFloat(w[1]) : NaN;
-            const hVal = h ? parseFloat(h[1]) : NaN;
-            if (!isNaN(wVal) && wVal > 0 && !isNaN(hVal) && hVal > 0) {
-                svg.setAttribute('viewBox', `0 0 ${wVal} ${hVal}`);
-            } else {
-                // Fallback: use the file's own viewBox
-                const viewBoxMatch = text.match(/viewBox=["']([^"']+)["']/);
-                if (viewBoxMatch) svg.setAttribute('viewBox', viewBoxMatch[1]);
-            }
-        } catch (err) {
-            console.error(`Could not sync viewBox for ${fileUrl}:`, err);
-        }
-    }
-}
 // ── Category icons row ───────────────────────────────────────────────────────
 
 function insertCategoryIconsRow(plant, mode, vers) {
@@ -608,7 +515,7 @@ function applySizeIcons(plant) {
 }
 
 // ── Image loader ─────────────────────────────────────────────────────────────
-
+/* old
 async function loadPlantImage(plant) {
   const imgText  = `${plant.Nr}_${plant.LatinName}_${plant.Name_Variety}`;
   const searchId = normalizeName(imgText);
@@ -622,7 +529,153 @@ async function loadPlantImage(plant) {
     imgEl.src = "images/default.jpg";
   }
 }
+*/
+async function loadPlantImage(plant) {
+  const imgEl = document.getElementById("plantImg");
+  if (!imgEl) return;
+  // Convert Latin name to Wikipedia format
+  const searchLatin = plant.LatinName.trim().replace(/\s+/g, "_");
+  const searchVariety = plant.Name_Variety.trim().replace(/\s+/g, "_");
+  
+  //Build your local search key
+  const imgText  = `${plant.Nr}_${searchLatin}_${searchVariety}`;
+  const searchId = normalizeName(imgText);
 
+  try {
+    //Try local image first
+    const response = await fetch("images/images.json");
+    const data = await response.json();
+
+    if (data[searchId] && data[searchId][0]) {
+      imgEl.src = `images/${data[searchId][0]}`;
+      return; // stop if found locally
+    }
+
+    //Fallback to Wikipedia API
+    const wikiResponse = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${searchLatin}`
+    );
+
+    if (!wikiResponse.ok) throw new Error("Wiki fetch failed");
+
+    const wikiData = await wikiResponse.json();
+
+    if (wikiData.thumbnail && wikiData.thumbnail.source) {
+      imgEl.src = wikiData.thumbnail.source;
+      return;
+    }
+
+    //If no thumbnail, try original image
+    if (wikiData.originalimage && wikiData.originalimage.source) {
+      imgEl.src = wikiData.originalimage.source;
+      return;
+    }
+
+    //Final fallback
+    imgEl.src = "images/default.jpg";
+
+  } catch (err) {
+    console.error("Image load error:", err);
+    imgEl.src = "images/default.jpg";
+  }
+}
+
+// 1. Run this once when your app loads to "fix" the hidden templates
+async function syncViewBoxes() {
+    const container = document.getElementById('icon-container');
+    const svgs = container.querySelectorAll('svg');
+
+    for (let svg of svgs) {
+        const useTag = svg.querySelector('use');
+        const fileUrl = useTag.getAttribute('href');
+
+        try {
+            const response = await fetch(fileUrl);
+            const text = await response.text();
+
+            // Use the file's explicit viewport dimensions (width/height) as the container
+            // viewBox so the full content is visible. When width/height differ from the
+            // internal viewBox (e.g. width="1080" viewBox="0 0 810 810"), using the
+            // internal viewBox would clip ~25% of the rendered content.
+            const w = text.match(/width=["']([^"']+)["']/);
+            const h = text.match(/height=["']([^"']+)["']/);
+            const wVal = w ? parseFloat(w[1]) : NaN;
+            const hVal = h ? parseFloat(h[1]) : NaN;
+            if (!isNaN(wVal) && wVal > 0 && !isNaN(hVal) && hVal > 0) {
+                svg.setAttribute('viewBox', `0 0 ${wVal} ${hVal}`);
+            } else {
+                // Fallback: use the file's own viewBox
+                const viewBoxMatch = text.match(/viewBox=["']([^"']+)["']/);
+                if (viewBoxMatch) svg.setAttribute('viewBox', viewBoxMatch[1]);
+            }
+        } catch (err) {
+            console.error(`Could not sync viewBox for ${fileUrl}:`, err);
+        }
+    }
+}
+
+// Asynchronously creates an SVG icon by fetching it from a folder not used
+/**
+ * Asynchronously creates an SVG icon by fetching it from a folder
+ * and dynamically adopting its internal viewBox.
+ * * @param {string} term - The filename (e.g., 'bark1')
+ * @param {string} folderPath - Path to your svg folder (e.g., '/assets/icons/')
+ * @param {string} id - Optional ID for the element
+ *//*
+async function makeSvgIconFromFile(term, folderPath = './', id = null) {
+  try {
+    // Class
+    const def = PART_ICON_MAP[term];
+    if (!def) return null;
+    
+    // 1. Fetch the SVG file from the folder
+    const response = await fetch(`${folderPath}${term}.svg`);
+    if (!response.ok) throw new Error(`SVG ${term} not found`);
+    
+    const svgText = await response.text();
+
+    // 2. Parse the text into a DOM object
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
+    const sourceSvg = xmlDoc.querySelector('svg');
+
+    if (!sourceSvg) throw new Error(`Invalid SVG content for ${term}`);
+
+    // 3. Create the new SVG element for your page
+    const svgns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgns, 'svg');
+
+    // 4. DYNAMICALLY take parameters from the file
+    // This ensures the icon always fits perfectly
+    const originalViewBox = sourceSvg.getAttribute('viewBox');
+    const originalWidth = sourceSvg.getAttribute('width');
+    const originalHeight = sourceSvg.getAttribute('height');
+
+    if (originalViewBox) {
+      svg.setAttribute('viewBox', originalViewBox);
+    } else if (originalWidth && originalHeight) {
+      // Fallback if viewBox is missing but dimensions exist
+      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+    } else {
+      // Default fallback
+      svg.setAttribute('viewBox', '0 0 512 512');
+    }
+
+    // 5. Apply styling and IDs
+    svg.setAttribute('class', def.class);
+    svg.style.cssText = 'display:inline-block; width:24px; height:24px; fill:currentColor;';
+    if (id) svg.setAttribute('id', `${term}-${id}`);
+    
+    // 6. Move the paths/content from the loaded file into your new SVG
+    svg.innerHTML = sourceSvg.innerHTML;
+
+    return svg;
+  } catch (err) {
+    console.error("Error loading SVG:", err);
+    return null;
+  }
+}
+*/
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 const selectedNr  = localStorage.getItem("selectedPlantNr");
