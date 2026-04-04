@@ -312,6 +312,65 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .55s ease both}
+
+/* HAMBURGER BUTTON */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;
+  border:none;cursor:pointer;padding:7px;border-radius:8px;
+  transition:background var(--tr);margin-left:8px;flex-shrink:0}
+.nav-hamburger:hover{background:var(--cream-dark)}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--brown);
+  border-radius:2px;transition:transform .28s,opacity .28s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* MOBILE NAV OVERLAY */
+.nav-mobile-menu{display:none;position:fixed;inset:0;z-index:195;
+  background:rgba(249,244,236,.97);backdrop-filter:blur(14px);
+  flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-menu a{font-size:1.15rem;font-weight:500;color:var(--brown);
+  text-decoration:none;padding:14px 36px;border-radius:var(--radius-sm);
+  width:100%;max-width:300px;text-align:center;
+  background:var(--card);border:1px solid var(--border);transition:all var(--tr)}
+.nav-mobile-menu a:hover,.nav-mobile-menu a:active{background:var(--cream-dark);border-color:var(--brown-light)}
+.nav-mobile-close{margin-top:12px;font-size:.85rem;color:var(--warm-gray);
+  cursor:pointer;padding:10px 28px;border-radius:20px;border:1px solid var(--border);
+  background:none;font-family:'DM Sans',sans-serif;transition:all var(--tr)}
+.nav-mobile-close:hover{background:var(--cream-dark);color:var(--brown)}
+
+@media(max-width:860px){
+  .nav-hamburger{display:flex}
+}
+
+/* RESPONSIVE SPACING & LAYOUT */
+@media(max-width:680px){
+  nav{padding:12px 18px}
+  .nav-right{gap:8px}
+  .mode-toggle .mode-pro,.mode-toggle>span:first-child{display:none}
+  .hero{padding:40px 18px 32px}
+  .hero-badges{gap:10px}
+  .bread-type-section{padding:22px 16px 0}
+  .main-section{padding:16px 16px;gap:16px}
+  .saved-section{padding:0 16px 24px}
+  .timeline-section{padding:0 16px 32px}
+  .starter-section{padding:0 16px 36px}
+  .divider{padding:0 16px}
+  footer{padding:16px 18px;flex-direction:column;text-align:center}
+  .card,.panel{border-radius:var(--radius-sm)}
+  input[type=range]{height:6px}
+  input[type=range]::-webkit-slider-thumb{width:20px;height:20px}
+  .lv-btn{width:32px;height:32px}
+  .bread-tab{min-width:76px;padding:9px 13px}
+  .tl-item{width:110px}
+}
+@media(max-width:400px){
+  nav{padding:10px 14px}
+  .nav-logo{font-size:1rem}
+  .nav-logo span{font-size:1.2rem}
+  .hero h1{font-size:1.7rem}
+  .lang-toggle{display:none}
+}
 </style>
 </head>
 <body id="app">
@@ -336,7 +395,19 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
       <button class="lang-btn" onclick="setLang('hu')">HU</button>
     </div>
   </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE NAV OVERLAY -->
+<div class="nav-mobile-menu" id="navMobileMenu">
+  <a href="#breadtype" onclick="closeMobileMenu()" data-i18n="nav_type">Bread Type</a>
+  <a href="#calculator" onclick="closeMobileMenu()" data-i18n="nav_calc">Calculator</a>
+  <a href="#timeline" onclick="closeMobileMenu()" data-i18n="nav_timeline">Timeline</a>
+  <a href="#starter" onclick="closeMobileMenu()" data-i18n="nav_starter">Starter</a>
+  <button class="nav-mobile-close" onclick="closeMobileMenu()">✕ Close</button>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1347,6 +1418,22 @@ function renderSaved(){
       ${BREAD_TYPES.find(x=>x.id===r.bread)?.icon||'🍞'} ${r.name}
       <span class="del" onclick="event.stopPropagation();deleteRecipe(${r.id})">✕</span>
     </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  MOBILE MENU
+// ═══════════════════════════════════════════════════
+function toggleMobileMenu(){
+  const btn=document.getElementById('navHamburger');
+  const menu=document.getElementById('navMobileMenu');
+  const isOpen=menu.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  btn.setAttribute('aria-label',isOpen?'Close menu':'Open menu');
+}
+function closeMobileMenu(){
+  document.getElementById('navHamburger').classList.remove('open');
+  document.getElementById('navMobileMenu').classList.remove('open');
+  document.getElementById('navHamburger').setAttribute('aria-label','Open menu');
 }
 
 // ═══════════════════════════════════════════════════
