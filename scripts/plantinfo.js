@@ -638,7 +638,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
 // ── Size icons ───────────────────────────────────────────────────────────────
 
-function applySizeIcons(plant,FM) {
+function applySizeIcons(plant,FM1) {
   const type = splitPipe(plant[FM.Plant_type]).join(", ");
   
   const humanSvg = document.getElementById("size-human-icon-1");
@@ -650,10 +650,10 @@ function applySizeIcons(plant,FM) {
   const plantSvg = document.getElementById("size-plant-icon-1");
   if (!plantSvg) return;
   
-  const wAvg = plant[FM.plant_width_average_mm];
-  const hAvg = plant[FM.plant_height_average_mm];
-  const rootW = plant[FM.plant_root_width_average_mm];
-  const rootH = plant[FM.plant_root_depth_average_mm];
+  const wAvg = plant[FM1.plant_width_average_mm];
+  const hAvg = plant[FM1.plant_height_average_mm];
+  const rootW = plant[FM1.plant_root_width_average_mm];
+  const rootH = plant[FM1.plant_root_depth_average_mm];
 
  const iconSizeTargets = [
   { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
@@ -663,7 +663,7 @@ function applySizeIcons(plant,FM) {
   { id: "size-bush-icon-1",  w: wAvg,  h: hAvg }
   ];
 
-  sizeTargets.forEach(({ id, w, h }) => {
+  iconSizeTargets.forEach(({ id, w, h }) => {
     const el = document.getElementById(id);
     if (!el) return;
     try {
