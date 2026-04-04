@@ -411,7 +411,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // vers = 'harv' / 'med'                 : Which version is it harv - all part, med - medicinal part
   const containerName = `#part-icons-row-${vers}`;
   const container = document.querySelector(containerName);
-  const iconsmade = 0;
+  let iconsmade = 0;
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
    
