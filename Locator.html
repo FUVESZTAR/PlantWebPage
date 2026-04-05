@@ -3,85 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Geo-Writer</title>
+    <title>NFC Geo-Linker Pro</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 500px; margin: auto; text-align: center; }
-        .data-box { background: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; }
-        button { width: 100%; padding: 12px; margin: 5px 0; cursor: pointer; border-radius: 5px; border: none; font-size: 16px; }
-        #captureBtn { background: #28a745; color: white; }
-        #writeBtn { background: #007bff; color: white; display: none; }
-        .success { color: green; font-weight: bold; }
+        :root { --primary: #007bff; --success: #28a745; --dark: #333; }
+        body { font-family: -apple-system, sans-serif; padding: 20px; line-height: 1.4; color: var(--dark); max-width: 500px; margin: auto; background: #f8f9fa; }
+        h2 { text-align: center; color: var(--primary); }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .data-line { display: flex; justify-content: space-between; margin: 8px 0; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .packet-zone { background: #e9ecef; padding: 10px; border-radius: 6px; word-break: break-all; font-family: monospace; margin: 10px 0; min-height: 20px; }
+        button { width: 100%; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 8px; border: none; font-size: 16px; font-weight: 600; transition: 0.2s; }
+        .btn-get { background: var(--dark); color: white; }
+        .btn-write { background: var(--primary); color: white; }
+        .btn-read { background: #6f42c1; color: white; }
+        .btn-copy { background: #6c757d; color: white; font-size: 14px; padding: 8px; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+        #status { text-align: center; font-weight: bold; margin-top: 10px; min-height: 1.5em; }
     </style>
 </head>
 <body>
 
-    <h2>NFC Geo-Stamper</h2>
-    
-    <button id="captureBtn">1. Get Location & Elevation</button>
+    <h2>NFC Geo-Tool</h2>
 
-    <div class="data-box" id="display">
-        <strong>Lat:</strong> <span id="lat">-</span><br>
-        <strong>Lon:</strong> <span id="lon">-</span><br>
-        <strong>Alt:</strong> <span id="alt">-</span><br>
-        <strong>Final Packet:</strong> <code id="packet">-</code>
+    <div class="card">
+        <strong>1. Capture Location</strong>
+        <button class="btn-get" onclick="captureLocation()">Get Device Data</button>
+        <div class="data-line"><span>Lat:</span> <span id="disp-lat">-</span></div>
+        <div class="data-line"><span>Lon:</span> <span id="disp-lon">-</span></div>
+        <div class="data-line"><span>Alt:</span> <span id="disp-alt">-</span></div>
     </div>
 
-    <button id="writeBtn">2. Write Packet to NFC</button>
-    <p id="status"></p>
+    <div class="card">
+        <strong>2. Compressed Packet (Base64)</strong>
+        <div class="packet-zone" id="packet-out">No data yet...</div>
+        <button class="btn-copy" onclick="copyPacket()">Copy Packet String</button>
+        <button class="btn-write" id="writeBtn" disabled onclick="writeNFC()">Write to NTAG213</button>
+    </div>
+
+    <div class="card">
+        <strong>3. Read from Tag</strong>
+        <button class="btn-read" onclick="readNFC()">Scan & Decode Tag</button>
+        <div id="read-display" style="display:none; margin-top:10px; border-top: 2px solid var(--primary); padding-top:10px;">
+            <div class="data-line"><span>Found Lat:</span> <span id="read-lat"></span></div>
+            <div class="data-line"><span>Found Lon:</span> <span id="read-lon"></span></div>
+            <div class="data-line"><span>Found Alt:</span> <span id="read-alt"></span></div>
+        </div>
+    </div>
+
+    <div id="status"></div>
 
     <script>
-        let nfcPacket = "";
+        let currentData = { lat: 0, lon: 0, alt: 0 };
 
-        // --- STEP 1: CAPTURE GEOLOCATION ---
-        document.getElementById('captureBtn').addEventListener('click', () => {
-            if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser.");
-                return;
-            }
+        // --- COMPRESSION LOGIC ---
+        function packBase64(lat, lon, alt) {
+            const latInt = Math.round((lat + 90) * 100000);
+            const lonInt = Math.round((lon + 180) * 100000);
+            const altInt = Math.round(alt + 1000);
 
-            const options = { enableHighAccuracy: true };
+            const buffer = new ArrayBuffer(10);
+            const view = new DataView(buffer);
+            view.setUint32(0, latInt); 
+            view.setUint32(4, lonInt); 
+            view.setUint16(8, altInt); 
 
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude.toFixed(5);
-                const lon = position.coords.longitude.toFixed(5);
-                const alt = position.coords.altitude ? Math.round(position.coords.altitude) : "0";
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+            return btoa(binary);
+        }
 
-                // Update UI
-                document.getElementById('lat').innerText = lat;
-                document.getElementById('lon').innerText = lon;
-                document.getElementById('alt').innerText = alt + "m";
+        // --- DECOMPRESSION LOGIC ---
+        function unpackBase64(b64) {
+            try {
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                
+                const view = new DataView(bytes.buffer);
+                return {
+                    lat: (view.getUint32(0) / 100000 - 90).toFixed(5),
+                    lon: (view.getUint32(4) / 100000 - 180).toFixed(5),
+                    alt: view.getUint16(8) - 1000
+                };
+            } catch (e) { return null; }
+        }
 
-                // Create Minimized Packet (Format: lat,lon,alt)
-                nfcPacket = `${lat},${lon},${alt}m`;
-                document.getElementById('packet').innerText = nfcPacket;
+        // --- UI ACTIONS ---
+        function setStatus(msg, color = "black") {
+            const s = document.getElementById('status');
+            s.innerText = msg;
+            s.style.color = color;
+        }
 
-                // Show the Write button
-                document.getElementById('writeBtn').style.display = "block";
-            }, (err) => {
-                alert("Error getting location: " + err.message);
-            }, options);
-        });
+        async function captureLocation() {
+            setStatus("Locating...", "orange");
+            navigator.geolocation.getCurrentPosition((pos) => {
+                currentData.lat = pos.coords.latitude;
+                currentData.lon = pos.coords.longitude;
+                currentData.alt = pos.coords.altitude || 0;
 
-        // --- STEP 2: WRITE TO NFC (SAMSUNG/CHROME) ---
-        document.getElementById('writeBtn').addEventListener('click', async () => {
-            if (!('NDEFReader' in window)) {
-                alert("Web NFC not supported. Use Chrome on Android.");
-                return;
-            }
+                document.getElementById('disp-lat').innerText = currentData.lat.toFixed(5);
+                document.getElementById('disp-lon').innerText = currentData.lon.toFixed(5);
+                document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
+
+                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
+                document.getElementById('packet-out').innerText = b64;
+                document.getElementById('writeBtn').disabled = false;
+                setStatus("Location Captured", "green");
+            }, (err) => setStatus("Error: " + err.message, "red"), {enableHighAccuracy: true});
+        }
+
+        function copyPacket() {
+            const text = document.getElementById('packet-out').innerText;
+            navigator.clipboard.writeText(text);
+            setStatus("Copied to clipboard!");
+        }
+
+        // --- NFC LOGIC (Samsung/Chrome) ---
+        async function writeNFC() {
+            if (!('NDEFReader' in window)) return setStatus("NFC not supported on this device", "red");
+            const b64 = document.getElementById('packet-out').innerText;
 
             try {
                 const ndef = new NDEFReader();
-                document.getElementById('status').innerText = "Approach tag now...";
-                
-                await ndef.write({
-                    records: [{ recordType: "text", data: nfcPacket }]
-                });
+                setStatus("Touch phone to NTAG213...", "blue");
+                await ndef.write({ records: [{ recordType: "text", data: b64 }] });
+                setStatus("Successfully Written! ✅", "green");
+            } catch (err) { setStatus("Write Failed: " + err, "red"); }
+        }
 
-                document.getElementById('status').innerHTML = "<span class='success'>Data Written Successfully!</span>";
-            } catch (error) {
-                document.getElementById('status').innerText = "Write failed: " + error;
-            }
-        });
+        async function readNFC() {
+            if (!('NDEFReader' in window)) return setStatus("NFC not supported on this device", "red");
+
+            try {
+                const ndef = new NDEFReader();
+                await ndef.scan();
+                setStatus("Scanning... Tap Tag", "blue");
+
+                ndef.onreading = event => {
+                    const decoder = new TextDecoder();
+                    for (const record of event.message.records) {
+                        const b64 = decoder.decode(record.data);
+                        const data = unpackBase64(b64);
+                        if (data) {
+                            document.getElementById('read-display').style.display = "block";
+                            document.getElementById('read-lat').innerText = data.lat;
+                            document.getElementById('read-lon').innerText = data.lon;
+                            document.getElementById('read-alt').innerText = data.alt + "m";
+                            setStatus("Tag Decoded! 📍", "green");
+                        } else {
+                            setStatus("Tag data is not a valid packet", "orange");
+                        }
+                    }
+                };
+            } catch (err) { setStatus("Read Error: " + err, "red"); }
+        }
     </script>
 </body>
 </html>
