@@ -96,18 +96,19 @@
         }
 
         async function captureLocation() {
-    setStatus("Warming up GPS... Wait for high accuracy", "orange");
+    setStatus("Requesting GPS... Please stay still", "orange");
     
     const options = {
-        enableHighAccuracy: true, // Forces the use of GPS hardware
-        timeout: 10000,           // Wait up to 10 seconds
-        maximumAge: 0             // Do not use a cached/old location
+        enableHighAccuracy: true, 
+        timeout: 30000,           // Increased to 30 seconds
+        maximumAge: 0             
     };
 
-    // We use watchPosition to "settle" the GPS
+    // Start watching the position
     const watchId = navigator.geolocation.watchPosition((pos) => {
-        const accuracy = pos.coords.accuracy; // Accuracy in meters
+        const acc = pos.coords.accuracy;
         
+        // Display the data immediately
         currentData.lat = pos.coords.latitude;
         currentData.lon = pos.coords.longitude;
         currentData.alt = pos.coords.altitude || 0;
@@ -116,21 +117,45 @@
         document.getElementById('disp-lon').innerText = currentData.lon.toFixed(6);
         document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
         
+        // Update the Packet
         const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
         document.getElementById('packet-out').innerText = b64;
 
-        if (accuracy < 15) {
-            // Once we hit 15 meters of accuracy, we stop watching and allow writing
+        // If accuracy is good (under 20m), we lock it in
+        if (acc < 20) {
             navigator.geolocation.clearWatch(watchId);
             document.getElementById('writeBtn').disabled = false;
-            setStatus(`Accuracy: ${Math.round(accuracy)}m - READY`, "green");
+            setStatus(`Accuracy: ${Math.round(acc)}m - READY`, "green");
         } else {
-            setStatus(`Accuracy: ${Math.round(accuracy)}m - Waiting for better signal...`, "orange");
+            // Even if not perfect, allow writing after we have ANY data
+            document.getElementById('writeBtn').disabled = false;
+            setStatus(`Accuracy: ${Math.round(acc)}m - Improving...`, "blue");
         }
     }, (err) => {
-        setStatus("Error: " + err.message, "red");
-    }, options);
+        if (err.code === 3) { // Timeout error code
+            setStatus("GPS Timeout. Trying again with lower accuracy...", "orange");
+            // Fallback: try one more time without forcing GPS (Wi-Fi fix)
+            navigator.geolocation.getCurrentPosition(successFallback, errorFallback, { enableHighAccuracy: false });
+        } else {
+            setStatus("Error: " + err.message, "red");
         }
+    }, options);
+}
+
+// Fallback functions if the main GPS fails
+function successFallback(pos) {
+    currentData.lat = pos.coords.latitude;
+    currentData.lon = pos.coords.longitude;
+    currentData.alt = pos.coords.altitude || 0;
+    document.getElementById('disp-lat').innerText = currentData.lat.toFixed(6);
+    document.getElementById('disp-lon').innerText = currentData.lon.toFixed(6);
+    document.getElementById('writeBtn').disabled = false;
+    setStatus("Used Wi-Fi Location (Lower Accuracy)", "blue");
+}
+
+function errorFallback(err) {
+    setStatus("Location failed: " + err.message, "red");
+}
         /*
         async function captureLocation() {
             setStatus("Locating...", "orange");
