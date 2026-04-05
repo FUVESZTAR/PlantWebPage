@@ -610,7 +610,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
           const id  = `${vers}-icon-${key}`;
           const svg = makeSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
-          iconsmade = i+1;
+          iconsmade++;
         });
     });
   }
@@ -639,7 +639,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 // ── Size icons ───────────────────────────────────────────────────────────────
 
 function applySizeIcons(plant,FM) {
-  const type = splitPipe(plant[FM.Plant_type]).join(", ");
+  const type = splitPipe(plant[FM.plant_type]).join(", ");
   console.log("típus: " +type);
   const humanSvg = document.getElementById("size-human-icon-1");
   if (!humanSvg) return;
@@ -997,7 +997,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
       const el = document.querySelector(selector);
       if (el) el.value = value || "";
     });*/
-    renderFields(fields1, BASIC_FIED_MAP, plant);
+    renderFields("fields1", BASIC_FIED_MAP, plant);
     
     // NFC link
     const nfcEl = document.querySelector("#nfc-link");
