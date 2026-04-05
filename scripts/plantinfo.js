@@ -640,7 +640,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
 function applySizeIcons(plant,FM) {
   const type = splitPipe(plant[FM.Plant_type]).join(", ");
-  
+  console.log("típus: " +type);
   const humanSvg = document.getElementById("size-human-icon-1");
   if (!humanSvg) return;
   const treeSvg  = document.getElementById("size-tree-icon-2");
