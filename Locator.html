@@ -56,8 +56,8 @@
 
         // --- COMPRESSION LOGIC ---
         function packBase64(lat, lon, alt) {
-            const latInt = Math.round((lat + 90) * 100000);
-            const lonInt = Math.round((lon + 180) * 100000);
+            const latInt = Math.round((lat + 90) * 1000000);
+            const lonInt = Math.round((lon + 180) * 1000000);
             const altInt = Math.round(alt + 1000);
 
             const buffer = new ArrayBuffer(10);
@@ -81,8 +81,8 @@
                 
                 const view = new DataView(bytes.buffer);
                 return {
-                    lat: (view.getUint32(0) / 100000 - 90).toFixed(5),
-                    lon: (view.getUint32(4) / 100000 - 180).toFixed(5),
+                    lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
+                    lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
                     alt: view.getUint16(8) - 1000
                 };
             } catch (e) { return null; }
@@ -102,8 +102,8 @@
                 currentData.lon = pos.coords.longitude;
                 currentData.alt = pos.coords.altitude || 0;
 
-                document.getElementById('disp-lat').innerText = currentData.lat.toFixed(5);
-                document.getElementById('disp-lon').innerText = currentData.lon.toFixed(5);
+                document.getElementById('disp-lat').innerText = currentData.lat.toFixed(6);
+                document.getElementById('disp-lon').innerText = currentData.lon.toFixed(6);
                 document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
 
                 const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
