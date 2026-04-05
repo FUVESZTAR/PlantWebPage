@@ -654,6 +654,8 @@ function applySizeIcons(plant,FM) {
   const hAvg = plant[FM.plant_height_average_mm];
   const rootW = plant[FM.plant_root_width_average_mm];
   const rootH = plant[FM.plant_root_depth_average_mm];
+  
+console.log("test in sie fc FM p widht: "+wAvg);
 
  const iconSizeTargets = [
   { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
@@ -914,7 +916,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 });
 
 (async function init() {
-  setupLanguageButtons();
+  //setupLanguageButtons();
   await syncViewBoxes();
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
