@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Writer for Samsung S22</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        button { padding: 15px 25px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>NFC Tag Writer</h2>
+    <p>Enter the data for your NTAG213:</p>
+    
+    <input type="text" id="nfcId" placeholder="Enter ID (e.g. 12345)"><br><br>
+    <input type="url" id="nfcUrl" placeholder="https://example.com"><br><br>
+    
+    <button id="writeBtn">Write to Tag</button>
+
+    <div id="status">Ready to write...</div>
+
+    <script>
+        const writeBtn = document.getElementById('writeBtn');
+        const statusDiv = document.getElementById('status');
+
+        writeBtn.addEventListener('click', async () => {
+            const idValue = document.getElementById('nfcId').value;
+            const urlValue = document.getElementById('nfcUrl').value;
+
+            // 1. Check if Web NFC is supported
+            if (!('NDEFReader' in window)) {
+                statusDiv.innerText = "Web NFC is not supported on this browser/device.";
+                statusDiv.style.color = "red";
+                return;
+            }
+
+            try {
+                statusDiv.innerText = "Approach the tag to the back of your phone...";
+                statusDiv.style.color = "blue";
+
+                const ndef = new NDEFReader();
+                
+                // 2. Prepare the NDEF records
+                // We are writing a custom ID (Text) and the Web Link (URL)
+                await ndef.write({
+                    records: [
+                        { recordType: "text", data: idValue },
+                        { recordType: "url", data: urlValue }
+                    ]
+                });
+
+                statusDiv.innerText = "Successfully written to NTAG213! ✅";
+                statusDiv.style.color = "green";
+
+            } catch (error) {
+                statusDiv.innerText = `Error: ${error}`;
+                statusDiv.style.color = "red";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
