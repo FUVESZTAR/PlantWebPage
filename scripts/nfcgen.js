@@ -416,6 +416,43 @@ function calculateSize(text) {
 
   //save end
 
+  // NFC Write button – writes nfc-preview (text) and link-preview (url) to a physical NFC tag
+  const nfcWriteBtn = document.getElementById("nfc-write-button");
+  nfcWriteBtn.addEventListener("click", async () => {
+    updatePreviews();
+    const nfcData = nfcPreview.textContent;
+    const link    = linkPreview.textContent;
+
+    if (nfcData === "NFC data will appear here...") {
+      showError("Please select a plant and generate NFC data first");
+      return;
+    }
+
+    if (!('NDEFReader' in window)) {
+      showError("Web NFC is not supported on this browser/device.");
+      return;
+    }
+
+    nfcWriteBtn.disabled = true;
+    showError("Approach the tag to the back of your phone...", "success");
+
+    try {
+      const ndef = new NDEFReader();
+      await ndef.write({
+        records: [
+          { recordType: "text", data: nfcData },
+          { recordType: "url",  data: link }
+        ]
+      });
+      showError("Successfully written to NFC tag! ✅", "success");
+    } catch (error) {
+      showError("Error: " + error);
+      console.error(error);
+    } finally {
+      nfcWriteBtn.disabled = false;
+    }
+  });
+
   function clearForm() {
     nrInput.value = "";
     nfcIdInput.value = "";
