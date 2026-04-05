@@ -434,7 +434,7 @@ function calculateSize(text) {
     }
 
     nfcWriteBtn.disabled = true;
-    showError("Approach the tag to the back of your phone...", "success");
+    showError("Approach the tag to the back of your phone...", "info");
 
     try {
       const ndef = new NDEFReader();
@@ -473,7 +473,13 @@ function calculateSize(text) {
 
   function showError(message, type = "error") {
     errorMsg.textContent = message;
-    errorMsg.style.color = type === "success" ? "green" : "red";
+    if (type === "success") {
+      errorMsg.style.color = "green";
+    } else if (type === "info") {
+      errorMsg.style.color = "blue";
+    } else {
+      errorMsg.style.color = "red";
+    }
     errorMsg.style.display = "block";
     
     if (type === "success") {
