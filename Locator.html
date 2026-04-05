@@ -96,6 +96,43 @@
         }
 
         async function captureLocation() {
+    setStatus("Warming up GPS... Wait for high accuracy", "orange");
+    
+    const options = {
+        enableHighAccuracy: true, // Forces the use of GPS hardware
+        timeout: 10000,           // Wait up to 10 seconds
+        maximumAge: 0             // Do not use a cached/old location
+    };
+
+    // We use watchPosition to "settle" the GPS
+    const watchId = navigator.geolocation.watchPosition((pos) => {
+        const accuracy = pos.coords.accuracy; // Accuracy in meters
+        
+        currentData.lat = pos.coords.latitude;
+        currentData.lon = pos.coords.longitude;
+        currentData.alt = pos.coords.altitude || 0;
+
+        document.getElementById('disp-lat').innerText = currentData.lat.toFixed(6);
+        document.getElementById('disp-lon').innerText = currentData.lon.toFixed(6);
+        document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
+        
+        const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
+        document.getElementById('packet-out').innerText = b64;
+
+        if (accuracy < 15) {
+            // Once we hit 15 meters of accuracy, we stop watching and allow writing
+            navigator.geolocation.clearWatch(watchId);
+            document.getElementById('writeBtn').disabled = false;
+            setStatus(`Accuracy: ${Math.round(accuracy)}m - READY`, "green");
+        } else {
+            setStatus(`Accuracy: ${Math.round(accuracy)}m - Waiting for better signal...`, "orange");
+        }
+    }, (err) => {
+        setStatus("Error: " + err.message, "red");
+    }, options);
+        }
+        /*
+        async function captureLocation() {
             setStatus("Locating...", "orange");
             navigator.geolocation.getCurrentPosition((pos) => {
                 currentData.lat = pos.coords.latitude;
@@ -112,6 +149,7 @@
                 setStatus("Location Captured", "green");
             }, (err) => setStatus("Error: " + err.message, "red"), {enableHighAccuracy: true});
         }
+        */
 
         function copyPacket() {
             const text = document.getElementById('packet-out').innerText;
