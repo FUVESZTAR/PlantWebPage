@@ -610,7 +610,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
           const id  = `${vers}-icon-${key}`;
           const svg = makeSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
-          iconsmade = iconsmade+1;
+          iconsmade++;
         });
     });
   }
