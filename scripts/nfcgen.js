@@ -411,6 +411,7 @@ function calculateSize(text) {
       showError("Failed to save NFC: " + err.message);
     } finally {
       saveNfcBtn.disabled = false;
+      updatePreviews();
     }
   });
 
