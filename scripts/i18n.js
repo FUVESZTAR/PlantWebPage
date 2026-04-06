@@ -4,6 +4,22 @@
  */
 export const TRANSLATIONS = {
   en: {
+    // ── Home Page ─────────────────────────────────────────────────────────────
+    "home.title": "Fűvésztar",
+    "home.subtitle": "Your botanical garden toolkit",
+    "home.card.plantpage.title": "Plant Page",
+    "home.card.plantpage.desc": "Browse and search plants, open detailed plant views and manage NFC tags.",
+    "home.card.nfcgenerator.title": "NFC Generator",
+    "home.card.nfcgenerator.desc": "Create and write NFC tags linked to plant records in your garden.",
+    "home.card.plantlist.title": "Plant List",
+    "home.card.plantlist.desc": "View the full list of plants with filtering by family, genus and variety.",
+    "home.card.position.title": "Position",
+    "home.card.position.desc": "Record and view the GPS positions of plants in your garden.",
+    "home.card.shadowmap.title": "Shadow Map",
+    "home.card.shadowmap.desc": "Visualise sun and shadow patterns across your garden throughout the year.",
+    "home.card.sourdough.title": "Sourdough",
+    "home.card.sourdough.desc": "Manage your sourdough starter schedule and baking timelines.",
+
     // ── Page titles ──────────────────────────────────────────────────────────
     "page.title.plantpage": "Plant Page",
     "page.title.list": "Plant List",
@@ -146,6 +162,22 @@ export const TRANSLATIONS = {
   },
 
   hu: {
+    // ── Home Page ─────────────────────────────────────────────────────────────
+    "home.title": "Fűvésztar",
+    "home.subtitle": "Botanikus kert eszköztár",
+    "home.card.plantpage.title": "Növény oldal",
+    "home.card.plantpage.desc": "Növények böngészése és keresése, részletes növény nézet megnyitása és NFC-címkék kezelése.",
+    "home.card.nfcgenerator.title": "NFC Generátor",
+    "home.card.nfcgenerator.desc": "NFC-címkék létrehozása és írása, amelyek a kertben lévő növény-rekordokhoz kapcsolódnak.",
+    "home.card.plantlist.title": "Növénylista",
+    "home.card.plantlist.desc": "A teljes növénylista megtekintése, szűrés család, nemzetség és fajta szerint.",
+    "home.card.position.title": "Pozíció",
+    "home.card.position.desc": "Kertben lévő növények GPS-pozícióinak rögzítése és megtekintése.",
+    "home.card.shadowmap.title": "Árnyéktérkép",
+    "home.card.shadowmap.desc": "A nap és árnyék mintázatainak vizualizálása a kertben az év folyamán.",
+    "home.card.sourdough.title": "Kovász",
+    "home.card.sourdough.desc": "Kovászos starter menetrend és sütési idővonalak kezelése.",
+
     // ── Page titles ──────────────────────────────────────────────────────────
     "page.title.plantpage": "N\u00f6v\u00e9ny Oldal",
     "page.title.list": "N\u00f6v\u00e9nylista",
