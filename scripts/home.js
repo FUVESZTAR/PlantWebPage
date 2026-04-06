@@ -40,7 +40,6 @@ async function populate() {
   openBtn.disabled = true;
   nfcBtn.disabled = false;
   varietySelector.disabled = true;
-  if (listBtn) listBtn.disabled = true;
 
   let plants = []; // Declare plants outside try block so it's accessible in event handlers
 
@@ -141,28 +140,15 @@ async function populate() {
     }
   });
 
-  function getActiveListFilter() {
-    if (familySelector && familySelector.value) return { filterType: "family", filterValue: familySelector.value };
-    if (genusSelector && genusSelector.value) return { filterType: "genus", filterValue: genusSelector.value };
-    if (latinSelector && latinSelector.value) return { filterType: "latin", filterValue: latinSelector.value };
-    return null;
-  }
-
-  function updateListBtn() {
-    if (!listBtn) return;
-    const active = getActiveListFilter();
-    listBtn.disabled = !active;
-  }
-
-  [familySelector, genusSelector, latinSelector].forEach(sel => {
-    if (sel) sel.addEventListener("change", updateListBtn);
-  });
-
   if (listBtn) {
+    listBtn.disabled = false;
     listBtn.addEventListener("click", () => {
-      const filter = getActiveListFilter();
-      if (!filter) return;
-      window.location.href = `PlantListPage.html?filterType=${encodeURIComponent(filter.filterType)}&filterValue=${encodeURIComponent(filter.filterValue)}`;
+      const params = new URLSearchParams();
+      if (familySelector && familySelector.value) params.set("family", familySelector.value);
+      if (genusSelector  && genusSelector.value)  params.set("genus",  genusSelector.value);
+      if (latinSelector  && latinSelector.value)  params.set("latin",  latinSelector.value);
+      const query = params.toString();
+      window.location.href = `PlantListPage.html${query ? "?" + query : ""}`;
     });
   }
 

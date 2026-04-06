@@ -13,11 +13,6 @@ function getFilterLabels() {
   };
 }
 
-const FILTER_FIELDS = {
-  family: "Family",
-  genus: "Genus",
-  latin: "LatinName",
-};
 
 function buildDropdown(selectEl, allValues, placeholder) {
   const current = selectEl.value;
@@ -64,16 +59,6 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   const params = new URLSearchParams(window.location.search);
-  const filterType = params.get("filterType") || "";
-  const filterValue = params.get("filterValue") || "";
-
-  if (filterType && filterValue) {
-    const FILTER_LABELS = getFilterLabels();
-    filterSummary.textContent = `${FILTER_LABELS[filterType] || filterType}: ${filterValue}`;
-  } else {
-    filterSummary.textContent = t('list.allPlants');
-  }
-
   let plants = [];
   try {
     plants = await loadPlantData();
@@ -86,16 +71,9 @@ async function populate() {
     return;
   }
 
-  // Apply URL-based filter
-  const field = FILTER_FIELDS[filterType];
-  let urlFiltered = plants;
-  if (field && filterValue) {
-    urlFiltered = plants.filter((p) => (p[field] || "") === filterValue);
-  }
+  plants.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
-  urlFiltered.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
-
-  // Populate dropdowns with unique sorted values from the URL-filtered set
+  // Populate dropdowns with unique sorted values from the full dataset
   const ddGenus = document.getElementById("dd-genus");
   const ddFamily = document.getElementById("dd-family");
   const ddLatin = document.getElementById("dd-latin");
@@ -105,10 +83,27 @@ async function populate() {
     return [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b));
   }
 
-  buildDropdown(ddGenus,   unique(urlFiltered.map(p => p.Genus)),        t('list.filter.allGenera'));
-  buildDropdown(ddFamily,  unique(urlFiltered.map(p => p.Family)),       t('list.filter.allFamilies'));
-  buildDropdown(ddLatin,   unique(urlFiltered.map(p => p.LatinName)),    t('list.filter.allLatinNames'));
-  buildDropdown(ddVariety, unique(urlFiltered.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
+  buildDropdown(ddGenus,   unique(plants.map(p => p.Genus)),        t('list.filter.allGenera'));
+  buildDropdown(ddFamily,  unique(plants.map(p => p.Family)),       t('list.filter.allFamilies'));
+  buildDropdown(ddLatin,   unique(plants.map(p => p.LatinName)),    t('list.filter.allLatinNames'));
+  buildDropdown(ddVariety, unique(plants.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
+
+  // Set dropdown values from URL params so the user can see and change the initial filter
+  const familyParam  = params.get("family")  || "";
+  const genusParam   = params.get("genus")   || "";
+  const latinParam   = params.get("latin")   || "";
+  if (familyParam)  ddFamily.value = familyParam;
+  if (genusParam)   ddGenus.value  = genusParam;
+  if (latinParam)   ddLatin.value  = latinParam;
+
+  function updateFilterSummary() {
+    const parts = [];
+    const FILTER_LABELS = getFilterLabels();
+    if (ddFamily.value) parts.push(`${FILTER_LABELS.family}: ${ddFamily.value}`);
+    if (ddGenus.value)  parts.push(`${FILTER_LABELS.genus}: ${ddGenus.value}`);
+    if (ddLatin.value)  parts.push(`${FILTER_LABELS.latin}: ${ddLatin.value}`);
+    filterSummary.textContent = parts.length ? parts.join(" | ") : t('list.allPlants');
+  }
 
   function applyDropdownFilters() {
     const genus   = ddGenus.value;
@@ -116,13 +111,14 @@ async function populate() {
     const latin   = ddLatin.value;
     const variety = ddVariety.value;
 
-    const result = urlFiltered.filter((p) => {
+    const result = plants.filter((p) => {
       if (genus   && (p.Genus        || "") !== genus)   return false;
       if (family  && (p.Family       || "") !== family)  return false;
       if (latin   && (p.LatinName    || "") !== latin)   return false;
       if (variety && (p.Name_Variety || "") !== variety) return false;
       return true;
     });
+    updateFilterSummary();
     renderRows(result);
   }
 
@@ -131,7 +127,7 @@ async function populate() {
   ddLatin.addEventListener("change", applyDropdownFilters);
   ddVariety.addEventListener("change", applyDropdownFilters);
 
-  renderRows(urlFiltered);
+  applyDropdownFilters();
 }
 
 if (document.readyState === "loading") {
