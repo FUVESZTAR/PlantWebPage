@@ -18,6 +18,7 @@ let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
 let plantId = 1;
+let nfcIdValue =0;
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -165,6 +166,7 @@ async function loadLastNfcId(nfcIdInput) {
     if (result.lastId !== undefined && result.lastId !== '') {
         const nextId = Number(result.lastId) + 1;
         nfcIdInput.value = nextId;
+        nfcIdValue = nextId;
         updateNFCPreview();    
     }
   } catch (err) {
@@ -407,7 +409,7 @@ function calculateSize(text) {
 
   function updateNFCPreview() {
     const nr = nrInput.value;
-    const nfcIdValue = nfcIdInput.value;
+    nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
