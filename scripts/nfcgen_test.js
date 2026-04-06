@@ -200,7 +200,7 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
   const gpsstartBtn = document.getElementById("gpsstartBtn");
   const gpsstopBtn = document.getElementById("gpsstopBtn");
-  loadLastNfcId(nfcIdInput);
+  
   let plants = [];
 
   try {
@@ -225,7 +225,7 @@ async function populate() {
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
-
+  loadLastNfcId(nfcIdInput);
   // Set current date
   const today = new Date();
   const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
