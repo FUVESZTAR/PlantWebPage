@@ -63,8 +63,8 @@ const nfcIdInput = document.getElementById("plantId");
            console.log("Start");
             if (watchId) navigator.geolocation.clearWatch(watchId);
             
-            document.getElementById('startBtn').style.display = "none";
-            document.getElementById('stopBtn').style.display = "block";
+            document.getElementById('gpsstartBtn').style.display = "none";
+            document.getElementById('gpsstopBtn').style.display = "block";
             document.getElementById('live-dot').style.display = "inline";
             setStatus("Fetching GPS satellites...", "orange");
 
@@ -110,9 +110,9 @@ const nfcIdInput = document.getElementById("plantId");
                 document.getElementById('packet-out').innerText = b64;
                 document.getElementById('packet-size').innerText = `Size: ${b64.length} bytes`;
                 
-            document.getElementById('startBtn').style.display = "block";
-            document.getElementById('startBtn').innerText = "Restart Tracking";
-            document.getElementById('stopBtn').style.display = "none";
+            document.getElementById('gpsstartBtn').style.display = "block";
+            document.getElementById('gpsstartBtn').innerText = "Restart Tracking";
+            document.getElementById('gpsstopBtn').style.display = "none";
             document.getElementById('live-dot').style.display = "none";
             document.getElementById('update-timer').innerText = "Status: Data Locked";
  
@@ -428,7 +428,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket$}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket || ''}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
