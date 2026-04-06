@@ -8,7 +8,6 @@
   --border: #dde6da;
   --sizeObjColor: black;
 }
-}
 
 * {
   box-sizing: border-box;
@@ -22,7 +21,9 @@ body {
   min-height: 100vh;
 }
 
-cursor: url('leaf.cur'),default;
+body {
+  cursor: url('../leaf.cur'), default;
+}
 
 main {
   width: min(1200px, 94vw);

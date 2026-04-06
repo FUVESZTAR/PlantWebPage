@@ -1,1 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-i18n-title="home.title">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fűvésztar</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/homepagestyles.css" />
+    <style>
+      /* ── Hero ───────────────────────────────────────────────────────────── */
+      .hero {
+        text-align: center;
+        padding: 3rem 1rem 1.5rem;
+      }
+      .hero h1 {
+        font-size: clamp(2rem, 6vw, 3.2rem);
+        font-weight: 800;
+        color: var(--accent-strong);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.4rem;
+      }
+      .hero p {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: var(--muted);
+        margin: 0;
+      }
 
+      /* ── Nav grid ───────────────────────────────────────────────────────── */
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.1rem;
+        padding: 0 0 3rem;
+      }
+
+      /* ── Nav card ───────────────────────────────────────────────────────── */
+      .nav-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        text-decoration: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.4rem 1.3rem 1.2rem;
+        box-shadow: 0 6px 20px rgba(23, 34, 23, 0.06);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        color: var(--text);
+      }
+      .nav-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(23, 34, 23, 0.11);
+        border-color: var(--accent);
+      }
+      .nav-card:active {
+        transform: translateY(0);
+      }
+
+      .card-icon {
+        font-size: 2rem;
+        line-height: 1;
+      }
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent-strong);
+        margin: 0;
+      }
+      .card-desc {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .card-arrow {
+        margin-top: auto;
+        font-size: 1rem;
+        color: var(--accent);
+        font-weight: 700;
+        padding-top: 0.4rem;
+      }
+
+      /* ── Footer ─────────────────────────────────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 1.2rem;
+        font-size: 0.8rem;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+      }
+
+      @media (max-width: 480px) {
+        .hero {
+          padding: 2rem 0.75rem 1rem;
+        }
+        .nav-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="hu" type="button">HU</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+
+    <main>
+      <!-- Hero -->
+      <header class="hero">
+        <h1 data-i18n="home.title">Fűvésztar</h1>
+        <p data-i18n="home.subtitle">Your botanical garden toolkit</p>
+      </header>
+
+      <!-- Navigation cards -->
+      <nav class="nav-grid" aria-label="Main navigation">
+
+        <a class="nav-card" href="Plantpage.html">
+          <span class="card-icon">🌿</span>
+          <p class="card-title" data-i18n="home.card.plantpage.title">Plant Page</p>
+          <p class="card-desc" data-i18n="home.card.plantpage.desc">
+            Browse and search plants, open detailed plant views and manage NFC tags.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a class="nav-card" href="Nfcgenerator.html">
+          <span class="card-icon">📶</span>
+          <p class="card-title" data-i18n="home.card.nfcgenerator.title">NFC Generator</p>
+          <p class="card-desc" data-i18n="home.card.nfcgenerator.desc">
+            Create and write NFC tags linked to plant records in your garden.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a class="nav-card" href="PlantListPage.html">
+          <span class="card-icon">📋</span>
+          <p class="card-title" data-i18n="home.card.plantlist.title">Plant List</p>
+          <p class="card-desc" data-i18n="home.card.plantlist.desc">
+            View the full list of plants with filtering by family, genus and variety.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a class="nav-card" href="Position.html">
+          <span class="card-icon">📍</span>
+          <p class="card-title" data-i18n="home.card.position.title">Position</p>
+          <p class="card-desc" data-i18n="home.card.position.desc">
+            Record and view the GPS positions of plants in your garden.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a class="nav-card" href="Shadowmap.html">
+          <span class="card-icon">🌤️</span>
+          <p class="card-title" data-i18n="home.card.shadowmap.title">Shadow Map</p>
+          <p class="card-desc" data-i18n="home.card.shadowmap.desc">
+            Visualise sun and shadow patterns across your garden throughout the year.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a class="nav-card" href="sourdoughpage.html">
+          <span class="card-icon">🍞</span>
+          <p class="card-title" data-i18n="home.card.sourdough.title">Sourdough</p>
+          <p class="card-desc" data-i18n="home.card.sourdough.desc">
+            Manage your sourdough starter schedule and baking timelines.
+          </p>
+          <span class="card-arrow">→</span>
+        </a>
+
+      </nav>
+    </main>
+
+    <footer>Fűvésztar &copy; 2026</footer>
+
+    <script type="module" src="scripts/home.js"></script>
+  </body>
+</html>
