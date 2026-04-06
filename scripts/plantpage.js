@@ -47,13 +47,13 @@ async function populate() {
     plants = await loadPlantData();
     // Keep only plants that are active on the page
     plants = plants.filter(p => p.Active_in_page === 'Y');
-    console.log("loading plants in home.js");
+    console.log("loading plants in plantpage.js");
     // Use Name_HU for Hungarian, Name_EN for English
     const lang = getCurrentLang();
     const nameProp = lang === 'en' ? 'Name_EN' : 'Name_HU';
 
     // Populate plant selector with unique names (sorted alphabetically)
-    selector.innerHTML = `<option value="">${t('home.placeholder.selectPlant')}</option>`;
+    selector.innerHTML = `<option value="">${t('plantpage.placeholder.selectPlant')}</option>`;
     const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
@@ -64,13 +64,13 @@ async function populate() {
       selector.appendChild(opt);
     });
 
-    fillUniqueSelector(familySelector, plants.map(p => p.Family), t('home.placeholder.allFamilies'));
-    fillUniqueSelector(genusSelector, plants.map(p => p.Genus), t('home.placeholder.allGenera'));
-    fillUniqueSelector(latinSelector, plants.map(p => p.LatinName), t('home.placeholder.allLatinNames'));
+    fillUniqueSelector(familySelector, plants.map(p => p.Family), t('plantpage.placeholder.allFamilies'));
+    fillUniqueSelector(genusSelector, plants.map(p => p.Genus), t('plantpage.placeholder.allGenera'));
+    fillUniqueSelector(latinSelector, plants.map(p => p.LatinName), t('plantpage.placeholder.allLatinNames'));
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = t('home.error.loadFailed');
-    selector.innerHTML = `<option value="">${t('home.error.option')}</option>`;
+    errorMsg.textContent = t('plantpage.error.loadFailed');
+    selector.innerHTML = `<option value="">${t('plantpage.error.option')}</option>`;
   }
 
   function populateVarietiesForSelection() {
