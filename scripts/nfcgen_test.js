@@ -251,6 +251,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
+      loadLastNfcId(nfcIdInput);
       nrInput.value = plant.Nr || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
@@ -344,6 +345,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
+      loadLastNfcId(nfcIdInput);
       nrInput.value = varietyPlant.Nr || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
