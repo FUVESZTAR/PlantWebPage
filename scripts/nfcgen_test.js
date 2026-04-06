@@ -19,6 +19,7 @@ let selectedVarietyData = null;
 let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
+const nfcIdInput = document.getElementById("plantId");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -166,8 +167,9 @@ async function loadLastNfcId(nfcIdInput) {
     if (result.lastId !== undefined && result.lastId !== '') {
         const nextId = Number(result.lastId) + 1;
         nfcIdInput.value = nextId;
+            // nfcIdValue = nfcIdInput.value;
         nfcIdValue = nextId;
-        updateNFCPreview();    
+        if (nextId>0) updateNFCPreview();    
     }
   } catch (err) {
     console.warn('Could not load last NFC ID:', err.message);
@@ -177,7 +179,6 @@ async function loadLastNfcId(nfcIdInput) {
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const nrInput = document.getElementById("nr");
-  const nfcIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -199,7 +200,7 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
   const gpsstartBtn = document.getElementById("gpsstartBtn");
   const gpsstopBtn = document.getElementById("gpsstopBtn");
-
+  loadLastNfcId(nfcIdInput);
   let plants = [];
 
   try {
@@ -253,7 +254,6 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      loadLastNfcId(nfcIdInput);
       nrInput.value = plant.Nr || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
@@ -347,7 +347,6 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      loadLastNfcId(nfcIdInput);
       nrInput.value = varietyPlant.Nr || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
@@ -364,14 +363,17 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, nfcIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [nrInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
+ //listener for nfcID change
+    [nfcIdInput].forEach(input => {
+    input.addEventListener("change", updatePreviews);
+    input.addEventListener("input", updatePreviews);
+  });      
 
   function updatePreviews() {
-    // Pre-fill NFC ID with the last value from column A of the NFC list sheet
-    loadLastNfcId(nfcIdInput);
     //update NFC field
     updateNFCPreview();
   }
@@ -451,6 +453,7 @@ function calculateSize(text) {
     
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
+    loadLastNfcId(nfcIdInput);
     updatePreviews();
     const nfcData = nfcPreview.textContent;
     
@@ -555,6 +558,7 @@ function calculateSize(text) {
     } catch (err) {
       showError("Failed to save NFC: " + err.message);
     } finally {
+      loadLastNfcId(nfcIdInput);
       saveNfcBtn.disabled = false;
       updatePreviews();
     }
