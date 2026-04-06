@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NFC Generator</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="css/homepagestyles.css" />
+  <style>
+    .nfc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .nfc-preview {
+      background-color: #f5f5f5;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    .button-group1 {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .button-group2 {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .error-message {
+      color: red;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 480px) {
+      .nfc-form {
+        max-width: 100%;
+      }
+      .button-group1,
+      .button-group2 {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="landing-wrapper">
+    <section class="card landing-card">
+      <h1>NFC Generator</h1>
+      <p class="subtitle">Generate NFC tags for plants</p>
+
+      <div class="nfc-form">
+        <!-- Plant Selection -->
+        <div class="form-group">
+          <label for="plant-selector">Plant Name</label>
+          <select id="plant-selector" aria-label="Select plant">
+            <option value="">Loading plants…</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+  <label for="name-variety">Variety</label>
+  <select id="name-variety">
+    <option value="">Select a variety...</option>
+  </select>
+  <input 
+    type="text" 
+    id="name-variety-custom" 
+    placeholder="Enter custom variety" 
+    style="display: none; margin-top: 0.5rem;"
+  />
+</div>
+        
+        <!-- Auto-filled fields from sheet -->
+     <div class="section">   
+        <div class="form-group">
+          <label for="nr">Nr</label>
+          <input type="text" id="nr" readonly />
+        </div>
+
+         <div class="form-group">
+          <label for="year">NFC ID</label>
+          <input type="number" id="plantId" />
+        </div>
+
+        <div class="form-group">
+          <label for="latin-name">Latin Name</label>
+          <input type="text" id="latin-name" />
+        </div>
+
+        <!-- Additional fields to add -->
+        <div class="form-group">
+          <label for="datum">Datum</label>
+          <input type="text" id="datum" placeholder="e.g., 2026-03-12" />
+        </div>
+
+        <div class="form-group">
+          <label for="nfctyp">NFC Type</label>
+          <select id="nfctyp">
+            <option value="n" selected>n-növény</option>
+            <option value="o">o-oltás</option>
+            <option value="m">m-mag</option>
+          </select>
+        </div>
+   </div><div class="section">   
+     <div class="form-group">
+        <div class="card">
+        <strong>1. GPS Monitor</strong>
+        <button id="startBtn" class="btn-get" onclick="startLiveCapture()">Start Live Tracking</button>
+        <button id="stopBtn" class="btn-stop" onclick="stopLiveCapture()">Stop & Lock Data</button>
+        
+        <div class="data-line"><span>Latitude:</span> <span id="disp-lat">-</span></div>
+        <div class="data-line"><span>Longitude:</span> <span id="disp-lon">-</span></div>
+        <div class="data-line"><span>Altitude:</span> <span id="disp-alt">-</span></div>
+        <div class="data-line"><span>Accuracy:</span> <span id="disp-acc">-</span></div>
+        
+        <div class="meta-info">
+            <span id="update-timer">Status: Standing by</span>
+            <span id="live-dot" style="display:none" class="live-indicator">● UPDATING</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="meta-info">
+            <strong>2. Compressed Packet</strong>
+            <span id="packet-size" class="badge">Size: 0 bytes</span>
+        </div>
+        <div class="packet-zone" id="packet-out">No data locked...</div>
+    </div>
+    <div id="status">Ready.</div>
+     
+     </div>
+     <div class="form-group">
+          <label for="egyeb">Other Info</label>
+          <textarea id="egyeb" placeholder="Additional information"></textarea>
+        </div>
+    </div>
+<!-- NFC Data Preview -->
+<div class="form-group">
+  <label for="nfc-preview">NFC Data Preview: <span id="nfc-size" style="font-weight: normal; color: #666;">Size: 0 B</span></label>
+  <div class="nfc-preview" id="nfc-preview">NFC data will appear here...</div>
+</div>
+
+<!-- Link Preview -->
+<div class="form-group">
+  <label for="link-preview">Link Preview: <span id="link-size" style="font-weight: normal; color: #666;">Size: 0 B</span></label>
+  <div class="nfc-preview" id="link-preview">Link will appear here...</div>
+  <label for="link-preview"><span id="total-size" style="font-weight: normal; color: #666;">Total Size: 0 B</span></label>
+</div>
+
+<!-- Error Message -->
+<p class="error-message" id="error-message"></p>
+
+<!-- Action Buttons -->
+<div class="button-group1">
+  <button id="copy-nfc" type="button">NFC</button>
+  <button id="copy-link" type="button">Link</button>
+  <button id="save-nfc" type="button">Save</button>
+</div>
+<div class="button-group2">
+  <button id="generate-nfc" type="button">Generate</button>
+  <button id="qr-button" type="button">NFC QR</button>
+  <button id="back-button" type="button">Back</button>
+</div>
+<div class="button-group2">
+  <button id="nfc-write-button" type="button">NFC Write</button>
+</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="scripts/nfcgen.js" type="module"></script>
+</body>
+</html>
