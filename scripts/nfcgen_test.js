@@ -18,11 +18,12 @@ let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
 let plantId = 1;
-
+//gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
         let timerInterval;
         let watchId = null;
+//gps
 
         function packBase64(lat, lon, alt) {
             const latInt = Math.round((lat + 90) * 1000000); 
@@ -40,7 +41,7 @@ let plantId = 1;
             for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
             return btoa(binary);
         }
-
+//gps
         function unpackBase64(b64) {
             try {
                 const binary = atob(b64);
@@ -54,7 +55,7 @@ let plantId = 1;
                 };
             } catch (e) { return null; }
         }
-
+//gps
         function startLiveCapture() {
            console.log("Start");
             if (watchId) navigator.geolocation.clearWatch(watchId);
