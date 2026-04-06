@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pages</title>
+    <link rel="icon" href="favicon.ico" />
+    <style>
+      :root {
+        --bg: #f5f8f3;
+        --surface: #ffffff;
+        --text: #172217;
+        --muted: #546354;
+        --accent: #2f7d32;
+        --accent-strong: #245f27;
+        --border: #dde6da;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: radial-gradient(circle at top right, #e6f3dd 0, var(--bg) 40%);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem 2.5rem;
+        box-shadow: 0 10px 32px rgba(23, 34, 23, 0.08);
+        width: min(520px, 100%);
+        display: grid;
+        gap: 1rem;
+      }
+
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.9rem;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+        line-height: 1.25;
+      }
+
+      .nav-btn:hover {
+        background: var(--accent-strong);
+        transform: translateY(-2px);
+      }
+
+      .nav-btn:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 420px) {
+        .card {
+          padding: 1.5rem 1.25rem;
+        }
+
+        .nav-grid {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div>
+        <h1>Pages</h1>
+        <p class="subtitle">Select a page to open</p>
+      </div>
+      <nav class="nav-grid">
+        <a class="nav-btn" href="Plantpage.html">🌿 Plant Page</a>
+        <a class="nav-btn" href="PlantListPage.html">📋 Plant List</a>
+        <a class="nav-btn" href="Nfcgenerator.html">📡 NFC Generator</a>
+        <a class="nav-btn" href="Position.html">📍 Position</a>
+        <a class="nav-btn" href="Shadowmap.html">🌑 Shadow Map</a>
+        <a class="nav-btn" href="sourdoughpage.html">🍞 Sourdough</a>
+      </nav>
+    </div>
+  </body>
+</html>
