@@ -5,8 +5,8 @@
 export const TRANSLATIONS = {
   en: {
     // ── Home Page ─────────────────────────────────────────────────────────────
-    "home.title": "Fűvésztar",
-    "home.subtitle": "Your botanical garden toolkit",
+    "home.title": "Homepage",
+    "home.subtitle": "My webpages",
     "home.card.plantpage.title": "Plant Page",
     "home.card.plantpage.desc": "Browse and search plants, open detailed plant views and manage NFC tags.",
     "home.card.nfcgenerator.title": "NFC Generator",
@@ -163,8 +163,8 @@ export const TRANSLATIONS = {
 
   hu: {
     // ── Home Page ─────────────────────────────────────────────────────────────
-    "home.title": "Fűvésztar",
-    "home.subtitle": "Botanikus kert eszköztár",
+    "home.title": "Homepage",
+    "home.subtitle": "Honlapjaim",
     "home.card.plantpage.title": "Növény oldal",
     "home.card.plantpage.desc": "Növények böngészése és keresése, részletes növény nézet megnyitása és NFC-címkék kezelése.",
     "home.card.nfcgenerator.title": "NFC Generátor",
