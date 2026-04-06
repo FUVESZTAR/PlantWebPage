@@ -31,6 +31,7 @@ async function loadLastNfcId(nfcIdInput) {
     if (result.lastId !== undefined && result.lastId !== '') {
         const nextId = Number(result.lastId) + 1;
         nfcIdInput.value = nextId;
+        updateNFCPreview();
     }
   } catch (err) {
     console.warn('Could not load last NFC ID:', err.message);
