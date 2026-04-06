@@ -56,6 +56,7 @@ let plantId = 1;
         }
 
         function startLiveCapture() {
+           console.log("Start");
             if (watchId) navigator.geolocation.clearWatch(watchId);
             
             document.getElementById('startBtn').style.display = "none";
@@ -94,6 +95,7 @@ let plantId = 1;
         }
 
         function stopLiveCapture() {
+            console.log("Stop");
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
                 watchId = null;
@@ -192,6 +194,8 @@ async function populate() {
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
   const errorMsg = document.getElementById("error-message");
+  const gpsstartBtn = document.getElementById("gpsstartBtn");
+  const gpsstopBtn = document.getElementById("gpsstopBtn");
 
   let plants = [];
 
@@ -435,7 +439,11 @@ function calculateSize(text) {
       }
     }   
   }
-
+  //Gsp
+  gpsstartBtn.addEventListener("click", startLiveCapture);
+  
+  gpsstopBtn.addEventListener("click", stopLiveCapture);
+    
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
     updatePreviews();
