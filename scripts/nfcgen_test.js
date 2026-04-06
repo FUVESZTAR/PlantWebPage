@@ -19,6 +19,7 @@ let selectedVarietyData = null;
 let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
+let gpsPacket =null;
 const nfcIdInput = document.getElementById("plantId");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
@@ -81,11 +82,6 @@ const nfcIdInput = document.getElementById("plantId");
                 document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
                 document.getElementById('disp-acc').innerText = Math.round(acc) + "m";
 
-                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
-                document.getElementById('packet-out').innerText = b64;
-                document.getElementById('packet-size').innerText = `Size: ${b64.length} bytes`;
-                
-                document.getElementById('writeBtn').disabled = false;
                 setStatus(`Updating... (${Math.round(acc)}m accuracy)`, "#0056b3");
 
             }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
@@ -108,13 +104,20 @@ const nfcIdInput = document.getElementById("plantId");
                 timerInterval = null;
             }
 
+                //calculation
+                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
+                const gpstext = `L:${b64}`;
+                document.getElementById('packet-out').innerText = b64;
+                document.getElementById('packet-size').innerText = `Size: ${b64.length} bytes`;
+                
             document.getElementById('startBtn').style.display = "block";
             document.getElementById('startBtn').innerText = "Restart Tracking";
             document.getElementById('stopBtn').style.display = "none";
             document.getElementById('live-dot').style.display = "none";
             document.getElementById('update-timer').innerText = "Status: Data Locked";
-            
+ 
             setStatus("Tracking Stopped. Data preserved.", "#333");
+            gpsPacket=gpstext;
         }
 
         async function writeNFC() {
@@ -425,7 +428,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket$}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
