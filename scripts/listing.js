@@ -19,8 +19,47 @@ const FILTER_FIELDS = {
   latin: "LatinName",
 };
 
-async function populate() {
+function buildDropdown(selectEl, allValues, placeholder) {
+  const current = selectEl.value;
+  selectEl.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "";
+  all.textContent = placeholder;
+  selectEl.appendChild(all);
+  allValues.forEach((v) => {
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    selectEl.appendChild(opt);
+  });
+  selectEl.value = allValues.includes(current) ? current : "";
+}
+
+function renderRows(plants) {
   const tbody = document.getElementById("plant-list-body");
+  if (!plants.length) {
+    tbody.innerHTML = `<tr><td colspan="5">${t('list.empty')}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  plants.forEach((plant) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${plant.Nr || ""}</td>
+      <td>${plant.LatinName || ""}</td>
+      <td>${plant.Name_Variety || ""}</td>
+      <td>${plant.Name_EN || ""}</td>
+      <td>${plant.Name_HU || ""}</td>
+    `;
+    tr.addEventListener("click", () => {
+      localStorage.setItem("selectedPlantNr", plant.Nr);
+      window.location.href = `P.html?id=${encodeURIComponent(plant.Nr)}`;
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+async function populate() {
   const filterSummary = document.getElementById("filter-summary");
   const errorMsg = document.getElementById("error-message");
 
@@ -38,43 +77,61 @@ async function populate() {
   let plants = [];
   try {
     plants = await loadPlantData();
-    // Keep only plants active on the page and in NFC
-   plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
+    plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
-    tbody.innerHTML = `<tr><td colspan="4">${t('list.error.loadData')}</td></tr>`;
+    document.getElementById("plant-list-body").innerHTML =
+      `<tr><td colspan="5">${t('list.error.loadData')}</td></tr>`;
     return;
   }
 
-  let filtered = plants;
+  // Apply URL-based filter
   const field = FILTER_FIELDS[filterType];
+  let urlFiltered = plants;
   if (field && filterValue) {
-    filtered = plants.filter((p) => (p[field] || "") === filterValue);
+    urlFiltered = plants.filter((p) => (p[field] || "") === filterValue);
   }
 
-  filtered.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
+  urlFiltered.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
-  if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="4">${t('list.empty')}</td></tr>`;
-    return;
+  // Populate dropdowns with unique sorted values from the URL-filtered set
+  const ddGenus = document.getElementById("dd-genus");
+  const ddFamily = document.getElementById("dd-family");
+  const ddLatin = document.getElementById("dd-latin");
+  const ddVariety = document.getElementById("dd-variety");
+
+  function unique(arr) {
+    return [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b));
   }
 
-  tbody.innerHTML = "";
-  filtered.forEach((plant) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${plant.LatinName || ""}</td>
-      <td>${plant.Name_Variety || ""}</td>
-      <td>${plant.Name_EN || ""}</td>
-      <td>${plant.Name_HU || ""}</td>
-    `;
-    tr.addEventListener("click", () => {
-      localStorage.setItem("selectedPlantNr", plant.Nr);
-      window.location.href = `P.html?id=${encodeURIComponent(plant.Nr)}`;
+  buildDropdown(ddGenus,   unique(urlFiltered.map(p => p.Genus)),        t('list.filter.allGenera'));
+  buildDropdown(ddFamily,  unique(urlFiltered.map(p => p.Family)),       t('list.filter.allFamilies'));
+  buildDropdown(ddLatin,   unique(urlFiltered.map(p => p.LatinName)),    t('list.filter.allLatinNames'));
+  buildDropdown(ddVariety, unique(urlFiltered.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
+
+  function applyDropdownFilters() {
+    const genus   = ddGenus.value;
+    const family  = ddFamily.value;
+    const latin   = ddLatin.value;
+    const variety = ddVariety.value;
+
+    const result = urlFiltered.filter((p) => {
+      if (genus   && (p.Genus        || "") !== genus)   return false;
+      if (family  && (p.Family       || "") !== family)  return false;
+      if (latin   && (p.LatinName    || "") !== latin)   return false;
+      if (variety && (p.Name_Variety || "") !== variety) return false;
+      return true;
     });
-    tbody.appendChild(tr);
-  });
+    renderRows(result);
+  }
+
+  ddGenus.addEventListener("change", applyDropdownFilters);
+  ddFamily.addEventListener("change", applyDropdownFilters);
+  ddLatin.addEventListener("change", applyDropdownFilters);
+  ddVariety.addEventListener("change", applyDropdownFilters);
+
+  renderRows(urlFiltered);
 }
 
 if (document.readyState === "loading") {
@@ -83,3 +140,4 @@ if (document.readyState === "loading") {
   setupLanguageButtons();
   populate();
 }
+
