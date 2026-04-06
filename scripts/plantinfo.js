@@ -63,7 +63,7 @@ const BASIC_FIED_MAP = [
   { key:'plant_type', symbol:"#plant_type", data:"Plant_type", icon:"", typ:'split', use:"", i18n:"planttype" },
 
   { key:'raw_edible_parts_all', symbol:"#raw_edible_parts_all", data:"Raw_edible_parts_all", icon:"", typ:'split', use:"", i18n:"rawediblepartsall" },
-  { key:'prepared_edible_parts_all', symbol:"#prepared_edible_parts_all", data:"Prepared_edible_parts_all", icon:"", typ:'split', use:"", i18n:"preparedediblepartsall" },
+  { key:'only_prepared_edible_parts_all', symbol:"#only_prepared_edible_parts_all", data:"Only_prepared_edible_parts_all", icon:"", typ:'split', use:"", i18n:"onlypreparedediblepartsall" },
   { key:'preparation_all', symbol:"#preparation_all", data:"Preparation_all", icon:"", typ:'split', use:"", i18n:"preparationall" },
   { key:'toxic_parts_all', symbol:"#toxic_parts_all", data:"Toxic_parts_all", icon:"", typ:'split', use:"", i18n:"toxicpartsall" },
   { key:'medicinal_parts_all', symbol:"#medicinal_parts_all", data:"Medicinal_parts_all", icon:"", typ:'split', use:"", i18n:"medicinalpartsall" },
