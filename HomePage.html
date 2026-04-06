@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Page</title>
+    <link rel="stylesheet" href="css/homepagestyles.css" />
+    <style>
+  .nfc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 0 auto;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .button-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+  </style>
+  </head>
+  <body>
+    <main class="landing-wrapper">
+      <section class="card landing-card">
+        <h1>Plant Page</h1>
+        <p class="subtitle">Choose a plant and open its detailed view.</p>
+        <div class="nfc-form">
+           <div class="form-group">
+              <label for="plant-selector">Plant name</label>
+              <select id="plant-selector" aria-label="Select plant">
+                  <option value="">Loading plants…</option>
+              </select>
+           </div>
+           <div class="form-group">
+              <label for="plant-selector-variety">Variety</label>
+              <select id="plant-selector-variety" aria-label="Select plant variety">
+                <option value="">Loading varieties…</option>
+              </select>
+           </div>
+           <div class="button-group">
+              <button id="open-view" type="button" disabled> Open Plant View</button>
+              <button id="nfc-button" type="button">NFC Generator</button>
+           </div>
+        </div>
+        <p class="subtitle">Lists</p>
+        <div class="nfc-form">
+           <div class="form-group">
+              <label for="plant-selector-family">Family</label>
+              <select id="plant-selector-family" aria-label="Select plant family">
+                 <option value="">Loading families…</option>
+              </select>
+           </div>
+           <div class="form-group">
+              <label for="plant-selector-genus">Genus</label>
+              <select id="plant-selector-genus" aria-label="Select plant genus">
+                 <option value="">Loading genera…</option>
+              </select>
+           </div>
+           <div class="form-group">
+              <label for="plant-selector-latin">Latin name</label>
+              <select id="plant-selector-latin" aria-label="Select plant latin name">
+                  <option value="">Loading plants…</option>
+              </select>
+            </div>
+            <div class="button-group">
+              <button id="plant-list-btn" type="button" disabled>Open Plant List</button>
+              <button id="nfc-list-btn" type="button">NFC List</button>
+              <p class="error-message" id="error-message" aria-live="polite"></p>
+            </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="scripts/home.js" type="module"></script>
+  </body>
+</html>
