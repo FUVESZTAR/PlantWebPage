@@ -192,7 +192,7 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const nrInput = document.getElementById("nr");
+  const plantId = document.getElementById("nr");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -266,7 +266,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      nrInput.value = plant.Nr || "";
+      plantId.value = plant.Nr || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
@@ -359,7 +359,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      nrInput.value = varietyPlant.Nr || "";
+      plantId.value = varietyPlant.Nr || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -375,7 +375,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [plantId, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -422,7 +422,7 @@ function calculateSize(text) {
 }
 
   function updateNFCPreview() {
-    const nr = nrInput.value;
+    const nr = plantId.value;
     nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
@@ -541,7 +541,7 @@ function calculateSize(text) {
     const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     const nfcId   = nfcIdInput.value;
-    const plantId = nrInput.textContent;
+    const plantId = plantId.textContent;
     const nfcData = nfcPreview.textContent;
     const nfctyp = nfctypInput.value;
     const datum = datumInput.value;
@@ -629,7 +629,7 @@ function calculateSize(text) {
   });
 
   function clearForm() {
-    nrInput.value = "";
+    plantId.value = "";
     nfcIdInput.value = "";
     nameHuInput = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
