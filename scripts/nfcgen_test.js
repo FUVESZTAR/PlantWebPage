@@ -21,6 +21,8 @@ let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
 const nfcIdInput = document.getElementById("plantId");
+const gpsStartBtn = document.getElementById('gpsstartBtn');
+const gpsStopBtn = document.getElementById('gpsstopBtn');
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
