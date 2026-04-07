@@ -40,15 +40,15 @@ function renderRows(plants) {
   plants.forEach((plant) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${plant.Nr || ""}</td>
+      <td>${plant.Plant_ID || ""}</td>
       <td>${plant.LatinName || ""}</td>
       <td>${plant.Name_Variety || ""}</td>
       <td>${plant.Name_EN || ""}</td>
       <td>${plant.Name_HU || ""}</td>
     `;
     tr.addEventListener("click", () => {
-      localStorage.setItem("selectedPlantNr", plant.Nr);
-      window.location.href = `P.html?id=${encodeURIComponent(plant.Nr)}`;
+      localStorage.setItem("selectedPlantNr", plant.Plant_ID);
+      window.location.href = `P.html?id=${encodeURIComponent(plant.Plant_ID)}`;
     });
     tbody.appendChild(tr);
   });
