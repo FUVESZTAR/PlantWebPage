@@ -90,7 +90,7 @@ async function populate() {
   const selector = document.getElementById("plant-selector");
   const plantIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
-  let nameHuInput = "";
+  let plantNameInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
   const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
@@ -169,7 +169,7 @@ async function populate() {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
       plantIdInput.value = plant.Plant_ID || "";
-      nameHuInput = plant[nameProp] || "";
+      plantNameInput = plant[nameProp] || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = "n";
@@ -260,7 +260,7 @@ async function populate() {
       
       // Update all fields from this variety's data
       plantIdInput.value = varietyPlant.Plant_ID || "";
-      nameHuInput = varietyPlant[nameProp] || "";
+      plantNameInput = varietyPlant[nameProp] || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = "n";
@@ -418,7 +418,7 @@ function calculateSize(text) {
   function updateNFCPreview() {
     const plantId = plantIdInput.value;
     nfcIdValue = nfcIdInput.value;
-    const nameHu = nameHuInput;
+    const plantName = plantNameInput;
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
     const datum = datumInput.value;
@@ -431,7 +431,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${plantId}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
+    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -626,7 +626,7 @@ function calculateSize(text) {
   function clearForm() {
     plantIdInput.value = "";
     nfcIdInput.value = "";
-    nameHuInput = "";
+    plantNameInput = "";
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
