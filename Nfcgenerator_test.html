@@ -96,20 +96,14 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
    .card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--brown)}
     .card-subtitle{font-size:.75rem;color:var(--warm-gray);font-weight:300;margin-top:1px}
-    .card-toggle{width:30px;height:16px;background:var(--cream-dark);border-radius:8px;
+
+.card-toggle{width:30px;height:16px;background:var(--cream-dark);border-radius:8px;
   cursor:pointer;border:none;transition:background .22s;flex-shrink:0;position:relative}
-  .card-toggle.on{background:var(--sage)}
-  .card-toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
+.card-toggle.on{background:var(--sage)}
+.card-toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
   border-radius:50%;background:#fff;transition:transform .22s}
-  .card-toggle.on::after{transform:translateX(14px)}
-
-
-    .card-toggle{width:44px;height:23px;background:var(--grey);border-radius:12px;
-  cursor:pointer;border:none;transition:background .3s;flex-shrink:0;position:relative}
-.card-toggle.on{background:var(--brown)}
-.card-toggle::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;
-  border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
-.card-toggle.on::after{transform:translateX(21px)}
+.card-toggle.on::after{transform:translateX(14px)}
+.card2-body{display:none;padding:0 12px 11px;border-top:1px solid var(--border)}
     
 .mode-on{color:var(--brown);font-weight:600}
 .mode-toggle{display:flex;align-items:center;gap:7px;font-size:.79rem;color:var(--warm-gray);font-weight:500}    
@@ -173,8 +167,8 @@
         </div>
           </div>
        <div class="card" id="data_card_header">
-        <div class="card-title" data-i18n="data_card_title">Selection</div>
-        <div class="card-subtitle" data-i18n="data_card_sub">Choose a plant and variety.</div>
+        <div class="card-title" data-i18n="data_card_title">Data</div>
+        <div class="card-subtitle" data-i18n="data_card_sub">Data in NFC</div>
         </div>  
         <div class="card" id="data_card_body"> 
         <!-- Auto-filled fields from sheet -->
@@ -214,18 +208,18 @@
      <div class="panel open anim" id="gps_card_header" style="animation-delay:.05s">
     <div class="panel-header" onclick="togglePanel('panelCalc')">
       <div class="panel-header-left">
-          <div class="panel-title" data-i18n="gps_card_title">GPS Monitor</div>
+          <div class="panel-title" data-i18n="gps_card_title">GPS data</div>
           <div class="panel-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
-          <div class="mode-toggle">
+      </div>
+      <div class="mode-toggle">
                 <span data-i18n="mode_on">On</span>
                 <button class="card-toggle" id="gps_card_toggle"></button>
           <!--      <button class="toggle-sw" id="modeToggle"></button> -->
                 <span class="mode-off" data-i18n="mode_off">Off</span>
-           </div>
       </div>
       <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
     </div>
-    <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+    <div class="panel-body" id="gps_card_body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
        <div class="form-group">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
         <button id="gpsStopBtn"  type="button" style="display:none">Stop & Lock Data</button>
