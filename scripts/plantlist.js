@@ -10,6 +10,8 @@ function getFilterLabels() {
     family: t('list.filter.family'),
     genus: t('list.filter.genus'),
     latin: t('list.filter.latin'),
+    nameEn: t('list.filter.nameEn'),
+    nameHu: t('list.filter.nameHu'),
   };
 }
 
@@ -77,6 +79,8 @@ async function populate() {
   const ddGenus = document.getElementById("dd-genus");
   const ddFamily = document.getElementById("dd-family");
   const ddLatin = document.getElementById("dd-latin");
+  const ddNameEn = document.getElementById("dd-nameEn");
+  const ddNameHu = document.getElementById("dd-nameHu");
   const ddVariety = document.getElementById("dd-variety");
 
   function unique(arr) {
@@ -86,15 +90,21 @@ async function populate() {
   buildDropdown(ddGenus,   unique(plants.map(p => p.Genus)),        t('list.filter.allGenera'));
   buildDropdown(ddFamily,  unique(plants.map(p => p.Family)),       t('list.filter.allFamilies'));
   buildDropdown(ddLatin,   unique(plants.map(p => p.LatinName)),    t('list.filter.allLatinNames'));
+  buildDropdown(ddNameEn,   unique(plants.map(p => p.Name_EN)),    t('list.filter.allNameEn'));
+  buildDropdown(ddNameHu,   unique(plants.map(p => p.Name_HU)),    t('list.filter.allNameHu'));
   buildDropdown(ddVariety, unique(plants.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
 
   // Set dropdown values from URL params so the user can see and change the initial filter
   const familyParam  = params.get("family")  || "";
   const genusParam   = params.get("genus")   || "";
   const latinParam   = params.get("latin")   || "";
+  const nameEnParam   = params.get("nameEn")   || "";
+  const nameHuParam   = params.get("nameHu")   || "";
   if (familyParam)  ddFamily.value = familyParam;
   if (genusParam)   ddGenus.value  = genusParam;
   if (latinParam)   ddLatin.value  = latinParam;
+  if (nameEnParam)   ddNameEn.value  = nameEnParam;
+  if (nameHuParam)   ddNameHu.value  = nameHuParam;
 
   function updateFilterSummary() {
     const parts = [];
@@ -102,6 +112,8 @@ async function populate() {
     if (ddFamily.value) parts.push(`${FILTER_LABELS.family}: ${ddFamily.value}`);
     if (ddGenus.value)  parts.push(`${FILTER_LABELS.genus}: ${ddGenus.value}`);
     if (ddLatin.value)  parts.push(`${FILTER_LABELS.latin}: ${ddLatin.value}`);
+    if (ddNameHu.value)  parts.push(`${FILTER_LABELS.Name_EN}: ${ddNameHu.value}`);
+    if (ddNameEn.value)  parts.push(`${FILTER_LABELS.Name_HU}: ${ddNameEn.value}`);
     filterSummary.textContent = parts.length ? parts.join(" | ") : t('list.allPlants');
   }
 
@@ -109,12 +121,16 @@ async function populate() {
     const genus   = ddGenus.value;
     const family  = ddFamily.value;
     const latin   = ddLatin.value;
+    const nameEn   = ddNameEn.value;
+    const nameHu   = ddNameHu.value;
     const variety = ddVariety.value;
 
     const result = plants.filter((p) => {
-      if (genus   && (p.Genus        || "") !== genus)   return false;
       if (family  && (p.Family       || "") !== family)  return false;
+      if (genus   && (p.Genus        || "") !== genus)   return false;
       if (latin   && (p.LatinName    || "") !== latin)   return false;
+      if (nameEn   && (p.Name_EN    || "") !== nameEn)   return false;
+      if (nameHu   && (p.Name_HU    || "") !== nameHu)   return false;
       if (variety && (p.Name_Variety || "") !== variety) return false;
       return true;
     });
@@ -125,6 +141,8 @@ async function populate() {
   ddGenus.addEventListener("change", applyDropdownFilters);
   ddFamily.addEventListener("change", applyDropdownFilters);
   ddLatin.addEventListener("change", applyDropdownFilters);
+  ddNameHu.addEventListener("change", applyDropdownFilters);
+  ddNameEn.addEventListener("change", applyDropdownFilters);
   ddVariety.addEventListener("change", applyDropdownFilters);
 
   applyDropdownFilters();
