@@ -912,7 +912,7 @@ const urlParams   = new URLSearchParams(window.location.search);
 const urlPlantId  = urlParams.get("id");
 
 document.querySelector("#back-button").addEventListener("click", () => {
-  window.location.href = "HomePage.html";
+  window.location.href = "Homepage.html";
 });
 
 (async function init() {
