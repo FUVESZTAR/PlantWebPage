@@ -38,99 +38,6 @@ const gpsStatus = document.getElementById('gpsStatus');
         let lastUpdateTime = Date.now();
         let timerInterval;
         let watchId = null;
-//gps
-
-        function packBase64(lat, lon, alt) {
-            const latInt = Math.round((lat + 90) * 1000000); 
-            const lonInt = Math.round((lon + 180) * 1000000);
-            const altInt = Math.round(alt + 1000);
-
-            const buffer = new ArrayBuffer(10);
-            const view = new DataView(buffer);
-            view.setUint32(0, latInt); 
-            view.setUint32(4, lonInt); 
-            view.setUint16(8, altInt); 
-
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-            return btoa(binary);
-        }
-//gps
-        function unpackBase64(b64) {
-            try {
-                const binary = atob(b64);
-                const bytes = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                const view = new DataView(bytes.buffer);
-                return {
-                    lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
-                    lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
-                    alt: view.getUint16(8) - 1000
-                };
-            } catch (e) { return null; }
-        }
-//gps
-        function startLiveCapture() {
-           console.log("Start capture");
-            if (watchId) navigator.geolocation.clearWatch(watchId);
-            
-            gpsStartBtn.style.display = "none";
-            gpsStopBtn.style.display = "block";
-            liveDot.style.display = "inline";
-            setStatus("Fetching GPS satellites...", "orange");
-
-            const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
-
-            watchId = navigator.geolocation.watchPosition((pos) => {
-                lastUpdateTime = Date.now();
-                currentData.lat = pos.coords.latitude;
-                currentData.lon = pos.coords.longitude;
-                currentData.alt = pos.coords.altitude || 0;
-                const acc = pos.coords.accuracy;
-
-                gpsDispLat.innerText = currentData.lat.toFixed(6);
-                gpsDispLon.innerText = currentData.lon.toFixed(6);
-                gpsDispAlt.innerText = Math.round(currentData.alt) + "m";
-                gpsDispAcc.innerText = Math.round(acc) + "m";
-
-                setStatus(`Updating... (${Math.round(acc)}m accuracy)`, "#0056b3");
-
-            }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
-
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
-                updateTimer.innerText = `Last improvement: ${seconds}s ago`;
-            }, 1000);
-        }
-
-        function stopLiveCapture() {
-            console.log("Stop");
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-
-                //calculation
-                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
-                const gpstext = `L:${b64}`;
-                posPacketOut.innerText = gpstext;
-                posPacketSize.innerText = `Size: ${b64.length} bytes`;
-                
-            gpsStartBtn.style.display = "block";
-            gpsStartBtn.innerText = "Restart Tracking";
-            gpsStopBtn.style.display = "none";
-            liveDot.style.display = "none";
-            updateTimer.innerText = "Status: Data Locked";
- 
-            setStatus("Tracking Stopped. Data preserved.", "#333");
-            gpsPacket=gpstext;
-        }
 /*
         async function writeNFC() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
@@ -384,7 +291,101 @@ async function populate() {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });      
+  //gps
 
+        function packBase64(lat, lon, alt) {
+            const latInt = Math.round((lat + 90) * 1000000); 
+            const lonInt = Math.round((lon + 180) * 1000000);
+            const altInt = Math.round(alt + 1000);
+
+            const buffer = new ArrayBuffer(10);
+            const view = new DataView(buffer);
+            view.setUint32(0, latInt); 
+            view.setUint32(4, lonInt); 
+            view.setUint16(8, altInt); 
+
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+            return btoa(binary);
+        }
+//gps
+        function unpackBase64(b64) {
+            try {
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                const view = new DataView(bytes.buffer);
+                return {
+                    lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
+                    lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
+                    alt: view.getUint16(8) - 1000
+                };
+            } catch (e) { return null; }
+        }
+//gps
+        function startLiveCapture() {
+           console.log("Start capture");
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+            
+            gpsStartBtn.style.display = "none";
+            gpsStopBtn.style.display = "block";
+            liveDot.style.display = "inline";
+            setStatus("Fetching GPS satellites...", "orange");
+
+            const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
+
+            watchId = navigator.geolocation.watchPosition((pos) => {
+                lastUpdateTime = Date.now();
+                currentData.lat = pos.coords.latitude;
+                currentData.lon = pos.coords.longitude;
+                currentData.alt = pos.coords.altitude || 0;
+                const acc = pos.coords.accuracy;
+
+                gpsDispLat.innerText = currentData.lat.toFixed(6);
+                gpsDispLon.innerText = currentData.lon.toFixed(6);
+                gpsDispAlt.innerText = Math.round(currentData.alt) + "m";
+                gpsDispAcc.innerText = Math.round(acc) + "m";
+
+                setStatus(`Updating... (${Math.round(acc)}m accuracy)`, "#0056b3");
+
+            }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
+                updateTimer.innerText = `Last improvement: ${seconds}s ago`;
+            }, 1000);
+        }
+
+        function stopLiveCapture() {
+            console.log("Stop");
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+                //calculation
+                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
+                const gpstext = `L:${b64}`;
+                posPacketOut.innerText = gpstext;
+                posPacketSize.innerText = `Size: ${b64.length} bytes`;
+                
+            gpsStartBtn.style.display = "block";
+            gpsStartBtn.innerText = "Restart Tracking";
+            gpsStopBtn.style.display = "none";
+            liveDot.style.display = "none";
+            updateTimer.innerText = "Status: Data Locked";
+ 
+            setStatus("Tracking Stopped. Data preserved.", "#333");
+            gpsPacket=gpstext;
+            updatePreviews();
+        }
+ 
   function updatePreviews() {
     //update NFC field
     updateNFCPreview();
