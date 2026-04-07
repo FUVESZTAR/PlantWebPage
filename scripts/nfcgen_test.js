@@ -376,7 +376,7 @@ async function populate() {
 
                 //calculation
                 const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
-                const gpstext = `L:${b64}`;
+                const gpstext = `L|${b64}|L`;
                 posPacketOut.innerText = gpstext;
                 posPacketSize.innerText = `Size: ${b64.length} bytes`;
                 
