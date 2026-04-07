@@ -620,17 +620,14 @@ function insertCategoryIconsRow(plant, mode, vers) {
     if (svg) frag.appendChild(svg);
   }
   
-  // Colour icons after all are inserted (single pass)
+  /*// Colour icons after all are inserted (single pass)
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
     document.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
       svg.classList.remove("green", "red", "black", "yellow");
       svg.classList.add(cls);
     });
-  });
-
-  
-  
+  });*/
   container.innerHTML = '';
   container.appendChild(frag);
 }
@@ -1034,13 +1031,14 @@ document.querySelector("#back-button").addEventListener("click", () => {
         : `<li>${t('detail.noVarieties')}</li>`;
     }
     
-    // ── Icon colouring (single pass) ──────────────────────────────────────
-    const edibilityClassValue = applyIconColours();
     
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant);
     insertCategoryIconsRow(plant,"unique","harv");
     insertCategoryIconsRow(plant,"unique","med");
+
+    // ── Icon colouring (single pass) ──────────────────────────────────────
+    const edibilityClassValue = applyIconColours();
     
     // ── Size icons ────────────────────────────────────────────────────────
     applySizeIcons(plant,FM);
