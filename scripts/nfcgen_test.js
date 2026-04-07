@@ -162,7 +162,7 @@ const nfcIdInput = document.getElementById("plantId");
  * Fetches the last value from column A of the NFC list sheet via the
  * Apps Script Web App and pre-fills the NFC ID input.
  */
-async function loadLastNfcId(nfcIdInput) {
+async function loadLastNfcId(nfcIdInput, onLoaded) {
   if (SHEET_WRITER_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') return;
   try {
     const response = await fetch(SHEET_WRITER_URL, { redirect: 'follow' });
@@ -170,9 +170,8 @@ async function loadLastNfcId(nfcIdInput) {
     if (result.lastId !== undefined && result.lastId !== '') {
         const nextId = Number(result.lastId) + 1;
         nfcIdInput.value = nextId;
-            // nfcIdValue = nfcIdInput.value;
         nfcIdValue = nextId;
-        if (nextId>0) updateNFCPreview();    
+        if (nextId > 0 && typeof onLoaded === 'function') onLoaded();
     }
   } catch (err) {
     console.warn('Could not load last NFC ID:', err.message);
@@ -228,7 +227,7 @@ async function populate() {
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
-  loadLastNfcId(nfcIdInput);
+  loadLastNfcId(nfcIdInput, () => updateNFCPreview());
   // Set current date
   const today = new Date();
   const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
