@@ -873,19 +873,18 @@ function renderFields(containerId, map, plant) {
     }
   };
 
+  const VISIBLE_TYPES = new Set(["show", "fill", "create"]);
   map
-    //.filter(item => item.use === "show")
-    const VISIBLE_TYPES = new Set(["show", "fill"]);
     .filter(item => VISIBLE_TYPES.has(item.use))
     .forEach(item => {
 
     if (item.use === "fill"){
             const rawValue1 = plant[item.data];
             const formattedValue1 = formatValue(rawValue1, item.typ);
-            const input1 = document.querySelector(item.key);
-            consol.log("chosen item to fill: "+item.key);
-            if (input1) input1.value = formattedValue || "";
-    } else if if (item.use === "create"){
+            const input1 = document.querySelector(item.symbol);
+            console.log("chosen item to fill: "+item.symbol);
+            if (input1) input1.value = formattedValue1 || "";
+    } else if (item.use === "create"){
       
       const rawValue = plant[item.data];
       const formattedValue = formatValue(rawValue, item.typ);
