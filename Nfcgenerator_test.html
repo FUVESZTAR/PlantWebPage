@@ -141,7 +141,7 @@
       <div class="card" id="main_card_header">
         <div class="card-title" data-i18n="main_card_title">Selection</div>
         <div class="card-subtitle" data-i18n="main_card_sub">Choose a plant and variety.</div>
-       
+        <div></div>
       <div class="nfc-form">
         <!-- Plant Selection -->
         <div class="form-group">
@@ -168,7 +168,7 @@
        <div class="card" id="data_card_header">
         <div class="card-title" data-i18n="data_card_title">Data</div>
         <div class="card-subtitle" data-i18n="data_card_sub">Data in NFC</div>
-
+        <div></div>
         <!-- Auto-filled fields from sheet -->
      <div class="section" id="main_section">   
        <div class="form-group">
@@ -204,8 +204,6 @@
    </div>
    <div class="section" id="gps_section"> 
      <div class="card" id="gps_card_header">
-     <div class="panel open anim" id="gps_card_header" style="animation-delay:.05s">
-    <div class="panel-header" onclick="togglePanel('panelCalc')">
       <div class="panel-header-left">
           <div class="panel-title" data-i18n="gps_card_title">GPS data</div>
           <div class="panel-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
@@ -217,8 +215,7 @@
                 <span class="mode-on" data-i18n="mode_on">On</span>
       </div>
       <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
-    </div>
-    <div class="panel-body" id="gps_card_body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+    <div class="card-body" id="gps_card_body">
        <div class="form-group">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
         <button id="gpsStopBtn"  type="button" style="display:none">Stop & Lock Data</button>
@@ -239,7 +236,7 @@
         <div id="gpsStatus">Ready.</div>
        </div>
      </div>
-     </div></div></div></div>
+    </div></div>
 </div>
  <div class="section" id="other_section">  
    <div class="card" id="oth_card_header">
