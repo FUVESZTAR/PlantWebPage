@@ -72,7 +72,7 @@ const gpsStatus = document.getElementById('gpsStatus');
         }
 //gps
         function startLiveCapture() {
-           console.log("Start");
+           console.log("Start capture");
             if (watchId) navigator.geolocation.clearWatch(watchId);
             
             gpsStartBtn.style.display = "none";
@@ -459,7 +459,11 @@ function calculateSize(text) {
     }   
   }
   //Gsp
-  gpsstartBtn.addEventListener("click", startLiveCapture);
+  gpsstartBtn.addEventListener("click", () => {
+    console.log("button pressed startLiveCapture");
+    startLiveCapture();
+
+    });
   
   gpsstopBtn.addEventListener("click", stopLiveCapture);
     
