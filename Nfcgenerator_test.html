@@ -141,8 +141,7 @@
       <div class="card" id="main_card_header">
         <div class="card-title" data-i18n="main_card_title">Selection</div>
         <div class="card-subtitle" data-i18n="main_card_sub">Choose a plant and variety.</div>
-        </div>  
-        <div class="card" id="main_card_body">
+       
       <div class="nfc-form">
         <!-- Plant Selection -->
         <div class="form-group">
@@ -169,8 +168,7 @@
        <div class="card" id="data_card_header">
         <div class="card-title" data-i18n="data_card_title">Data</div>
         <div class="card-subtitle" data-i18n="data_card_sub">Data in NFC</div>
-        </div>  
-        <div class="card" id="data_card_body"> 
+
         <!-- Auto-filled fields from sheet -->
      <div class="section" id="main_section">   
        <div class="form-group">
@@ -204,7 +202,8 @@
         </div>
           </div>
    </div>
-   <div class="section" id="gps_section">  
+   <div class="section" id="gps_section"> 
+     <div class="card" id="gps_card_header">
      <div class="panel open anim" id="gps_card_header" style="animation-delay:.05s">
     <div class="panel-header" onclick="togglePanel('panelCalc')">
       <div class="panel-header-left">
@@ -212,10 +211,10 @@
           <div class="panel-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
       </div>
       <div class="mode-toggle">
-                <span data-i18n="mode_on">On</span>
+                <span data-i18n="mode_off">Off</span>
                 <button class="card-toggle" id="gps_card_toggle"></button>
           <!--      <button class="toggle-sw" id="modeToggle"></button> -->
-                <span class="mode-off" data-i18n="mode_off">Off</span>
+                <span class="mode-on" data-i18n="mode_on">On</span>
       </div>
       <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
     </div>
@@ -241,18 +240,30 @@
        </div>
      </div>
      </div></div></div></div>
-    <div class="section" id="other_section">  
-      <div class="card" id="oth_card_header">
-        <div class="card-title" data-i18n="oth_card_title">Other Info</div>
-        <div class="card-subtitle" data-i18n="oth_card_sub">Toggle on/off.</div>
-        <button class="card-toggle" id="oth_card_toggle"></button>
-        </div>  
-        <div class="card" id="oth_card_body" style="display:none">
+</div>
+ <div class="section" id="other_section">  
+   <div class="card" id="oth_card_header">
+    <div class="panel open anim" id="oth_card_header" style="animation-delay:.05s">
+    <div class="panel-header" onclick="togglePanel('panelCalc')">
+      <div class="panel-header-left">
+          <div class="panel-title" data-i18n="oth_card_title">Other Info</div>
+          <div class="panel-subtitle" data-i18n="oth_card_sub">Toggle on/off.</div>
+      </div>
+      <div class="mode-toggle">
+                <span data-i18n="mode_off">Off</span>
+                <button class="card-toggle" id="oth_card_toggle"></button>
+          <!--      <button class="toggle-sw" id="modeToggle"></button> -->
+                <span class="mode-on" data-i18n="mode_on">On</span>
+      </div>
+      <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
+    </div>
+    <div class="panel-body" id="oth_card_body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
           <div class="form-group">
              <textarea id="egyeb" placeholder="Additional information"></textarea>
           </div>
         </div>
-    </div>
+    </div></div></div></div>
+ </div>
 <!-- NFC Data Preview -->
 <div class="section" id="results"> 
         <div class="card">
