@@ -94,7 +94,14 @@
         #gpsStatus { text-align: center; font-weight: bold; margin-top: 10px; padding: 10px; border-radius: 8px; transition: 0.3s; }
         .live-indicator { color: var(--success); animation: blink 1s infinite; font-weight: bold; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
+   .card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--brown)}
+    .card-subtitle{font-size:.75rem;color:var(--warm-gray);font-weight:300;margin-top:1px}
+    .card_toggle{width:30px;height:16px;background:var(--cream-dark);border-radius:8px;
+  cursor:pointer;border:none;transition:background .22s;flex-shrink:0;position:relative}
+  .card_toggle.on{background:var(--sage)}
+  .card_toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
+  border-radius:50%;background:#fff;transition:transform .22s}
+  .card_toggle.on::after{transform:translateX(14px)}
   </style>
 </head>
 <body>
@@ -127,7 +134,8 @@
         
         <!-- Auto-filled fields from sheet -->
      <div class="section" id="main_section">   
-        <div class="form-group">
+        <div class="card">
+       <div class="form-group">
           <label for="nr">Nr</label>
           <input type="text" id="nr" readonly />
         </div>
@@ -156,11 +164,16 @@
             <option value="m">m-mag</option>
           </select>
         </div>
+          </div>
    </div>
    <div class="section" id="gps_section">   
      <div class="form-group">
-        <div class="card">
-        <strong>1. GPS Monitor</strong>
+        <div class="card" id="gps_card_header">
+        <div class="card-title" data-i18n="gps_card_title">GPS Monitor</div>
+        <div class="card-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
+        <button class="card_toggle" id="gps_card"></button>
+        </div>  
+        <div class="card" id="gps_card_body">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
         <button id="gpsStopBtn"  type="button" style="display:none">Stop & Lock Data</button>
         <div class="data-line"><span>Latitude:</span> <span id="gpsDispLat">-</span></div>
@@ -181,34 +194,41 @@
        </div>
      </div>
      </div>
-    <div class="section" id="other_section">      
-     <div class="form-group">
-          <label for="egyeb">Other Info</label>
-          <textarea id="egyeb" placeholder="Additional information"></textarea>
+    <div class="section" id="other_section">  
+      <div class="card">
+          <div class="form-group">
+             <label for="egyeb">Other Info</label>
+             <textarea id="egyeb" placeholder="Additional information"></textarea>
+          </div>
         </div>
     </div>
 <!-- NFC Data Preview -->
+<div class="section" id="results"> 
+        <div class="card">
 <div class="form-group">
   <label for="nfc-preview">NFC Data Preview: <span id="nfc-size" style="font-weight: normal; color: #666;">Size: 0 B</span></label>
   <div class="nfc-preview" id="nfc-preview">NFC data will appear here...</div>
 </div>
-
 <!-- Link Preview -->
 <div class="form-group">
   <label for="link-preview">Link Preview: <span id="link-size" style="font-weight: normal; color: #666;">Size: 0 B</span></label>
   <div class="nfc-preview" id="link-preview">Link will appear here...</div>
   <label for="link-preview"><span id="total-size" style="font-weight: normal; color: #666;">Total Size: 0 B</span></label>
 </div>
-
+</div></div>
 <!-- Error Message -->
 <p class="error-message" id="error-message"></p>
 
 <!-- Action Buttons -->
+<div class="section" id="control"> 
+ <div class="card">
 <div class="button-group1" id="button-group-sd">
   <button id="generate-nfc" type="button">Generate NFC</button>
   <button id="nfc-write-button" type="button">Write NFC</button>
   <button id="save-nfc" type="button">Save NFC</button>
 </div>
+ </div>
+  <div class="card">
 <div class="button-group1" id="button-group-copy">
   <button id="copy-nfc" type="button">Copy NFC</button>
   <button id="copy-link" type="button">Copy Link</button>
@@ -216,9 +236,11 @@
 <div class="button-group1" id="button-group-oth">
   <button id="qr-button" type="button">NFC QR</button>
 </div>
+    </div>
 <div class="button-group2" id="button-group-m">
   <button id="back-button" type="button">Back</button>
 </div>
+  </div>
       </div>
     </section>
   </main>
