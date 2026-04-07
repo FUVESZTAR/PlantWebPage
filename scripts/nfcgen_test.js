@@ -162,7 +162,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      nrInput.value = plant.Nr || "";
+      nrInput.value = plant.Plant_ID || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
@@ -255,7 +255,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      nrInput.value = varietyPlant.Nr || "";
+      nrInput.value = varietyPlant.Plant_ID || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -667,7 +667,7 @@ function calculateSize(text) {
       const matchOpt = Array.from(nameVarietySelector.options).find(opt => {
         if (!opt.value || opt.value === '__custom__') return false;
         const idx = parseInt(opt.value);
-        return String(plants[idx]?.Nr) === paramNr;
+        return String(plants[idx]?.Plant_ID) === paramNr;
       });
       if (matchOpt) {
         nameVarietySelector.value = matchOpt.value;
