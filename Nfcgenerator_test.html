@@ -104,14 +104,37 @@
   .card-toggle.on::after{transform:translateX(14px)}
 
 
-    .card-toggle{width:44px;height:23px;background:var(--cream-dark);border-radius:12px;
+    .card-toggle{width:44px;height:23px;background:var(--grey);border-radius:12px;
   cursor:pointer;border:none;transition:background .3s;flex-shrink:0;position:relative}
 .card-toggle.on{background:var(--brown)}
 .card-toggle::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;
   border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .card-toggle.on::after{transform:translateX(21px)}
-.mode-pro{color:var(--brown);font-weight:600}
     
+.mode-pro{color:var(--brown);font-weight:600}
+    /* COLLAPSIBLE PANELS */
+.panel{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;transition:box-shadow var(--tr)}
+.panel:hover{box-shadow:var(--shadow-lg)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;cursor:pointer;user-select:none;
+  border-bottom:1px solid transparent;transition:border-color var(--tr),background var(--tr)}
+.panel-header:hover{background:var(--cream-mid)}
+.panel.open .panel-header{border-bottom-color:var(--border)}
+.panel-header-left{display:flex;align-items:center;gap:8px}
+.panel-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--brown)}
+.panel-subtitle{font-size:.75rem;color:var(--warm-gray);font-weight:300;margin-top:1px}
+.panel-chevron{width:22px;height:22px;border-radius:50%;background:var(--cream-dark);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),background var(--tr)}
+.panel-chevron svg{width:11px;height:11px;stroke:var(--warm-gray);fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.panel.open .panel-chevron{transform:rotate(180deg);background:var(--cream-dark)}
+.panel-header:hover .panel-chevron{background:var(--cream)}
+.panel-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.4,0,.2,1)}
+.panel.open .panel-body{grid-template-rows:1fr}
+.panel-body-inner{overflow:hidden}
+.panel-body-inner-pad{padding:20px 22px 22px}
   </style>
 </head>
 <body>
@@ -119,6 +142,7 @@
     <section class="card landing-card">
       <h1>NFC Generator</h1>
       <p class="subtitle">Generate NFC tags for plants</p>
+      
       <div class="card" id="main_card_header">
         <div class="card-title" data-i18n="main_card_title">Selection</div>
         <div class="card-subtitle" data-i18n="main_card_sub">Choose a plant and variety.</div>
@@ -185,20 +209,26 @@
         </div>
           </div>
    </div>
-   <div class="section" id="gps_section">   
-     <div class="form-group">
-        <div class="card" id="gps_card_header">
-        <div class="card-title" data-i18n="gps_card_title">GPS Monitor</div>
-        <div class="card-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
-        <button class="card-toggle" id="gps_card_toggle"></button>
+   <div class="section" id="gps_section">  
+     <div class="panel open anim" id="gps_card_header" style="animation-delay:.05s">
+    <div class="panel-header" onclick="togglePanel('panelCalc')">
+      <div class="panel-header-left">
+        <span style="font-size:1.1rem">⚙️</span>
+        <div>
+          <div class="panel-title" data-i18n="gps_card_title">GPS Monitor</div>
+          <div class="panel-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
           <div class="mode-toggle">
                 <span data-i18n="mode_on">On</span>
                 <button class="card-toggle" id="gps_card_toggle"></button>
           <!--      <button class="toggle-sw" id="modeToggle"></button> -->
                 <span class="mode-off" data-i18n="mode_off">Off</span>
            </div>
-        </div>  
-        <div class="card" id="gps_card_body" style="display:none">
+        </div>
+      </div>
+      <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
+    </div>
+    <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+       <div class="form-group">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
         <button id="gpsStopBtn"  type="button" style="display:none">Stop & Lock Data</button>
         <div class="data-line"><span>Latitude:</span> <span id="gpsDispLat">-</span></div>
@@ -218,7 +248,7 @@
         <div id="gpsStatus">Ready.</div>
        </div>
      </div>
-     </div>
+     </div></div></div></div>
     <div class="section" id="other_section">  
       <div class="card" id="oth_card_header">
         <div class="card-title" data-i18n="oth_card_title">Other Info</div>
