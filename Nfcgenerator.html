@@ -411,9 +411,6 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       </div>
     </div>
 
-    <!-- Error / status message -->
-    <p class="status-msg" id="error-message"></p>
-
     <!-- ── Panel 1: Selection ──────────────────────────────── -->
     <div class="panel open" id="panel-selection">
       <div class="panel-header" onclick="togglePanel('panel-selection')">
@@ -602,6 +599,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
         <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
       </div>
       <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-pad">
+           <!-- Error / status message -->
+         <p class="status-msg" id="error-message"></p>
         <div class="btn-grid cols-3">
           <button id="generate-nfc"   class="btn-primary"   type="button" data-i18n="btn_generate">Generate NFC</button>
           <button id="nfc-write-button" class="btn-primary" type="button" data-i18n="btn_write">Write NFC</button>
