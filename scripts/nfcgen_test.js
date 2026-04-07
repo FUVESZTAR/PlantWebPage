@@ -459,13 +459,13 @@ function calculateSize(text) {
     }   
   }
   //Gsp
-  gpsstartBtn.addEventListener("click", () => {
+  gpsStartBtn.addEventListener("click", () => {
     console.log("button pressed startLiveCapture");
     startLiveCapture();
 
     });
   
-  gpsstopBtn.addEventListener("click", stopLiveCapture);
+  gpsStopBtn.addEventListener("click", stopLiveCapture);
     
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
