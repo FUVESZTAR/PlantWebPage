@@ -111,7 +111,8 @@
   border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .card-toggle.on::after{transform:translateX(21px)}
     
-.mode-pro{color:var(--brown);font-weight:600}
+.mode-on{color:var(--brown);font-weight:600}
+.mode-toggle{display:flex;align-items:center;gap:7px;font-size:.79rem;color:var(--warm-gray);font-weight:500}    
     /* COLLAPSIBLE PANELS */
 .panel{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);
   box-shadow:var(--shadow);overflow:hidden;transition:box-shadow var(--tr)}
@@ -213,8 +214,6 @@
      <div class="panel open anim" id="gps_card_header" style="animation-delay:.05s">
     <div class="panel-header" onclick="togglePanel('panelCalc')">
       <div class="panel-header-left">
-        <span style="font-size:1.1rem">⚙️</span>
-        <div>
           <div class="panel-title" data-i18n="gps_card_title">GPS Monitor</div>
           <div class="panel-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
           <div class="mode-toggle">
@@ -223,7 +222,6 @@
           <!--      <button class="toggle-sw" id="modeToggle"></button> -->
                 <span class="mode-off" data-i18n="mode_off">Off</span>
            </div>
-        </div>
       </div>
       <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
     </div>
