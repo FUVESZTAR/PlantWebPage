@@ -49,13 +49,14 @@ async function loadNfcData() {
         plantId:        findVal(entry, 'Plant_ID'),
         created:        findVal(entry, 'NFC_created'),
         datum:          findVal(entry, 'Datum'),
-        gpsCoordinates: findVal(entry, 'NFC_position'),
         location:       findVal(entry, 'Location'),
+        gpsCoordinates: findVal(entry, 'NFC_position'),
+        altitude:       findVal(entry, 'Altitude', 'NFC_altitude'),
       };
     });
 }
 
-document.getElementBynfcId('back-button').addEventListener('click', () => {
+document.getElementById('back-button').addEventListener('click', () => {
   window.location.href = 'Homepage.html';
 });
 
@@ -80,7 +81,7 @@ function buildDropdown(selectEl, allValues, placeholder) {
 }
 
 function renderRows(rows) {
-  const tbody = document.getElementBynfcId('nfc-list-body');
+  const tbody = document.getElementById('nfc-list-body');
   const colCount = document.querySelectorAll('.nfc-list-table thead th').length || 9;
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="${colCount}">${t('nfc.empty')}</td></tr>`;
@@ -90,7 +91,7 @@ function renderRows(rows) {
   rows.forEach(row => {
     const tr = document.createElement('tr');
 
-    const tdnfcId = document.createElement('td');
+    const tdId = document.createElement('td');
     tdId.textContent = row.nfcId;
 
     const tdNfc = document.createElement('td');
@@ -123,7 +124,10 @@ function renderRows(rows) {
     const tdGps = document.createElement('td');
     tdGps.textContent = row.gpsCoordinates;
 
-    tr.append(tdId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps);
+    const tdAltitude = document.createElement('td');
+    tdAltitude.textContent = row.altitude;
+
+    tr.append(tdId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAltitude);
     tbody.appendChild(tr);
   });
 }
@@ -182,7 +186,7 @@ async function populate() {
     const variety = ddVariety.value;
 
     const result = enriched.filter(r => {
-      if (nfcId2   && r.nfcId      !== nfcId)   return false;
+      if (nfcId2   && r.nfcId      !== nfcId2)   return false;
       if (plantId && r.plantId !== plantId) return false;
       if (family  && r.family  !== family)  return false;
       if (genus   && r.genus   !== genus)   return false;
