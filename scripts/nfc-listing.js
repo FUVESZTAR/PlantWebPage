@@ -7,7 +7,7 @@ const NFC_SHEET_NAME = 'nfc_list';
 /**
  * Load all rows from the NFC list Google Sheet.
  * Returns an array of objects with keys: NFCid, nfcText, link, plantId, ...
- * created, datum, location, gpsCoordinates.
+ * created, datum, location, nfcPosition.
  */
 async function loadNfcData() {
   const url = `https://docs.google.com/spreadsheets/d/${NFC_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(NFC_SHEET_NAME)}`;
@@ -50,8 +50,7 @@ async function loadNfcData() {
         created:        findVal(entry, 'NFC_created'),
         datum:          findVal(entry, 'Datum'),
         location:       findVal(entry, 'Location'),
-        gpsCoordinates: findVal(entry, 'NFC_position'),
-        altitude:       findVal(entry, 'Altitude', 'NFC_altitude'),
+        nfcPosition:    findVal(entry, 'NFC_position'),
       };
     });
 }
@@ -91,7 +90,7 @@ function renderRows(rows) {
   rows.forEach(row => {
     const tr = document.createElement('tr');
 
-    const tdId = document.createElement('td');
+    const tdNfcId = document.createElement('td');
     tdId.textContent = row.nfcId;
 
     const tdNfc = document.createElement('td');
@@ -121,13 +120,13 @@ function renderRows(rows) {
     const tdLocation = document.createElement('td');
     tdLocation.textContent = row.location;
 
-    const tdGps = document.createElement('td');
-    tdGps.textContent = row.gpsCoordinates;
+    const tdNfctye = document.createElement('td');
+    tdnfctye.textContent = row.nfctye;
 
-    const tdAltitude = document.createElement('td');
-    tdAltitude.textContent = row.altitude;
+    const tdnfcPosition = document.createElement('td');
+    tdnfcPosition.textContent = row.nfcPosition;
 
-    tr.append(tdId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAltitude);
+    tr.append(tdNfcId, tdPlantId, tdNfctye, tdDatum, tdCreated, tdnfcPosition, tdNfc, tdLink, tdLocation);
     tbody.appendChild(tr);
   });
 }
@@ -141,7 +140,7 @@ async function populate() {
     const [nfcData, plantData] = await Promise.all([loadNfcData(), loadPlantData()]);
     nfcRows = nfcData;
     plantData.forEach(p => {
-      if (p.Nr) plantMap[String(p.Nr)] = p;
+      if (p.Plant_Id) plantMap[String(p.Plant_Id)] = p;
     });
   } catch (err) {
     console.error(err);
@@ -151,7 +150,7 @@ async function populate() {
     return;
   }
 
-  // Enrich NFC rows with plant taxonomy info via plant_id → Nr
+  // Enrich NFC rows with plant taxonomy info via plant_id → Plant_Id
   const enriched = nfcRows.map(row => {
     const plant = plantMap[row.plantId] || {};
     return {
@@ -170,12 +169,12 @@ async function populate() {
   const ddLatin   = document.getElementById('dd-latin');
   const ddVariety = document.getElementById('dd-variety');
 
-  buildDropdown(ddNfcId,   unique(enriched.map(r => r.nfcId)),      t('nfc.filter.allNfcIds'));
-  buildDropdown(ddPlantId, unique(enriched.map(r => r.plantId)), t('nfc.filter.allPlantIds'));
-  buildDropdown(ddFamily,  unique(enriched.map(r => r.family)),  t('nfc.filter.allFamilies'));
-  buildDropdown(ddGenus,   unique(enriched.map(r => r.genus)),   t('nfc.filter.allGenera'));
-  buildDropdown(ddLatin,   unique(enriched.map(r => r.latin)),   t('nfc.filter.allLatinNames'));
-  buildDropdown(ddVariety, unique(enriched.map(r => r.variety)), t('nfc.filter.allVarieties'));
+  buildDropdown(ddNfcId,   unique(eplantIdiched.map(r => r.nfcId)),      t('nfc.filter.allNfcIds'));
+  buildDropdown(ddPlantId, unique(eplantIdiched.map(r => r.plantId)), t('nfc.filter.allPlantIds'));
+  buildDropdown(ddFamily,  unique(eplantIdiched.map(r => r.family)),  t('nfc.filter.allFamilies'));
+  buildDropdown(ddGenus,   unique(eplantIdiched.map(r => r.genus)),   t('nfc.filter.allGenera'));
+  buildDropdown(ddLatin,   unique(eplantIdiched.map(r => r.latin)),   t('nfc.filter.allLatinNames'));
+  buildDropdown(ddVariety, unique(eplantIdiched.map(r => r.variety)), t('nfc.filter.allVarieties'));
 
   function applyFilters() {
     const nfcId2   = ddNfcId.value;
@@ -185,7 +184,7 @@ async function populate() {
     const latin   = ddLatin.value;
     const variety = ddVariety.value;
 
-    const result = enriched.filter(r => {
+    const result = eplantIdiched.filter(r => {
       if (nfcId2   && r.nfcId      !== nfcId2)   return false;
       if (plantId && r.plantId !== plantId) return false;
       if (family  && r.family  !== family)  return false;
