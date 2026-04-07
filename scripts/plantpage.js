@@ -29,9 +29,6 @@ function fillUniqueSelector(selectEl, values, placeholder) {
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const varietySelector = document.getElementById("plant-selector-variety");
-  const familySelector = document.getElementById("plant-selector-family");
-  const genusSelector = document.getElementById("plant-selector-genus");
-  const latinSelector = document.getElementById("plant-selector-latin");
   const openBtn = document.getElementById("open-view");
   const nfcBtn = document.getElementById("nfc-button");
   const listBtn = document.getElementById("plant-list-btn");
@@ -64,9 +61,6 @@ async function populate() {
       selector.appendChild(opt);
     });
 
-    fillUniqueSelector(familySelector, plants.map(p => p.Family), t('plantpage.placeholder.allFamilies'));
-    fillUniqueSelector(genusSelector, plants.map(p => p.Genus), t('plantpage.placeholder.allGenera'));
-    fillUniqueSelector(latinSelector, plants.map(p => p.LatinName), t('plantpage.placeholder.allLatinNames'));
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('plantpage.error.loadFailed');
@@ -140,28 +134,15 @@ async function populate() {
     }
   });
 
-  if (listBtn) {
-    listBtn.disabled = false;
-    listBtn.addEventListener("click", () => {
-      const params = new URLSearchParams();
-      if (familySelector && familySelector.value) params.set("family", familySelector.value);
-      if (genusSelector  && genusSelector.value)  params.set("genus",  genusSelector.value);
-      if (latinSelector  && latinSelector.value)  params.set("latin",  latinSelector.value);
-      const query = params.toString();
-      window.location.href = `PlantListPage.html${query ? "?" + query : ""}`;
-    });
-  }
-
   const nfcListBtn = document.getElementById("nfc-list-btn");
   if (nfcListBtn) {
     nfcListBtn.addEventListener("click", () => {
       window.location.href = "NFCListPage.html";
     });
   }
-  const SMBtn = document.getElementById("shadow-map-btn");
-  if (SMBtn) {
-    SMBtn.addEventListener("click", () => {
-      window.location.href = "Shadowmap.html";
+    if (listBtn) {
+    listBtn.addEventListener("click", () => {
+      window.location.href = "PlantListPage.html";
     });
   }
 }
