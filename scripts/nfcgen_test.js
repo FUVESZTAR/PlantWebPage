@@ -13,6 +13,22 @@ const SHEET_WRITER_URL    = 'https://script.google.com/macros/s/AKfycbysWB68AM6T
 const SHEET_WRITER_SECRET = '159753g9d5rt4Ht4eg7e5z4d6szo89fsef';
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Use the page-level i18n helper if available, otherwise return the key. */
+function msg(key) {
+  return (typeof window.t === 'function') ? window.t(key) : key;
+}
+
+/** Placeholder text in either language – used to detect "no real data yet" */
+const NFC_PLACEHOLDER_KEYS = ['ph_nfc_preview', 'ph_link_preview'];
+function isPlaceholder(text) {
+  return !text || NFC_PLACEHOLDER_KEYS.some(k => {
+    return ['en','hu'].some(lang => {
+      const translations = window.TRANS && window.TRANS[lang];
+      return translations && translations[k] === text;
+    });
+  }) || text === 'NFC data will appear here...' || text === 'NFC data will appear here…';
+}
+
 let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
@@ -43,42 +59,10 @@ const othCardBody = document.getElementById('oth_card_body');
         let lastUpdateTime = Date.now();
         let timerInterval;
         let watchId = null;
-/*
-        async function writeNFC() {
-            if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
-            const b64 = posPacketOut.innerText;
-            try {
-                const ndef = new NDEFReader();
-                setStatus("TAP NFC TAG NOW", "blue");
-                await ndef.write({ records: [{ recordType: "text", data: b64 }] });
-                setStatus("Successfully Written! ✅", "green");
-            } catch (err) { setStatus("Write Error", "red"); }
-        }
 
-        async function readNFC() {
-            if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
-            try {
-                const ndef = new NDEFReader();
-                await ndef.scan();
-                setStatus("Ready to Read - Tap Tag", "blue");
-                ndef.onreading = event => {
-                    const decoder = new TextDecoder();
-                    const b64 = decoder.decode(event.message.records[0].data);
-                    const data = unpackBase64(b64);
-                    if (data) {
-                        document.getElementById('read-display').style.display = "block";
-                        document.getElementById('read-lat').innerText = data.lat;
-                        document.getElementById('read-lon').innerText = data.lon;
-                        document.getElementById('read-alt').innerText = data.alt + "m";
-                        setStatus("Tag Decoded!", "green");
-                    }
-                };
-            } catch (err) { setStatus("Read Error", "red"); }
-        }
-*/
-        function setStatus(msg, color) {
+        function setStatus(msg_text, color) {
             const s = gpsStatus;
-            s.innerText = msg;
+            s.textContent = msg_text;
             s.style.background = color;
             s.style.color = "white";
         }
@@ -104,7 +88,7 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const plantId = document.getElementById("nr");
+  const nrInput = document.getElementById("nr");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -133,7 +117,7 @@ async function populate() {
     plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
-    selector.innerHTML = '<option value="">Select a plant</option>';
+    selector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
     const uniqueNames = [...new Set(plants.map(p => p.Name_HU).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
@@ -145,7 +129,7 @@ async function populate() {
     });
   } catch (err) {
     console.error(err);
-    errorMsg.textContent = "Failed to load plant data";
+    showError(errorMsg, msg('err_plant_load'));
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
@@ -178,7 +162,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      plantId.value = plant.Nr || "";
+      nrInput.value = plant.Nr || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
@@ -195,7 +179,7 @@ async function populate() {
   // Populate varieties dropdown
   function populateVarieties(nameHU) {
     console.log("Populating varieties for Name_HU:", nameHU);
-    nameVarietySelector.innerHTML = '<option value="">Select a variety...</option><option value="__custom__">-- Add custom --</option>';
+    nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
     customVarietyMode = false;
     nameVarietyCustomInput.style.display = "none";
     nameVarietyCustomInput.value = "";
@@ -271,7 +255,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      plantId.value = varietyPlant.Nr || "";
+      nrInput.value = varietyPlant.Nr || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -287,7 +271,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [plantId, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [nrInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -336,7 +320,7 @@ async function populate() {
             gpsStartBtn.style.display = "none";
             gpsStopBtn.style.display = "block";
             liveDot.style.display = "inline";
-            setStatus("Fetching GPS satellites...", "orange");
+            setStatus(msg('gps_standby').replace('Standing by','Fetching GPS satellites…'), "orange");
 
             const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
 
@@ -347,19 +331,19 @@ async function populate() {
                 currentData.alt = pos.coords.altitude || 0;
                 const acc = pos.coords.accuracy;
 
-                gpsDispLat.innerText = currentData.lat.toFixed(6);
-                gpsDispLon.innerText = currentData.lon.toFixed(6);
-                gpsDispAlt.innerText = Math.round(currentData.alt) + "m";
-                gpsDispAcc.innerText = Math.round(acc) + "m";
+                gpsDispLat.textContent = currentData.lat.toFixed(6);
+                gpsDispLon.textContent = currentData.lon.toFixed(6);
+                gpsDispAlt.textContent = Math.round(currentData.alt) + "m";
+                gpsDispAcc.textContent = Math.round(acc) + "m";
 
-                setStatus(`Updating... (${Math.round(acc)}m accuracy)`, "#0056b3");
+                setStatus(`Updating… (${Math.round(acc)}m accuracy)`, "#0056b3");
 
             }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
 
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
-                updateTimer.innerText = `Last improvement: ${seconds}s ago`;
+                updateTimer.textContent = `Last improvement: ${seconds}s ago`;
             }, 1000);
         }
 
@@ -377,14 +361,14 @@ async function populate() {
                 //calculation
                 const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
                 const gpstext = `L|${b64}|L`;
-                posPacketOut.innerText = gpstext;
-                posPacketSize.innerText = `Size: ${b64.length} bytes`;
+                posPacketOut.textContent = gpstext;
+                posPacketSize.textContent = `${b64.length} B`;
                 
             gpsStartBtn.style.display = "block";
-            gpsStartBtn.innerText = "Restart Tracking";
+            gpsStartBtn.textContent = msg('btn_gps_start');
             gpsStopBtn.style.display = "none";
             liveDot.style.display = "none";
-            updateTimer.innerText = "Status: Data Locked";
+            updateTimer.textContent = "Status: Data Locked";
  
             setStatus("Tracking Stopped. Data preserved.", "#333");
             gpsPacket=gpstext;
@@ -428,7 +412,7 @@ function calculateSize(text) {
 }
 
   function updateNFCPreview() {
-    const nr = plantId.value;
+    const nr = nrInput.value;
     nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
@@ -451,21 +435,21 @@ function calculateSize(text) {
       const linkSizeBytes = calculateSizeInBytes(link);
       const nfcSizeBytes = calculateSizeInBytes(nfcData);
       const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
-      nfcSize.textContent = `Size: ${formatSize(nfcSizeBytes)}`;
-      totalSize.textContent = `Total Size: ${formatSize(totalSizeBytes)}`;
-      linkSize.textContent = `Size: ${formatSize(linkSizeBytes)}`;
+      nfcSize.textContent = formatSize(nfcSizeBytes);
+      totalSize.textContent = formatSize(totalSizeBytes);
+      linkSize.textContent = formatSize(linkSizeBytes);
     } else {
-      linkPreview.textContent = "Link will appear here...";
-      nfcPreview.textContent = "NFC will appear here...";
+      linkPreview.textContent = msg('ph_link_preview');
+      nfcPreview.textContent = msg('ph_nfc_preview');
       if (linkSize) {
-        nfcSize.textContent = "Size: 0 B";
-        linkSize.textContent = "Size: 0 B";
-        totalSize.textContent = "Size: 0 B";
+        nfcSize.textContent = "0 B";
+        linkSize.textContent = "0 B";
+        totalSize.textContent = "0 B";
       }
     }   
   }
   updateNFCPreviewFn = updateNFCPreview;
-  //Gsp
+  //Gps
   gpsStartBtn.addEventListener("click", () => {
     console.log("button pressed startLiveCapture");
     startLiveCapture();
@@ -480,8 +464,8 @@ function calculateSize(text) {
     updatePreviews();
     const nfcData = nfcPreview.textContent;
     
-    if (nfcData === "NFC data will appear here...") {
-      showError("Please select a plant and configure the NFC data");
+    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+      showError(errorMsg, msg('err_no_plant'));
       return;
     }
   });
@@ -492,8 +476,8 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link = linkPreview.textContent;
     const combined = nfcData + " " + link;
-    if (nfcData === "NFC data will appear here...") {
-      showError("Please select a plant and configure the NFC data");
+    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+      showError(errorMsg, msg('err_no_plant'));
       return;
     }
     
@@ -502,9 +486,9 @@ function calculateSize(text) {
     
     const win = window.open(qrCodeUrl, "_blank");
     if (!win) {
-      showError("Failed to open QR code. Please check your popup blocker.");
+      showError(errorMsg, msg('err_qr_fail'));
     } else {
-      showError("QR code opened in new tab", "success");
+      showError(errorMsg, msg('err_qr_ok'), "success");
     }
   });
 
@@ -512,15 +496,15 @@ function calculateSize(text) {
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
-    if (nfcData === "NFC data will appear here...") {
-      showError("No NFC data to copy");
+    if (isPlaceholder(nfcData)) {
+      showError(errorMsg, msg('err_no_nfc'));
       return;
     }
     
     navigator.clipboard.writeText(nfcData).then(() => {
-      showError("NFC data copied to clipboard!", "success");
+      showError(errorMsg, msg('err_copy_nfc_ok'), "success");
     }).catch(err => {
-      showError("Failed to copy NFC data: " + err.message);
+      showError(errorMsg, msg('err_copy_fail') + err.message);
     });
   });
 
@@ -528,15 +512,15 @@ function calculateSize(text) {
   copylinkBtn.addEventListener("click", () => {
     const link = linkPreview.textContent;
     
-    if (link === "Link will appear here..." || !link) {
-      showError("No link to copy");
+    if (isPlaceholder(link) || !link) {
+      showError(errorMsg, msg('err_no_link'));
       return;
     }
     
     navigator.clipboard.writeText(link).then(() => {
-      showError("Link copied to clipboard!", "success");
+      showError(errorMsg, msg('err_copy_link_ok'), "success");
     }).catch(err => {
-      showError("Failed to copy link: " + err.message);
+      showError(errorMsg, msg('err_copy_fail') + err.message);
     });
   });
 
@@ -551,27 +535,23 @@ function calculateSize(text) {
     const today = new Date();
     const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
     
-    const nfcId   = nfcIdInput.value;
-    const plantId = plantId.textContent;
-    const nfcData = nfcPreview.textContent;
-    const nfctyp = nfctypInput.value;
-    const datum = datumInput.value;
+    const nfcId      = nfcIdInput.value;
+    const nrValue    = nrInput.value;
+    const nfcData    = nfcPreview.textContent;
+    const nfctyp     = nfctypInput.value;
+    const datum      = datumInput.value;
     const nfcCreated = dateString;
-    const nfcPos = posPacketOut.innerText;
-    const link    = linkPreview.textContent;
-    
-    
-    const egyeb = egyebInput.value;
-    
-          posPacketOut.innerText       
+    const nfcPos     = posPacketOut.textContent;
+    const link       = linkPreview.textContent;
+    const egyeb      = egyebInput.value;
 
-    if (nfcData === "NFC data will appear here...") {
-      showError("Please select a plant and generate NFC data first");
+    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+      showError(errorMsg, msg('err_no_save'));
       return;
     }
 
     if (SHEET_WRITER_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') {
-      showError("Save is not configured: set SHEET_WRITER_URL in nfcgen.js");
+      showError(errorMsg, msg('err_no_config'));
       return;
     }
 
@@ -582,17 +562,17 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: nrValue, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
       if (result.status === 'success') {
-        showError("NFC saved to list!", "success");
+        showError(errorMsg, msg('err_save_ok'), "success");
       } else {
-        showError("Failed to save NFC: " + (result.error || "Unknown error"));
+        showError(errorMsg, msg('err_save_fail') + (result.error || "Unknown error"));
       }
     } catch (err) {
-      showError("Failed to save NFC: " + err.message);
+      showError(errorMsg, msg('err_save_fail') + err.message);
     } finally {
       loadLastNfcId(nfcIdInput);
       saveNfcBtn.disabled = false;
@@ -609,18 +589,18 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link    = linkPreview.textContent;
 
-    if (nfcData === "NFC data will appear here...") {
-      showError("Please select a plant and generate NFC data first");
+    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+      showError(errorMsg, msg('err_no_save'));
       return;
     }
 
     if (!('NDEFReader' in window)) {
-      showError("Web NFC is not supported on this browser/device.");
+      showError(errorMsg, msg('err_nfc_ns'));
       return;
     }
 
     nfcWriteBtn.disabled = true;
-    showError("Approach the tag to the back of your phone...", "info");
+    showError(errorMsg, msg('err_nfc_tap'), "info");
 
     try {
       const ndef = new NDEFReader();
@@ -630,9 +610,9 @@ function calculateSize(text) {
           { recordType: "url",  data: link }
         ]
       });
-      showError("Successfully written to NFC tag! ✅", "success");
+      showError(errorMsg, msg('err_nfc_ok'), "success");
     } catch (error) {
-      showError("Error: " + error);
+      showError(errorMsg, msg('err_nfc_write') + error);
       console.error(error);
     } finally {
       nfcWriteBtn.disabled = false;
@@ -640,44 +620,37 @@ function calculateSize(text) {
   });
 
   function clearForm() {
-    plantId.value = "";
+    nrInput.value = "";
     nfcIdInput.value = "";
     nameHuInput = "";
-    nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
+    nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
     latinNameInput.value = "";
     datumInput.value = dateString;
     nfctypInput.value = "n";
     egyebInput.value = "";
-    nfcPreview.textContent = "NFC data will appear here...";
-    nfcSize.textContent = "Size: 0 B";
-    linkPreview.textContent = "Link will appear here...";
-    linkSize.textContent = "Size: 0 B";
-    totalSize.textContent = "Size: 0 B";
+    nfcPreview.textContent = msg('ph_nfc_preview');
+    nfcSize.textContent = "0 B";
+    linkPreview.textContent = msg('ph_link_preview');
+    linkSize.textContent = "0 B";
+    totalSize.textContent = "0 B";
   }
 
-  function showError(message, type = "error") {
-    errorMsg.textContent = message;
-    if (type === "success") {
-      errorMsg.style.color = "green";
-    } else if (type === "info") {
-      errorMsg.style.color = "blue";
-    } else {
-      errorMsg.style.color = "red";
-    }
-    errorMsg.style.display = "block";
+  function showError(el, message, type = "error") {
+    el.textContent = message;
+    el.className = 'status-msg ' + (type === 'success' ? 'success' : type === 'info' ? 'info' : 'error');
+    el.style.display = "block";
     
     if (type === "success") {
       setTimeout(() => {
-        errorMsg.textContent = "";
-        errorMsg.style.display = "none";
+        el.textContent = "";
+        el.className = 'status-msg';
       }, 3000);
     }
   }
 
   // Set current date on load
-//  yearInput.value = new Date().getFullYear();
   datumInput.value = dateString;
 
   // Pre-select plant and variety from URL params (when navigating from Homepage)
@@ -712,11 +685,23 @@ if (document.readyState === "loading") {
 
 gpsCardToggle.addEventListener('click', () => {
   gpsCardToggle.classList.toggle('on');
-  gpsCardBody.style.display = gpsCardToggle.classList.contains('on') ? 'block' : 'none';
+  const isOn = gpsCardToggle.classList.contains('on');
+  gpsCardBody.style.display = isOn ? 'block' : 'none';
+  // Auto-open the GPS panel when turning on
+  const gpsPanel = document.getElementById('panel-gps');
+  if (isOn && gpsPanel && !gpsPanel.classList.contains('open')) {
+    gpsPanel.classList.add('open');
+  }
   if (updateNFCPreviewFn) updateNFCPreviewFn();
 });
 
 othCardToggle.addEventListener('click', () => {
   othCardToggle.classList.toggle('on');
-  othCardBody.style.display = othCardToggle.classList.contains('on') ? 'block' : 'none';
+  const isOn = othCardToggle.classList.contains('on');
+  othCardBody.style.display = isOn ? 'block' : 'none';
+  // Auto-open the Other panel when turning on
+  const othPanel = document.getElementById('panel-other');
+  if (isOn && othPanel && !othPanel.classList.contains('open')) {
+    othPanel.classList.add('open');
+  }
 });
