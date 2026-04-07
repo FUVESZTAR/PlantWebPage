@@ -331,18 +331,21 @@ button {
     background: #dcdcdc;
     border: 1px solid #b5b5b5;
     padding: 6px;
+    overflow-x: auto;
 }
 
 .CALENDER1-months {
     display: grid;
     grid-template-columns: repeat(12, minmax(34px, 1fr));
     gap: 2px;
+    min-width: 480px;
 }
 
 .CALENDER1-row {
     display: grid;
     grid-template-columns: repeat(48, minmax(8px, 1fr));
     gap: 2px;
+    min-width: 480px;
 }
 
 .CALENDER1-month {
@@ -377,7 +380,7 @@ button {
 
 .CALENDER1-legend {
     display: grid;
-    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 8px;
     margin-top: 8px;
 }
