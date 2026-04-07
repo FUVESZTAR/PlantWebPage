@@ -29,8 +29,8 @@ const gpsDispLon = document.getElementById('gpsDispLon');
 const gpsDispAlt = document.getElementById('gpsDispAlt');
 const gpsDispAcc = document.getElementById('gpsDispAcc');
 const updateTimer = document.getElementById('updateTimer');
-const posPacketOut = document.getElementById('posPacketOut').innerText = b64;
-const posPacketSize = document.getElementById('posPacketSize').innerText = `Size: ${b64.length} bytes`;
+const posPacketOut = document.getElementById('posPacketOut');
+const posPacketSize = document.getElementById('posPacketSize');
                 
 const gpsStatus = document.getElementById('gpsStatus');
 //gps
@@ -212,8 +212,6 @@ async function populate() {
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
   const errorMsg = document.getElementById("error-message");
-  const gpsstartBtn = document.getElementById("gpsstartBtn");
-  const gpsstopBtn = document.getElementById("gpsstopBtn");
   
   let plants = [];
 
@@ -539,13 +537,16 @@ function calculateSize(text) {
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   saveNfcBtn.addEventListener("click", async () => {
     updatePreviews();
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
     const nfcId   = nfcIdInput.value;
     const plantId = nrInput.textContent;
     const nfcData = nfcPreview.textContent;
     const nfctyp = nfctypInput.value;
     const datum = datumInput.value;
-    const nfcCreated = datumInput.value;
-    const nfcPos = datumInput.value;
+    const nfcCreated = dateString;
+    const nfcPos = posPacketOut.innerText;
     const link    = linkPreview.textContent;
     
     
@@ -570,7 +571,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId, nfcData, nfctyp, datum, nfcCreated, nfcPos, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
