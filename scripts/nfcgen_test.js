@@ -21,8 +21,18 @@ let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
 const nfcIdInput = document.getElementById("plantId");
-const gpsStartBtn = document.getElementById('gpsstartBtn');
-const gpsStopBtn = document.getElementById('gpsstopBtn');
+const gpsStartBtn = document.getElementById('gpsStartBtn');
+const gpsStopBtn = document.getElementById('gpsStopBtn');
+const liveDot = document.getElementById('live-dot');
+const gpsDispLat = document.getElementById('gpsDispLat');
+const gpsDispLon = document.getElementById('gpsDispLon');
+const gpsDispAlt = document.getElementById('gpsDispAlt');
+const gpsDispAcc = document.getElementById('gpsDispAcc');
+const updateTimer = document.getElementById('updateTimer');
+const posPacketOut = document.getElementById('posPacketOut').innerText = b64;
+const posPacketSize = document.getElementById('posPacketSize').innerText = `Size: ${b64.length} bytes`;
+                
+const gpsStatus = document.getElementById('gpsStatus');
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -65,9 +75,9 @@ const gpsStopBtn = document.getElementById('gpsstopBtn');
            console.log("Start");
             if (watchId) navigator.geolocation.clearWatch(watchId);
             
-            document.getElementById('gpsstartBtn').style.display = "none";
-            document.getElementById('gpsstopBtn').style.display = "block";
-            document.getElementById('live-dot').style.display = "inline";
+            gpsStartBtn.style.display = "none";
+            gpsStopBtn.style.display = "block";
+            liveDot.style.display = "inline";
             setStatus("Fetching GPS satellites...", "orange");
 
             const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
@@ -79,10 +89,10 @@ const gpsStopBtn = document.getElementById('gpsstopBtn');
                 currentData.alt = pos.coords.altitude || 0;
                 const acc = pos.coords.accuracy;
 
-                document.getElementById('disp-lat').innerText = currentData.lat.toFixed(6);
-                document.getElementById('disp-lon').innerText = currentData.lon.toFixed(6);
-                document.getElementById('disp-alt').innerText = Math.round(currentData.alt) + "m";
-                document.getElementById('disp-acc').innerText = Math.round(acc) + "m";
+                gpsDispLat.innerText = currentData.lat.toFixed(6);
+                gpsDispLon.innerText = currentData.lon.toFixed(6);
+                gpsDispAlt.innerText = Math.round(currentData.alt) + "m";
+                gpsDispAcc.innerText = Math.round(acc) + "m";
 
                 setStatus(`Updating... (${Math.round(acc)}m accuracy)`, "#0056b3");
 
@@ -91,7 +101,7 @@ const gpsStopBtn = document.getElementById('gpsstopBtn');
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
-                document.getElementById('update-timer').innerText = `Last improvement: ${seconds}s ago`;
+                updateTimer.innerText = `Last improvement: ${seconds}s ago`;
             }, 1000);
         }
 
@@ -109,22 +119,22 @@ const gpsStopBtn = document.getElementById('gpsstopBtn');
                 //calculation
                 const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
                 const gpstext = `L:${b64}`;
-                document.getElementById('packet-out').innerText = b64;
-                document.getElementById('packet-size').innerText = `Size: ${b64.length} bytes`;
+                posPacketOut.innerText = gpstext;
+                posPacketSize.innerText = `Size: ${b64.length} bytes`;
                 
-            document.getElementById('gpsstartBtn').style.display = "block";
-            document.getElementById('gpsstartBtn').innerText = "Restart Tracking";
-            document.getElementById('gpsstopBtn').style.display = "none";
-            document.getElementById('live-dot').style.display = "none";
-            document.getElementById('update-timer').innerText = "Status: Data Locked";
+            gpsStartBtn.style.display = "block";
+            gpsStartBtn.innerText = "Restart Tracking";
+            gpsStopBtn.style.display = "none";
+            liveDot.style.display = "none";
+            updateTimer.innerText = "Status: Data Locked";
  
             setStatus("Tracking Stopped. Data preserved.", "#333");
             gpsPacket=gpstext;
         }
-
+/*
         async function writeNFC() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
-            const b64 = document.getElementById('packet-out').innerText;
+            const b64 = posPacketOut.innerText;
             try {
                 const ndef = new NDEFReader();
                 setStatus("TAP NFC TAG NOW", "blue");
@@ -153,9 +163,9 @@ const gpsStopBtn = document.getElementById('gpsstopBtn');
                 };
             } catch (err) { setStatus("Read Error", "red"); }
         }
-
+*/
         function setStatus(msg, color) {
-            const s = document.getElementById('status');
+            const s = gpsStatus;
             s.innerText = msg;
             s.style.background = color;
             s.style.color = "white";
@@ -429,7 +439,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket || ''}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -529,9 +539,19 @@ function calculateSize(text) {
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   saveNfcBtn.addEventListener("click", async () => {
     updatePreviews();
-    const nfcData = nfcPreview.textContent;
-    const link    = linkPreview.textContent;
     const nfcId   = nfcIdInput.value;
+    const plantId = nrInput.textContent;
+    const nfcData = nfcPreview.textContent;
+    const nfctyp = nfctypInput.value;
+    const datum = datumInput.value;
+    const nfcCreated = datumInput.value;
+    const nfcPos = datumInput.value;
+    const link    = linkPreview.textContent;
+    
+    
+    const egyeb = egyebInput.value;
+    
+          posPacketOut.innerText       
 
     if (nfcData === "NFC data will appear here...") {
       showError("Please select a plant and generate NFC data first");
@@ -550,7 +570,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, nfcData, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId, nfcData, nfctyp, datum, nfcCreated, nfcPos, link }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
