@@ -140,7 +140,7 @@ async function populate() {
     const [nfcData, plantData] = await Promise.all([loadNfcData(), loadPlantData()]);
     nfcRows = nfcData;
     plantData.forEach(p => {
-      if (p.Plant_Id) plantMap[String(p.Plant_Id)] = p;
+      if (p.Plant_ID) plantMap[String(p.Plant_ID)] = p;
     });
   } catch (err) {
     console.error(err);
@@ -150,7 +150,7 @@ async function populate() {
     return;
   }
 
-  // Enrich NFC rows with plant taxonomy info via plant_id → Plant_Id
+  // Enrich NFC rows with plant taxonomy info via Plant_ID → Plant_ID
   const enriched = nfcRows.map(row => {
     const plant = plantMap[row.plantId] || {};
     return {
