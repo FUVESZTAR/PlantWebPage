@@ -1,5 +1,5 @@
 import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
-import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
+import { t, getCurrentLang, applyTranslations, setupLanguageButtons } from "./lang.js";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -863,7 +863,7 @@ function renderFields(containerId, map, plant) {
       case "split":
         return splitPipe(value).join(", ");
       case "splitminus":
-        return splitPipe(value).join(" - ");
+        return splitPipe(value).join(" – ");
       case "normal":
       default:
         return value;
@@ -882,32 +882,27 @@ function renderFields(containerId, map, plant) {
             console.log("chosen item to fill: "+item.symbol);
             if (input1) input1.value = formattedValue1 || "";
     } else if (item.use === "create"){
-      
+
       const rawValue = plant[item.data];
       const formattedValue = formatValue(rawValue, item.typ);
 
-      // Create elements
-      const row = document.createElement("div");
-      row.className = "row";
+      // Create card element
+      const card = document.createElement("div");
+      card.className = "field-card";
 
-      const wrapper = document.createElement("div");
-
-      const label = document.createElement("label");
+      const label = document.createElement("span");
+      label.className = "field-card__label";
       label.setAttribute("data-i18n", `detail.label.${item.i18n}`);
-      label.textContent = `${item.i18n}:`; // fallback text
+      label.textContent = t(`detail.label.${item.i18n}`);
 
-      const input = document.createElement("input");
-      input.type = "text";
-      input.id = item.key;
-      input.style.width = "500px";
-      input.readOnly = true;
-      input.value = formattedValue;
+      const value = document.createElement("span");
+      value.className = "field-card__value" + (formattedValue ? "" : " field-card__value--empty");
+      value.id = item.key;
+      value.textContent = formattedValue || "–";
 
-      // Build structure
-      wrapper.appendChild(label);
-      wrapper.appendChild(input);
-      row.appendChild(wrapper);
-      container.appendChild(row);
+      card.appendChild(label);
+      card.appendChild(value);
+      container.appendChild(card);
       }
     });
 }
@@ -923,7 +918,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 });
 
 (async function init() {
-  //setupLanguageButtons();
+  setupLanguageButtons();
   await syncViewBoxes();
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
@@ -1007,8 +1002,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
       if (el) el.value = value || "";
     });*/
     renderFields("fields1", BASIC_FIED_MAP, plant);
+    applyTranslations();
     
-    // NFC link
     const nfcEl = document.querySelector("#nfc-link");
     if (nfcEl) nfcEl.textContent = `${plant.Plant_ID}  / ${primaryName} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
    
