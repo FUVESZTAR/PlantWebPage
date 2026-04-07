@@ -20,6 +20,7 @@ let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
+let updateNFCPreviewFn = null;
 const nfcIdInput = document.getElementById("plantId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
 const gpsStopBtn = document.getElementById('gpsStopBtn');
@@ -33,6 +34,10 @@ const posPacketOut = document.getElementById('posPacketOut');
 const posPacketSize = document.getElementById('posPacketSize');
                 
 const gpsStatus = document.getElementById('gpsStatus');
+const gpsCardToggle = document.getElementById('gps_card_toggle');
+const gpsCardBody = document.getElementById('gps_card_body');
+const othCardToggle = document.getElementById('oth_card_toggle');
+const othCardBody = document.getElementById('oth_card_body');
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -438,7 +443,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${gpsPacket}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -459,6 +464,7 @@ function calculateSize(text) {
       }
     }   
   }
+  updateNFCPreviewFn = updateNFCPreview;
   //Gsp
   gpsStartBtn.addEventListener("click", () => {
     console.log("button pressed startLiveCapture");
@@ -703,3 +709,14 @@ if (document.readyState === "loading") {
 } else {
   populate();
 }
+
+gpsCardToggle.addEventListener('click', () => {
+  gpsCardToggle.classList.toggle('on');
+  gpsCardBody.style.display = gpsCardToggle.classList.contains('on') ? 'block' : 'none';
+  if (updateNFCPreviewFn) updateNFCPreviewFn();
+});
+
+othCardToggle.addEventListener('click', () => {
+  othCardToggle.classList.toggle('on');
+  othCardBody.style.display = othCardToggle.classList.contains('on') ? 'block' : 'none';
+});
