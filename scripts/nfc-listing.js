@@ -6,8 +6,8 @@ const NFC_SHEET_NAME = 'nfc_list';
 
 /**
  * Load all rows from the NFC list Google Sheet.
- * Returns an array of objects with keys: id, nfcText, link, plantId,
- * created, datum, location, gpsCoordinates, altitude.
+ * Returns an array of objects with keys: NFCid, nfcText, link, plantId, ...
+ * created, datum, location, gpsCoordinates.
  */
 async function loadNfcData() {
   const url = `https://docs.google.com/spreadsheets/d/${NFC_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(NFC_SHEET_NAME)}`;
@@ -43,20 +43,19 @@ async function loadNfcData() {
         entry[header] = (cell && cell.v != null) ? String(cell.v) : '';
       });
       return {
-        id:             entry[headers[0]] || '',
-        nfcText:        entry[headers[1]] || '',
-        link:           entry[headers[2]] || '',
-        plantId:        findVal(entry, 'plant_id'),
-        created:        findVal(entry, 'created'),
-        datum:          findVal(entry, 'datum'),
-        location:       findVal(entry, 'location'),
-        gpsCoordinates: findVal(entry, 'gps_coordinates'),
-        altitude:       findVal(entry, 'altitude'),
+        nfcId:          findVal(entry, 'NFC_ID'),
+        nfcText:        findVal(entry, 'NFC_text'),
+        link:           findVal(entry, 'NFC_link'),
+        plantId:        findVal(entry, 'Plant_ID'),
+        created:        findVal(entry, 'NFC_created'),
+        datum:          findVal(entry, 'Datum'),
+        gpsCoordinates: findVal(entry, 'NFC_position'),
+        location:       findVal(entry, 'Location'),
       };
     });
 }
 
-document.getElementById('back-button').addEventListener('click', () => {
+document.getElementBynfcId('back-button').addEventListener('click', () => {
   window.location.href = 'HomePage.html';
 });
 
@@ -81,7 +80,7 @@ function buildDropdown(selectEl, allValues, placeholder) {
 }
 
 function renderRows(rows) {
-  const tbody = document.getElementById('nfc-list-body');
+  const tbody = document.getElementBynfcId('nfc-list-body');
   const colCount = document.querySelectorAll('.nfc-list-table thead th').length || 9;
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="${colCount}">${t('nfc.empty')}</td></tr>`;
@@ -91,8 +90,8 @@ function renderRows(rows) {
   rows.forEach(row => {
     const tr = document.createElement('tr');
 
-    const tdId = document.createElement('td');
-    tdId.textContent = row.id;
+    const tdnfcId = document.createElement('td');
+    tdId.textContent = row.nfcId;
 
     const tdNfc = document.createElement('td');
     tdNfc.textContent = row.nfcText;
@@ -124,10 +123,7 @@ function renderRows(rows) {
     const tdGps = document.createElement('td');
     tdGps.textContent = row.gpsCoordinates;
 
-    const tdAlt = document.createElement('td');
-    tdAlt.textContent = row.altitude;
-
-    tr.append(tdId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAlt);
+    tr.append(tdId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps);
     tbody.appendChild(tr);
   });
 }
@@ -170,7 +166,7 @@ async function populate() {
   const ddLatin   = document.getElementById('dd-latin');
   const ddVariety = document.getElementById('dd-variety');
 
-  buildDropdown(ddNfcId,   unique(enriched.map(r => r.id)),      t('nfc.filter.allNfcIds'));
+  buildDropdown(ddNfcId,   unique(enriched.map(r => r.nfcId)),      t('nfc.filter.allNfcIds'));
   buildDropdown(ddPlantId, unique(enriched.map(r => r.plantId)), t('nfc.filter.allPlantIds'));
   buildDropdown(ddFamily,  unique(enriched.map(r => r.family)),  t('nfc.filter.allFamilies'));
   buildDropdown(ddGenus,   unique(enriched.map(r => r.genus)),   t('nfc.filter.allGenera'));
@@ -178,7 +174,7 @@ async function populate() {
   buildDropdown(ddVariety, unique(enriched.map(r => r.variety)), t('nfc.filter.allVarieties'));
 
   function applyFilters() {
-    const nfcId   = ddNfcId.value;
+    const nfcId2   = ddNfcId.value;
     const plantId = ddPlantId.value;
     const family  = ddFamily.value;
     const genus   = ddGenus.value;
@@ -186,7 +182,7 @@ async function populate() {
     const variety = ddVariety.value;
 
     const result = enriched.filter(r => {
-      if (nfcId   && r.id      !== nfcId)   return false;
+      if (nfcId2   && r.nfcId      !== nfcId)   return false;
       if (plantId && r.plantId !== plantId) return false;
       if (family  && r.family  !== family)  return false;
       if (genus   && r.genus   !== genus)   return false;
