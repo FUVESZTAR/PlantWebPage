@@ -35,7 +35,7 @@ body {
   color: var(--charcoal);
   line-height: 1.6;
   min-height: 100vh;
-  cursor: url('leaf.cur'), default;
+  cursor: url('leaf.cur') 0 0, auto;
 }
 
 /* ── Layout wrapper ─────────────────────────────────────────── */
@@ -517,15 +517,15 @@ button:disabled { opacity:.55; cursor:not-allowed; }
             <div class="data-line"><span data-i18n="lbl_acc">Accuracy:</span><span id="gpsDispAcc">–</span></div>
           </div>
           <div class="meta-info">
-            <span id="updateTimer" data-i18n="gps_standby">Status: Standing by</span>
+            <span id="updateTimer" data-i18n="gps_standby" data-i18n-live>Status: Standing by</span>
             <span id="liveDot" style="display:none" class="live-indicator">● LIVE</span>
           </div>
           <div class="meta-info">
             <span data-i18n="lbl_packet">Compressed Packet</span>
             <span class="badge" id="posPacketSize">0 B</span>
           </div>
-          <div class="packet-zone" id="posPacketOut" data-i18n="no_data_locked">No data locked…</div>
-          <div id="gpsStatus" data-i18n="gps_ready">Ready.</div>
+          <div class="packet-zone" id="posPacketOut" data-i18n="no_data_locked" data-i18n-live>No data locked…</div>
+          <div id="gpsStatus" data-i18n="gps_ready" data-i18n-live>Ready.</div>
         </div>
       </div></div></div>
     </div>
@@ -574,14 +574,14 @@ button:disabled { opacity:.55; cursor:not-allowed; }
             <span data-i18n="lbl_nfc_preview">NFC Data</span>
             <span class="size-tag" id="nfc-size">0 B</span>
           </div>
-          <div class="nfc-preview" id="nfc-preview" data-i18n="ph_nfc_preview">NFC data will appear here…</div>
+          <div class="nfc-preview" id="nfc-preview" data-i18n="ph_nfc_preview" data-i18n-live>NFC data will appear here…</div>
         </div>
         <div class="form-group">
           <div class="preview-label">
             <span data-i18n="lbl_link_preview">Link</span>
             <span class="size-tag" id="link-size">0 B</span>
           </div>
-          <div class="nfc-preview" id="link-preview" data-i18n="ph_link_preview">Link will appear here…</div>
+          <div class="nfc-preview" id="link-preview" data-i18n="ph_link_preview" data-i18n-live>Link will appear here…</div>
         </div>
         <div style="text-align:right;font-size:.78rem;color:var(--muted)">
           <span data-i18n="lbl_total_size">Total:</span> <span id="total-size">0 B</span>
@@ -779,7 +779,7 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       const val = t(key);
       if (el.tagName === 'OPTION') {
         el.textContent = val;
-      } else if (el.id === 'nfc-preview' || el.id === 'link-preview' || el.id === 'posPacketOut' || el.id === 'gpsStatus' || el.id === 'updateTimer') {
+      } else if (el.hasAttribute('data-i18n-live')) {
         // Don't overwrite live content – only set if still showing placeholder
         if (!el._hasData) el.textContent = val;
       } else {

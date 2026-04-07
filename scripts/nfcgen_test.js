@@ -464,7 +464,7 @@ function calculateSize(text) {
     updatePreviews();
     const nfcData = nfcPreview.textContent;
     
-    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+    if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_plant'));
       return;
     }
@@ -476,7 +476,7 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link = linkPreview.textContent;
     const combined = nfcData + " " + link;
-    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+    if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_plant'));
       return;
     }
@@ -545,7 +545,7 @@ function calculateSize(text) {
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
 
-    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+    if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
       return;
     }
@@ -589,7 +589,7 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link    = linkPreview.textContent;
 
-    if (selectedPlantIndex === null && selectedPlantIndex !== 0) {
+    if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
       return;
     }
