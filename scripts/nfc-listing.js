@@ -91,7 +91,7 @@ function renderRows(rows) {
     const tr = document.createElement('tr');
 
     const tdNfcId = document.createElement('td');
-    tdId.textContent = row.nfcId;
+    tdNfcId.textContent = row.nfcId;
 
     const tdNfc = document.createElement('td');
     tdNfc.textContent = row.nfcText;
@@ -120,13 +120,13 @@ function renderRows(rows) {
     const tdLocation = document.createElement('td');
     tdLocation.textContent = row.location;
 
-    const tdNfctye = document.createElement('td');
-    tdnfctye.textContent = row.nfctye;
+    const tdGps = document.createElement('td');
+    tdGps.textContent = row.nfcPosition;
 
-    const tdnfcPosition = document.createElement('td');
-    tdnfcPosition.textContent = row.nfcPosition;
+    const tdAltitude = document.createElement('td');
+    tdAltitude.textContent = '';
 
-    tr.append(tdNfcId, tdPlantId, tdNfctye, tdDatum, tdCreated, tdnfcPosition, tdNfc, tdLink, tdLocation);
+    tr.append(tdNfcId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAltitude);
     tbody.appendChild(tr);
   });
 }
@@ -169,12 +169,12 @@ async function populate() {
   const ddLatin   = document.getElementById('dd-latin');
   const ddVariety = document.getElementById('dd-variety');
 
-  buildDropdown(ddNfcId,   unique(eplantIdiched.map(r => r.nfcId)),      t('nfc.filter.allNfcIds'));
-  buildDropdown(ddPlantId, unique(eplantIdiched.map(r => r.plantId)), t('nfc.filter.allPlantIds'));
-  buildDropdown(ddFamily,  unique(eplantIdiched.map(r => r.family)),  t('nfc.filter.allFamilies'));
-  buildDropdown(ddGenus,   unique(eplantIdiched.map(r => r.genus)),   t('nfc.filter.allGenera'));
-  buildDropdown(ddLatin,   unique(eplantIdiched.map(r => r.latin)),   t('nfc.filter.allLatinNames'));
-  buildDropdown(ddVariety, unique(eplantIdiched.map(r => r.variety)), t('nfc.filter.allVarieties'));
+  buildDropdown(ddNfcId,   unique(enriched.map(r => r.nfcId)),      t('nfc.filter.allNfcIds'));
+  buildDropdown(ddPlantId, unique(enriched.map(r => r.plantId)), t('nfc.filter.allPlantIds'));
+  buildDropdown(ddFamily,  unique(enriched.map(r => r.family)),  t('nfc.filter.allFamilies'));
+  buildDropdown(ddGenus,   unique(enriched.map(r => r.genus)),   t('nfc.filter.allGenera'));
+  buildDropdown(ddLatin,   unique(enriched.map(r => r.latin)),   t('nfc.filter.allLatinNames'));
+  buildDropdown(ddVariety, unique(enriched.map(r => r.variety)), t('nfc.filter.allVarieties'));
 
   function applyFilters() {
     const nfcId2   = ddNfcId.value;
@@ -184,7 +184,7 @@ async function populate() {
     const latin   = ddLatin.value;
     const variety = ddVariety.value;
 
-    const result = eplantIdiched.filter(r => {
+    const result = enriched.filter(r => {
       if (nfcId2   && r.nfcId      !== nfcId2)   return false;
       if (plantId && r.plantId !== plantId) return false;
       if (family  && r.family  !== family)  return false;
