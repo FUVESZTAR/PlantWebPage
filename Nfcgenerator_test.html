@@ -171,18 +171,18 @@
         <strong>1. GPS Monitor</strong>
         <button id="gpsStartBtn"  type="button" class="btn-get" display="block">Start Live Tracking</button>
         <button id="gpsStopBtn"  type="button" class="btn-stop" display="none">Stop & Lock Data</button>
-        <div class="data-line"><span>Latitude:</span> <span id="gpDispLat">-</span></div>
-        <div class="data-line"><span>Longitude:</span> <span id="gpDispLon">-</span></div>
-        <div class="data-line"><span>Altitude:</span> <span id="gpDispAlt">-</span></div>
-        <div class="data-line"><span>Accuracy:</span> <span id="gpDispAcc">-</span></div>
+        <div class="data-line"><span>Latitude:</span> <span id="gpsDispLat">-</span></div>
+        <div class="data-line"><span>Longitude:</span> <span id="gpsDispLon">-</span></div>
+        <div class="data-line"><span>Altitude:</span> <span id="gpsDispAlt">-</span></div>
+        <div class="data-line"><span>Accuracy:</span> <span id="gpsDispAcc">-</span></div>
         
         <div class="meta-info">
-            <span id="update-timer">Status: Standing by</span>
+            <span id="updateTimer">Status: Standing by</span>
             <span id="live-dot" style="display:none" class="live-indicator">● UPDATING</span>
         </div>
         <div class="meta-info">
             <strong>2. Compressed Packet</strong>
-            <span id="posPacketSize" class="badge">Size: 0 bytes</span>
+            <span class="badge" id="posPacketSize" >Size: 0 bytes</span>
         </div>  
         <div class="packet-zone" id="posPacketOut">No data locked...</div>
         <div id="gpsStatus">Ready.</div>
