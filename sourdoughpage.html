@@ -931,7 +931,7 @@ T.hu.tl = T.en.tl;
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let lang = 'en';
+let lang = localStorage.getItem('fuvesztar_lang') || 'hu';
 let proMode = false;
 let loaves = 1;
 let currentBread = 'sourdough';
@@ -968,6 +968,7 @@ function setText(id,val){
 // ═══════════════════════════════════════════════════
 function setLang(l){
   lang=l;
+  try { localStorage.setItem('fuvesztar_lang', l); } catch(e) {}
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
   applyTranslations();
   buildBreadTabs();
@@ -1444,6 +1445,7 @@ function togglePanel(id){
 // ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
+document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===lang));
 applyTranslations();
 buildBreadTabs();
 buildSeeds();
