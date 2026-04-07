@@ -94,7 +94,7 @@ async function populate() {
   const nameVarietySelector = document.getElementById("name-variety");
   const nameVarietyCustomInput = document.getElementById("name-variety-custom");
   const latinNameInput = document.getElementById("latin-name");
-  const nfctypInput = document.getElementById("nfctyp");
+  const nfcTypInput = document.getElementById("nfcTyp");
   const egyebInput = document.getElementById("egyeb");
   const nfcPreview = document.getElementById("nfc-preview");
   const nfcSize = document.getElementById("nfc-size");
@@ -172,7 +172,7 @@ async function populate() {
       plantNameInput = plant[nameProp] || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
-      nfctypInput.value = "n";
+      nfcTypInput.value = "n";
       egyebInput.value = plant.egyeb || "";
     }
     
@@ -263,7 +263,7 @@ async function populate() {
       plantNameInput = varietyPlant[nameProp] || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
-      nfctypInput.value = "n";
+      nfcTypInput.value = "n";
       egyebInput.value = varietyPlant.egyeb || "";
       
       updatePreviews();
@@ -275,7 +275,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [plantIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [plantIdInput, latinNameInput, datumInput, nfcTypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -422,7 +422,7 @@ function calculateSize(text) {
     const nameVariety = getVarietyText();
     const latinName = latinNameInput.value;
     const datum = datumInput.value;
-    const nfctyp = nfctypInput.value;
+    const nfcTyp = nfcTypInput.value;
     const egyeb = egyebInput.value;
     let link = "";
     if (plantId) {
@@ -431,7 +431,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
+    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfcTyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -542,7 +542,7 @@ function calculateSize(text) {
     const nfcId      = nfcIdInput.value;
     const plantIdValue    = plantIdInput.value;
     const nfcData    = nfcPreview.textContent;
-    const nfctyp     = nfctypInput.value;
+    const nfcTyp     = nfcTypInput.value;
     const datum      = datumInput.value;
     const nfcCreated = dateString;
     const nfcPos     = posPacketOut.textContent;
@@ -566,7 +566,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
@@ -632,7 +632,7 @@ function calculateSize(text) {
     nameVarietyCustomInput.style.display = "none";
     latinNameInput.value = "";
     datumInput.value = dateString;
-    nfctypInput.value = "n";
+    nfcTypInput.value = "n";
     egyebInput.value = "";
     nfcPreview.textContent = msg('ph_nfc_preview');
     nfcSize.textContent = "0 B";
