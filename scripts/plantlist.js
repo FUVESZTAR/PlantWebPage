@@ -128,13 +128,23 @@ async function populate() {
     buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
   }
 
-  // Apply URL params in hierarchical order so each level is valid before the next
-  const familyParam  = params.get("family")  || "";
-  const genusParam   = params.get("genus")   || "";
-  const latinParam   = params.get("latin")   || "";
+  // Apply URL params in hierarchical order so each level is valid before the next.
+  // Also handle filterType/filterValue params produced by setIdentityFilterLink in P.html.
+  const filterType  = params.get("filterType")  || "";
+  const filterValue = params.get("filterValue") || "";
+
+  let familyParam  = params.get("family")  || "";
+  let genusParam   = params.get("genus")   || "";
+  let latinParam   = params.get("latin")   || "";
   const nameHuParam  = params.get("nameHu")  || "";
   const nameEnParam  = params.get("nameEn")  || "";
   const varietyParam = params.get("variety") || "";
+
+  if (filterValue) {
+    if (filterType === "family") familyParam = filterValue;
+    else if (filterType === "genus") genusParam = filterValue;
+    else if (filterType === "latin") latinParam = filterValue;
+  }
 
   if (familyParam)  { ddFamily.value = familyParam;  rebuildDependentDropdowns(); }
   if (genusParam)   { ddGenus.value  = genusParam;   rebuildDependentDropdowns(); }
