@@ -96,12 +96,22 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
    .card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--brown)}
     .card-subtitle{font-size:.75rem;color:var(--warm-gray);font-weight:300;margin-top:1px}
-    .card_toggle{width:30px;height:16px;background:var(--cream-dark);border-radius:8px;
+    .card-toggle{width:30px;height:16px;background:var(--cream-dark);border-radius:8px;
   cursor:pointer;border:none;transition:background .22s;flex-shrink:0;position:relative}
-  .card_toggle.on{background:var(--sage)}
-  .card_toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
+  .card-toggle.on{background:var(--sage)}
+  .card-toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
   border-radius:50%;background:#fff;transition:transform .22s}
-  .card_toggle.on::after{transform:translateX(14px)}
+  .card-toggle.on::after{transform:translateX(14px)}
+
+
+    .card-toggle{width:44px;height:23px;background:var(--cream-dark);border-radius:12px;
+  cursor:pointer;border:none;transition:background .3s;flex-shrink:0;position:relative}
+.card-toggle.on{background:var(--brown)}
+.card-toggle::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;
+  border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.card-toggle.on::after{transform:translateX(21px)}
+.mode-pro{color:var(--brown);font-weight:600}
+    
   </style>
 </head>
 <body>
@@ -110,8 +120,8 @@
       <h1>NFC Generator</h1>
       <p class="subtitle">Generate NFC tags for plants</p>
       <div class="card" id="main_card_header">
-        <div class="card-title" data-i18n="main_card_title">Other Info</div>
-        <div class="card-subtitle" data-i18n="main_card_sub">Toggle on/off.</div>
+        <div class="card-title" data-i18n="main_card_title">Selection</div>
+        <div class="card-subtitle" data-i18n="main_card_sub">Choose a plant and variety.</div>
         </div>  
         <div class="card" id="main_card_body">
       <div class="nfc-form">
@@ -135,10 +145,15 @@
     style="display: none; margin-top: 0.5rem;"
   />
 </div>
-        
+        </div>
+          </div>
+       <div class="card" id="data_card_header">
+        <div class="card-title" data-i18n="data_card_title">Selection</div>
+        <div class="card-subtitle" data-i18n="data_card_sub">Choose a plant and variety.</div>
+        </div>  
+        <div class="card" id="data_card_body"> 
         <!-- Auto-filled fields from sheet -->
      <div class="section" id="main_section">   
-        <div class="card">
        <div class="form-group">
           <label for="nr">Nr</label>
           <input type="text" id="nr" readonly />
@@ -170,13 +185,18 @@
         </div>
           </div>
    </div>
-        </div>  
    <div class="section" id="gps_section">   
      <div class="form-group">
         <div class="card" id="gps_card_header">
         <div class="card-title" data-i18n="gps_card_title">GPS Monitor</div>
         <div class="card-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
-        <button class="card_toggle" id="gps_card_toggle"></button>
+        <button class="card-toggle" id="gps_card_toggle"></button>
+          <div class="mode-toggle">
+                <span data-i18n="mode_on">On</span>
+                <button class="card-toggle" id="gps_card_toggle"></button>
+          <!--      <button class="toggle-sw" id="modeToggle"></button> -->
+                <span class="mode-off" data-i18n="mode_off">Off</span>
+           </div>
         </div>  
         <div class="card" id="gps_card_body" style="display:none">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
@@ -203,7 +223,7 @@
       <div class="card" id="oth_card_header">
         <div class="card-title" data-i18n="oth_card_title">Other Info</div>
         <div class="card-subtitle" data-i18n="oth_card_sub">Toggle on/off.</div>
-        <button class="card_toggle" id="oth_card_toggle"></button>
+        <button class="card-toggle" id="oth_card_toggle"></button>
         </div>  
         <div class="card" id="oth_card_body" style="display:none">
           <div class="form-group">
