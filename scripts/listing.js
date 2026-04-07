@@ -2,7 +2,7 @@ import { loadPlantData } from "./csv-utils.js";
 import { t, setupLanguageButtons } from "./lang.js";
 
 document.getElementById("back-button").addEventListener("click", () => {
-  window.location.href = "HomePage.html";
+  window.location.href = "Homepage.html";
 });
 
 function getFilterLabels() {
