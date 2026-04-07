@@ -56,7 +56,7 @@ async function loadNfcData() {
 }
 
 document.getElementBynfcId('back-button').addEventListener('click', () => {
-  window.location.href = 'HomePage.html';
+  window.location.href = 'Homepage.html';
 });
 
 function unique(arr) {
