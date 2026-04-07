@@ -124,7 +124,7 @@ function renderRows(rows) {
     tdGps.textContent = row.nfcPosition;
 
     const tdAltitude = document.createElement('td');
-    tdAltitude.textContent = '';
+    tdAltitude.textContent = row.altitude || '';
 
     tr.append(tdNfcId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAltitude);
     tbody.appendChild(tr);
