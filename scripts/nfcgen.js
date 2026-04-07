@@ -17,7 +17,7 @@ let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
-let plantId = 1;
+let nfcId = 1;
 
 /**
  * Fetches the last value from column A of the NFC list sheet via the
@@ -40,8 +40,8 @@ async function loadLastNfcId(nfcIdInput) {
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const nrInput = document.getElementById("nr");
-  const nfcIdInput = document.getElementById("plantId");
+  const plantIdInput = document.getElementById("plantId");
+  const nfcIdInput = document.getElementById("nfcId");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -115,7 +115,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      nrInput.value = plant.Nr || "";
+      plantIdInput.value = plant.Plant_ID || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
@@ -208,7 +208,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      nrInput.value = varietyPlant.Nr || "";
+      plantIdInput.value = varietyPlant.Plant_ID || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -224,7 +224,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, nfcIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [plantIdInput, nfcIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -268,7 +268,7 @@ function calculateSize(text) {
 }
 
   function updateNFCPreview() {
-    const nr = nrInput.value;
+    const plantId = plantIdInput.value;
     const nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
@@ -277,13 +277,13 @@ function calculateSize(text) {
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
     let link = "";
-    if (nr) {
+    if (plantId) {
       const baseUrl = window.location.origin;
-      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(nr)}`;
+      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(plantId)}`;
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${plantId}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -456,7 +456,7 @@ function calculateSize(text) {
   });
 
   function clearForm() {
-    nrInput.value = "";
+    plantIdInput.value = "";
     nfcIdInput.value = "";
     nameHuInput = "";
     nameVarietySelector.innerHTML = '<option value="">Select a variety...</option>';
@@ -499,18 +499,18 @@ function calculateSize(text) {
   // Pre-select plant and variety from URL params (when navigating from Homepage)
   const params = new URLSearchParams(window.location.search);
   const paramName = params.get('name');
-  const paramNr = params.get('nr');
+  const paramPlantId = params.get('plantId');
 
   if (paramName) {
     selector.value = paramName;
     selector.dispatchEvent(new Event('change'));
 
-    if (paramNr) {
-      // Find the option whose plant has the matching Nr
+    if (paramPlantId) {
+      // Find the option whose plant has the matching plantId
       const matchOpt = Array.from(nameVarietySelector.options).find(opt => {
         if (!opt.value || opt.value === '__custom__') return false;
         const idx = parseInt(opt.value);
-        return String(plants[idx]?.Nr) === paramNr;
+        return String(plants[idx]?.Plant_ID) === paramPlantId;
       });
       if (matchOpt) {
         nameVarietySelector.value = matchOpt.value;
