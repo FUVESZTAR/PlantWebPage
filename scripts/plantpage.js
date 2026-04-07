@@ -33,7 +33,9 @@ async function populate() {
   const nfcBtn = document.getElementById("nfc-button");
   const listBtn = document.getElementById("plant-list-btn");
   const errorMsg = document.getElementById("error-message");
-
+  const nfcListBtn = document.getElementById("nfc-list-btn");
+  nfcListBtn.disabled = false;
+  listBtn.disabled = false;
   openBtn.disabled = true;
   nfcBtn.disabled = false;
   varietySelector.disabled = true;
@@ -134,7 +136,7 @@ async function populate() {
     }
   });
 
-  const nfcListBtn = document.getElementById("nfc-list-btn");
+  
   if (nfcListBtn) {
     nfcListBtn.addEventListener("click", () => {
       window.location.href = "NFCListPage.html";
