@@ -109,7 +109,11 @@
     <section class="card landing-card">
       <h1>NFC Generator</h1>
       <p class="subtitle">Generate NFC tags for plants</p>
-
+      <div class="card" id="main_card_header">
+        <div class="card-title" data-i18n="main_card_title">Other Info</div>
+        <div class="card-subtitle" data-i18n="main_card_sub">Toggle on/off.</div>
+        </div>  
+        <div class="card" id="main_card_body">
       <div class="nfc-form">
         <!-- Plant Selection -->
         <div class="form-group">
@@ -166,12 +170,13 @@
         </div>
           </div>
    </div>
+        </div>  
    <div class="section" id="gps_section">   
      <div class="form-group">
         <div class="card" id="gps_card_header">
         <div class="card-title" data-i18n="gps_card_title">GPS Monitor</div>
         <div class="card-subtitle" data-i18n="gps_card_sub">Recording position in NFC with toggle on/off.</div>
-        <button class="card_toggle" id="gps_card"></button>
+        <button class="card_toggle" id="gps_card_toggle"></button>
         </div>  
         <div class="card" id="gps_card_body">
         <button id="gpsStartBtn"  type="button" style="display:block">Start Live Tracking</button>
@@ -195,9 +200,13 @@
      </div>
      </div>
     <div class="section" id="other_section">  
-      <div class="card">
+      <div class="card" id="oth_card_header">
+        <div class="card-title" data-i18n="oth_card_title">Other Info</div>
+        <div class="card-subtitle" data-i18n="oth_card_sub">Toggle on/off.</div>
+        <button class="card_toggle" id="oth_card"></button>
+        </div>  
+        <div class="card" id="oth_card_body">
           <div class="form-group">
-             <label for="egyeb">Other Info</label>
              <textarea id="egyeb" placeholder="Additional information"></textarea>
           </div>
         </div>
