@@ -37,7 +37,7 @@ let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
-const nfcIdInput = document.getElementById("plantId");
+const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
 const gpsStopBtn = document.getElementById('gpsStopBtn');
 const liveDot = document.getElementById('liveDot');
@@ -88,7 +88,7 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 async function populate() {
   const selector = document.getElementById("plant-selector");
-  const nrInput = document.getElementById("nr");
+  const plantIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
   let nameHuInput = "";
   const nameVarietySelector = document.getElementById("name-variety");
@@ -162,7 +162,7 @@ async function populate() {
     if (plant) {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
-      nrInput.value = plant.Plant_ID || "";
+      plantIdInput.value = plant.Plant_ID || "";
       nameHuInput = plant.Name_HU || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
@@ -255,7 +255,7 @@ async function populate() {
       selectedVarietyData = varietyPlant;
       
       // Update all fields from this variety's data
-      nrInput.value = varietyPlant.Plant_ID || "";
+      plantIdInput.value = varietyPlant.Plant_ID || "";
       nameHuInput = varietyPlant.Name_HU || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
@@ -271,7 +271,7 @@ async function populate() {
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
 
   // Input change events - update previews
-  [nrInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
+  [plantIdInput, latinNameInput, datumInput, nfctypInput, egyebInput].forEach(input => {
     input.addEventListener("change", updatePreviews);
     input.addEventListener("input", updatePreviews);
   });
@@ -412,7 +412,7 @@ function calculateSize(text) {
 }
 
   function updateNFCPreview() {
-    const nr = nrInput.value;
+    const plantId = plantIdInput.value;
     nfcIdValue = nfcIdInput.value;
     const nameHu = nameHuInput;
     const nameVariety = getVarietyText();
@@ -421,13 +421,13 @@ function calculateSize(text) {
     const nfctyp = nfctypInput.value;
     const egyeb = egyebInput.value;
     let link = "";
-    if (nr) {
+    if (plantId) {
       const baseUrl = window.location.origin;
-      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(nr)}`;
+      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(plantId)}`;
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${nr}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${plantId}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}/${egyeb}`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -536,7 +536,7 @@ function calculateSize(text) {
     const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     const nfcId      = nfcIdInput.value;
-    const nrValue    = nrInput.value;
+    const plantIdValue    = plantIdInput.value;
     const nfcData    = nfcPreview.textContent;
     const nfctyp     = nfctypInput.value;
     const datum      = datumInput.value;
@@ -562,7 +562,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: nrValue, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfctyp, datum, nfcCreated, nfcPos, nfcData, link }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
@@ -620,7 +620,7 @@ function calculateSize(text) {
   });
 
   function clearForm() {
-    nrInput.value = "";
+    plantIdInput.value = "";
     nfcIdInput.value = "";
     nameHuInput = "";
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
@@ -656,18 +656,18 @@ function calculateSize(text) {
   // Pre-select plant and variety from URL params (when navigating from Homepage)
   const params = new URLSearchParams(window.location.search);
   const paramName = params.get('name');
-  const paramNr = params.get('nr');
+  const paramplantId = params.get('plantId');
 
   if (paramName) {
     selector.value = paramName;
     selector.dispatchEvent(new Event('change'));
 
-    if (paramNr) {
-      // Find the option whose plant has the matching Nr
+    if (paramplantId) {
+      // Find the option whose plant has the matching plantId
       const matchOpt = Array.from(nameVarietySelector.options).find(opt => {
         if (!opt.value || opt.value === '__custom__') return false;
         const idx = parseInt(opt.value);
-        return String(plants[idx]?.Plant_ID) === paramNr;
+        return String(plants[idx]?.Plant_ID) === paramplantId;
       });
       if (matchOpt) {
         nameVarietySelector.value = matchOpt.value;
