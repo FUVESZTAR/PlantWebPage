@@ -767,7 +767,7 @@ button:disabled { opacity:.55; cursor:not-allowed; }
     }
   };
 
-  let currentLang = 'en';
+  let currentLang = localStorage.getItem('fuvesztar_lang') || 'hu';
 
   function t(key) {
     return (TRANS[currentLang] && TRANS[currentLang][key]) || TRANS['en'][key] || key;
@@ -797,13 +797,18 @@ button:disabled { opacity:.55; cursor:not-allowed; }
   }
 
   function setLang(lang) {
-    currentLang = lang;
-    applyLang();
+    if (lang === currentLang) return;
+    localStorage.setItem('fuvesztar_lang', lang);
+    window.location.reload();
   }
 
   // Expose for the module script
   window.t = t;
   window.TRANS = TRANS;
+  window.getCurrentNfcLang = () => currentLang;
+
+  // Apply initial language state
+  applyLang();
 
   /* ── Panel collapse ─────────────────────────────────────────── */
   function togglePanel(id) {

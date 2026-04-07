@@ -98,6 +98,12 @@ async function populate() {
   const egyebInput = document.getElementById("egyeb");
   const nfcPreview = document.getElementById("nfc-preview");
   const nfcSize = document.getElementById("nfc-size");
+
+  // Use language-aware name property
+  const currentLang = (typeof window.getCurrentNfcLang === 'function')
+    ? window.getCurrentNfcLang()
+    : (localStorage.getItem('fuvesztar_lang') || 'hu');
+  const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
   const linkPreview = document.getElementById("link-preview");
   const linkSize = document.getElementById("link-size");
   const totalSize = document.getElementById("total-size");
@@ -118,7 +124,7 @@ async function populate() {
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
     selector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
-    const uniqueNames = [...new Set(plants.map(p => p.Name_HU).filter(Boolean))].sort((a, b) =>
+    const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
     uniqueNames.forEach((name) => {
@@ -153,9 +159,9 @@ async function populate() {
       return;
     }
     
-    // Find the Species plant for this Name_HU, or fall back to the first match
-    const speciesPlant = plants.find(p => p.Name_HU === nameValue && (p.Name_Variety || "").trim() === "Species");
-    const plant = speciesPlant || plants.find(p => p.Name_HU === nameValue);
+    // Find the Species plant for this name, or fall back to the first match
+    const speciesPlant = plants.find(p => p[nameProp] === nameValue && (p.Name_Variety || "").trim() === "Species");
+    const plant = speciesPlant || plants.find(p => p[nameProp] === nameValue);
     
     console.log("Selected plant:", plant);
     
@@ -163,37 +169,35 @@ async function populate() {
       selectedPlantIndex = plants.indexOf(plant);
       // Fill form fields
       plantIdInput.value = plant.Plant_ID || "";
-      nameHuInput = plant.Name_HU || "";
+      nameHuInput = plant[nameProp] || "";
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = "n";
       egyebInput.value = plant.egyeb || "";
     }
     
-    // Populate varieties dropdown based on Name_HU
+    // Populate varieties dropdown based on plant name
     populateVarieties(nameValue);
     
     updatePreviews();
   });
 
   // Populate varieties dropdown
-  function populateVarieties(nameHU) {
-    console.log("Populating varieties for Name_HU:", nameHU);
+  function populateVarieties(plantName) {
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
     customVarietyMode = false;
     nameVarietyCustomInput.style.display = "none";
     nameVarietyCustomInput.value = "";
     
-    if (!nameHU) {
-      console.log("No Name_HU provided");
+    if (!plantName) {
       return;
     }
     
-    // Find all plants with same Name_HU
+    // Find all plants with same name (language-aware)
     const varietiesSet = new Set();
     
     plants.forEach((plant, idx) => {
-      if (plant.Name_HU === nameHU) {
+      if (plant[nameProp] === plantName) {
         const variety = (plant.Name_Variety || "").trim();
         if (variety && !varietiesSet.has(variety)) {
           varietiesSet.add(variety);
@@ -256,7 +260,7 @@ async function populate() {
       
       // Update all fields from this variety's data
       plantIdInput.value = varietyPlant.Plant_ID || "";
-      nameHuInput = varietyPlant.Name_HU || "";
+      nameHuInput = varietyPlant[nameProp] || "";
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
       nfctypInput.value = "n";

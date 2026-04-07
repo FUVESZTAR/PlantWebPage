@@ -752,7 +752,7 @@ const i18n = {
   }
 };
 
-let lang = 'en';
+let lang = localStorage.getItem('fuvesztar_lang') || 'hu';
 let proMode = false;
 let loaves = 1;
 let savedRecipes = JSON.parse(localStorage.getItem('szandi_recipes') || '[]');
@@ -761,6 +761,7 @@ function t(key) { return i18n[lang][key] || key; }
 
 function setLang(l) {
   lang = l;
+  try { localStorage.setItem('fuvesztar_lang', l); } catch(e) {}
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === l));
   applyTranslations();
   buildTimeline();
@@ -1048,6 +1049,7 @@ function renderSaved() {
 // ============================================================
 // INIT
 // ============================================================
+document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === lang));
 applyTranslations();
 buildTimeline();
 calculate();
