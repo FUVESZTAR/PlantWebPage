@@ -427,7 +427,7 @@ function calculateSize(text) {
       linkPreview.textContent = link;
     }
     
-    const nfcData = `${nfcIdValue}/${plantId}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}/${egyeb}`;
+    const nfcData = `${nfcIdValue}/${plantId}/${nameHu}/${nameVariety}/${latinName}/${nfctyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
