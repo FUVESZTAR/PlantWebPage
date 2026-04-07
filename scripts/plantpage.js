@@ -95,7 +95,7 @@ async function populate() {
       seenVarieties.add(variety);
 
       const option = document.createElement("option");
-      option.value = String(plant.Nr);
+      option.value = String(plant.Plant_ID);
       option.textContent = variety;
       varietySelector.appendChild(option);
     });
@@ -122,7 +122,7 @@ async function populate() {
     const selectedName = selector.value;
     if (!selectedName) return;
 
-    // Use selected variety's Nr, or fall back to the Species row for this name
+    // Use selected variety's Plant_ID, or fall back to the Species row for this name
     let targetNr = varietySelector.value;
     if (!targetNr) {
       const lang = getCurrentLang();
@@ -130,7 +130,7 @@ async function populate() {
       const speciesPlant = plants.find(
         p => p[nameProp] === selectedName && String(p.Name_Variety).trim() === "Species"
       );
-      targetNr = speciesPlant ? String(speciesPlant.Nr) : null;
+      targetNr = speciesPlant ? String(speciesPlant.Plant_ID) : null;
     }
 
     if (targetNr) {
