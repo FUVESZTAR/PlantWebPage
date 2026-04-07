@@ -372,7 +372,7 @@ function calculateSize(text) {
 
   // Back button
   backBtn.addEventListener("click", () => {
-    window.location.href = "HomePage.html";
+    window.location.href = "Homepage.html";
   });
 
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
@@ -496,7 +496,7 @@ function calculateSize(text) {
 //  yearInput.value = new Date().getFullYear();
   datumInput.value = dateString;
 
-  // Pre-select plant and variety from URL params (when navigating from homepage)
+  // Pre-select plant and variety from URL params (when navigating from Homepage)
   const params = new URLSearchParams(window.location.search);
   const paramName = params.get('name');
   const paramNr = params.get('nr');
