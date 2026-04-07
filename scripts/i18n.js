@@ -234,7 +234,7 @@ export const TRANSLATIONS = {
     "list.filter.allFamilies": "\u00d6sszes csal\u00e1d",
     "list.filter.allLatinNames": "\u00d6sszes latin n\u00e9v",
     "list.filter.allNameEn": "\u00d6sszes n\u00e9v (EN)",
-    "list.filter.allNameHu": "\u00d6sszes n\u00e9v (HU)",
+    "list.filter.allNameHu": "\u00d6sszes n\u00f6v\u00e9ny",
     "list.filter.allVarieties": "\u00d6sszes fajta",
     "list.table.plantId": "N.ID",
     "list.table.latinName": "Latin N\u00e9v",

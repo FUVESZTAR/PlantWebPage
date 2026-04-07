@@ -1,4 +1,4 @@
-import { loadPlantData } from "./csv-utils.js";
+import { loadPlantData, splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 
 document.getElementById("back-button").addEventListener("click", () => {
@@ -30,10 +30,11 @@ function renderRows(plants) {
   tbody.innerHTML = "";
   plants.forEach((plant) => {
     const tr = document.createElement("tr");
+    const varieties = splitPipe(plant.Name_Variety);
     tr.innerHTML = `
       <td>${plant.Plant_ID || ""}</td>
       <td>${plant.LatinName || ""}</td>
-      <td>${plant.Name_Variety || ""}</td>
+      <td>${varieties.length ? varieties.join(", ") : ""}</td>
       <td>${plant.Name_EN || ""}</td>
       <td>${plant.Name_HU || ""}</td>
     `;
@@ -112,7 +113,7 @@ async function populate() {
       ? afterLatin.filter(p => p[nameField] === ddName.value)
       : afterLatin;
 
-    buildDropdown(ddVariety, unique(afterName.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
+    buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
   }
 
   // Initialise all dependent dropdowns
@@ -124,7 +125,7 @@ async function populate() {
     const afterGenus  = ddGenus.value  ? afterFamily.filter(p => p.Genus === ddGenus.value) : afterFamily;
     const afterLatin  = ddLatin.value  ? afterGenus.filter(p => p.LatinName === ddLatin.value) : afterGenus;
     const afterName   = ddName.value   ? afterLatin.filter(p => p[nameField] === ddName.value) : afterLatin;
-    buildDropdown(ddVariety, unique(afterName.map(p => p.Name_Variety)), t('list.filter.allVarieties'));
+    buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
   }
 
   // Apply URL params in hierarchical order so each level is valid before the next
@@ -158,7 +159,7 @@ async function populate() {
       if (ddGenus.value   && (p.Genus        || "") !== ddGenus.value)   return false;
       if (ddLatin.value   && (p.LatinName    || "") !== ddLatin.value)   return false;
       if (ddName.value    && (p[nameField]   || "") !== ddName.value)    return false;
-      if (ddVariety.value && (p.Name_Variety || "") !== ddVariety.value) return false;
+      if (ddVariety.value && !splitPipe(p.Name_Variety).includes(ddVariety.value)) return false;
       return true;
     });
     updateFilterSummary();
