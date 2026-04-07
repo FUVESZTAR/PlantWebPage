@@ -690,7 +690,7 @@ console.log("test in sie fc FM p widht: "+wAvg);
 // ── Image loader ─────────────────────────────────────────────────────────────
 /* old
 async function loadPlantImage(plant) {
-  const imgText  = `${plant.Nr}_${plant.LatinName}_${plant.Name_Variety}`;
+  const imgText  = `${plant.Plant_ID}_${plant.LatinName}_${plant.Name_Variety}`;
   const searchId = normalizeName(imgText);
   const imgEl    = document.getElementById("plantImg");
   if (!imgEl) return;
@@ -711,7 +711,7 @@ async function loadPlantImage(plant) {
   const searchVariety = plant.Name_Variety.trim().replace(/\s+/g, "_");
   
   //Build your local search key
-  const imgText  = `${plant.Nr}_${searchLatin}_${searchVariety}`;
+  const imgText  = `${plant.Plant_ID}_${searchLatin}_${searchVariety}`;
   console.log("seach image text: "+imgText);
   const searchId = normalizeName(imgText);
  console.log("seach image norm text: "+searchId);
@@ -935,7 +935,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     // ── Single data load ──────────────────────────────────────────────────
     const plants    = (await loadPlantData()).filter(p => p.Active_in_page === 'Y');
     const lookupNr  = urlPlantId || selectedNr;
-    const plant     = plants.find(p => String(p.Nr) === String(lookupNr));
+    const plant     = plants.find(p => String(p.Plant_ID) === String(lookupNr));
 
     if (!plant) {
       title.textContent    = t('detail.plantNotFound');
@@ -1003,7 +1003,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     
     // NFC link
     const nfcEl = document.querySelector("#nfc-link");
-    if (nfcEl) nfcEl.textContent = `${plant.Nr}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
+    if (nfcEl) nfcEl.textContent = `${plant.Plant_ID}  / ${plant.Name_HU || ""} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
    
     // ── Planning table + calendar ─────────────────────────────────────────
     populatePlanningTable(plant);
@@ -1020,7 +1020,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
             .filter((p, i, a) => a.findIndex(x => x.Name_Variety === p.Name_Variety) === i)
         : [];
       varietiesList.innerHTML = varieties.length
-              ? varieties.map(v => `<li><a href="P.html?id=${v.Nr}">${v.Name_Variety}</a></li>`).join("")
+              ? varieties.map(v => `<li><a href="P.html?id=${v.Plant_ID}">${v.Name_Variety}</a></li>`).join("")
         : `<li>${t('detail.noVarieties')}</li>`;
     }
     
