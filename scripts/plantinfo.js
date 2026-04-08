@@ -179,12 +179,12 @@ const BASIC_FIED_MAP = [
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
 const ICON_SIZE_TARGETS = [
-  { symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
-  { symbolid: "size-house-icon", vers: "base", symbol: "#icon-house-size"},
-  { symbolid: "size-root-icon",   vers: "root", symbol: "#icon-root-size"},
-  { symbolid: "size-plant-icon",  vers: "choose", symbol: "#icon-plant-size"},
-  { symbolid: "size-bush-icon",  vers: "choose", symbol: "#icon-bush-size"},
-  { symbolid: "size-human-icon",  vers: "base", symbol: "#icon-human-size"}
+  { id: 'size-tree-icon',   vers: 'choose', symbol: '#icon-tree-size', symbolid: 'icon-tree-size'},
+  { id: 'size-house-icon', vers: 'base', symbol: '#icon-house-size' , symbolid: 'icon-house-size'},
+  { id: 'size-root-icon',   vers: 'root', symbol: '#icon-root-size' , symbolid: 'icon-root-size'},
+  { id: 'size-plant-icon',  vers: 'choose', symbol: '#icon-plant-size' , symbolid: 'icon-plant-size'},
+  { id: 'size-bush-icon',  vers: 'choose', symbol: '#icon-bush-size' , symbolid: 'icon-bush-size'},
+  { id: 'size-human-icon',  vers: 'base', symbol: '#icon-human-size' , symbolid: 'icon-human-size'}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
@@ -337,14 +337,14 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   return svg;
 }
 //<svg id="icon-tree-size"><use href="icons/use_tree_size.svg"></use></svg>size-plant-icon
- //{ symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
-function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block') {
+ //{ id: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size" , symbolid: 'icon-tree-size' },
+function makeSizeSvgIcon(id = null, symbolid = null, symbol = null, type = 'display:inline-block') {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
-  console.log("make svg from: "+symbol);
+  console.log("make svg from: "+symbolid);
       // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(symbol);;
-     if (!sourceSvg1) { console.log("not found: "+symbol);return;}
+      const sourceSvg1 = document.getElementById(symbolid);;
+     if (!sourceSvg1) { console.log("not found: "+symbolid);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
     const originalWidth = sourceSvg1.getAttribute('width');
@@ -357,7 +357,7 @@ function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block')
     } else {
       // Default fallback
       svg.setAttribute('viewBox', '0 0 512 512');
-      console.log("make svg from: "+symbol+"set default viewbox: 0 0 512 512 ");
+      console.log("make svg from: "+symbolid+"set default viewbox: 0 0 512 512 ");
     }
    //setting
   // svg.setAttribute('class', class1);
@@ -365,8 +365,8 @@ function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block')
   //svg.setAttribute('aria-hidden', 'true');
   //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
   svg.style.cssText = type;
-  if (symbolid) {
-    svg.setAttribute('id', symbolid);
+  if (id) {
+    svg.setAttribute('id', id);
   }
   const use = document.createElementNS(svgns, 'use');
   use.setAttribute('href', symbol);
@@ -713,23 +713,23 @@ function insertSizeIconsRow() {
   const fragCH = document.createDocumentFragment();
   const fragBa = document.createDocumentFragment();
   const fragRo = document.createDocumentFragment();
-  ICON_SIZE_TARGETS.forEach(({ symbolid, vers, symbol}) => { 
+  ICON_SIZE_TARGETS.forEach(({ id, symbolid, vers, symbol}) => { 
      if (vers === 'choose') {
-           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
            if (svg) {
              fragCH.appendChild(svg);
             console.log("create icon: "+symbol);
            }
        }
     if (vers === 'base') {
-           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
            if (svg) {
              fragBa.appendChild(svg);
            console.log("create icon: "+symbol);
            }
        } 
     if (vers === 'root') {
-           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
            if (svg) {
            fragRo.appendChild(svg);
            console.log("create icon: "+symbol);
