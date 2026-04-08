@@ -566,7 +566,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other: egyeb }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
