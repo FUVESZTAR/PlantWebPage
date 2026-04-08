@@ -179,12 +179,12 @@ const BASIC_FIED_MAP = [
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
 const iconSizeTargets = [
-  { id: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "choose"},
-  { id: "size-house-icon", w: 6000,  h: 4000 , vers: "base"},
-  { id: "size-root-icon",  w: rootW, h: rootH , vers: "root"},
-  { id: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose"},
-  { id: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose"},
-  { id: "size-human-icon",  w: wAvg,  h: hAvg , vers: "base"}
+  { id: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "use_tree_size"},
+  { id: "size-house-icon", w: 6000,  h: 4000 , vers: "base", svgname: "use_house_size"},
+  { id: "size-root-icon",  w: rootW, h: rootH , vers: "root", svgname: "use_root_size"},
+  { id: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose", svgname: "use_plant_size"},
+  { id: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "use_bush_size"},
+  { id: "size-human-icon",  w: 300,  h: 1800 , vers: "base", svgname: "use_human_size"}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
