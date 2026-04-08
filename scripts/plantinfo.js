@@ -696,9 +696,6 @@ function insertCategoryIconsRow(plant, mode, vers) {
   container.appendChild(frag);
 }
 
-<div id="size-choose-icon-row">
-  <div id="size-base-icon-row">
-  <div id="size-root-icon-row">
 // ── Size icons row ───────────────────────────────────────────────────────
 
 function insertSizeIconsRow(plant, mode) {
