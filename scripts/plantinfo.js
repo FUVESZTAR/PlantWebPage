@@ -336,14 +336,15 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   svg.appendChild(use);
   return svg;
 }
-
+//<svg id="icon-tree-size"><use href="icons/use_tree_size.svg"></use></svg>size-plant-icon
+ { symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
 function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block') {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
-  console.log("make svg from: "+symbolid);
+  console.log("make svg from: "+symbol);
       // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(symbolid);;
-     if (!sourceSvg1) { console.log("not found: "+symbolid);return;}
+      const sourceSvg1 = document.getElementById(symbol);;
+     if (!sourceSvg1) { console.log("not found: "+symbol);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
     const originalWidth = sourceSvg1.getAttribute('width');
@@ -356,7 +357,7 @@ function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block')
     } else {
       // Default fallback
       svg.setAttribute('viewBox', '0 0 512 512');
-      console.log("make svg from: "+symbolid+"set default viewbox: 0 0 512 512 ");
+      console.log("make svg from: "+symbol+"set default viewbox: 0 0 512 512 ");
     }
    //setting
   // svg.setAttribute('class', class1);
