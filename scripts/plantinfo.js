@@ -146,7 +146,7 @@ const BASIC_FIED_MAP = [
   { key:'soil_need', symbol:"#soil_need", data:"Soil_need", icon:"", typ:'normal', use:"create", i18n:"soilneed" },
   { key:'ph_need', symbol:"#ph_need", data:"PH_need", icon:"", typ:'normal', use:"create", i18n:"phneed" },
   { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'normal', use:"create", i18n:"windtolerance" },
-  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"", typ:'normal', use:"create", i18n:"growthrate" },
+  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"u_growing_speed.svg", typ:'normal', use:"create", i18n:"growthrate" },
 
   { key:'plants_per_square_meter', symbol:"#plants_per_square_meter", data:"Plants_per_square_meter", icon:"", typ:'splitminus', use:"create", i18n:"plantsperm2" },
   { key:'planting_location', symbol:"#planting_location", data:"Planting_location", icon:"", typ:'normal', use:"create", i18n:"plantinglocation" },
