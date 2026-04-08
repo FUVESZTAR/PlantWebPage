@@ -178,7 +178,14 @@ const BASIC_FIED_MAP = [
   { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not", i18n:"listofvarieties" },
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
-
+const iconSizeTargets = [
+  { id: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "choose"},
+  { id: "size-house-icon", w: 6000,  h: 4000 , vers: "base"},
+  { id: "size-root-icon",  w: rootW, h: rootH , vers: "root"},
+  { id: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose"},
+  { id: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose"},
+  { id: "size-human-icon",  w: wAvg,  h: hAvg , vers: "base"}
+  ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
   'Raw_edible_parts_all',
@@ -290,7 +297,7 @@ function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize
   targetSvg.style.height = `${th}px`;
 }
 
-function makeSvgIcon(term, id = null, type = 'display:inline-block') {
+function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   const def = PART_ICON_MAP[term];
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
@@ -330,6 +337,43 @@ function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   return svg;
 }
 
+function makeSizeSvgIcon(id = null, class1 = null; type = 'display:inline-block') {
+  const svgns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgns, 'svg');
+console.log("make svg from: "+id);
+      // 4. DYNAMICALLY take parameters from the file
+      const sourceSvg1 = document.getElementById(id);;
+     if (!sourceSvg1) { console.log("not found: "+id);return;}
+    // This ensures the icon always fits perfectly
+    const originalViewBox = sourceSvg1.getAttribute('viewBox');
+    const originalWidth = sourceSvg1.getAttribute('width');
+    const originalHeight = sourceSvg1.getAttribute('height');
+    if (originalViewBox) {
+      svg.setAttribute('viewBox', originalViewBox);
+    } else if (originalWidth && originalHeight) {
+      // Fallback if viewBox is missing but dimensions exist
+      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+    } else {
+      // Default fallback
+      svg.setAttribute('viewBox', '0 0 512 512');
+      console.log("make svg from: "+id+"set default viewbox: 0 0 512 512 ");
+    }
+   //setting
+  svg.setAttribute('class', class1);
+  //svg.setAttribute('viewBox', '0 0 512 512');
+  //svg.setAttribute('aria-hidden', 'true');
+  //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
+  svg.style.cssText = type;
+  if (id) {
+    const makeID = `${term}-${id}`;
+    svg.setAttribute('id', makeID);
+  }
+  const use = document.createElementNS(svgns, 'use');
+  use.setAttribute('href', def.symbol);
+  use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', def.symbol);
+  svg.appendChild(use);
+  return svg;
+}
 // ── Identity filter links ────────────────────────────────────────────────────
 
 function setIdentityFilterLink(element, filterType, value) {
@@ -562,12 +606,12 @@ function insertPartIconsInTable(plant) {
       if (!cell) return;
       if (!cell.querySelector('svg')) cell.textContent = '';
       const makeID = `harv-icon-${month}`;
-      const svg = makeSvgIcon(term,makeID,'display:inline-block'); //
+      const svg = makePartSvgIcon(term,makeID,'display:inline-block'); //
       // Example: Adding the "bark1" icon to a div
       /*
        const container = document.getElementById('icon-container');
     
-         makeSvgIcon('bark1', './icons/').then(svgElement => {
+         makePartSvgIcon('bark1', './icons/').then(svgElement => {
              if (svgElement) {
                 container.appendChild(svgElement);
                   }
@@ -613,7 +657,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
     seenParts.forEach(part => {
       const id  = `${vers}-icon`;
-      const svg = makeSvgIcon(part, id,'display:inline-block');
+      const svg = makePartSvgIcon(part, id,'display:inline-block');
       if (svg) frag.appendChild(svg);
       iconsmade = iconsmade+1;
     });
@@ -628,7 +672,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
       String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
         .forEach(part => {
           const id  = `${vers}-icon-${key}`;
-          const svg = makeSvgIcon(part, id,'display:inline-block');
+          const svg = makePartSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
           iconsmade++;
         });
@@ -637,7 +681,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // none icon
   if (iconsmade == 0) {
     const id  = `none-${vers}-icon`;
-    const svg = makeSvgIcon('none', id,'display:inline-block');
+    const svg = makePartSvgIcon('none', id,'display:inline-block');
     if (svg) frag.appendChild(svg);
   }
   
@@ -653,18 +697,59 @@ function insertCategoryIconsRow(plant, mode, vers) {
   container.appendChild(frag);
 }
 
+<div id="size-choose-icon-row">
+  <div id="size-base-icon-row">
+  <div id="size-root-icon-row">
+// ── Size icons row ───────────────────────────────────────────────────────
+
+function insertSizeIconsRow(plant, mode) {
+  // mode = 'per-category' : one icon per part per category column (original behaviour)
+  // mode = 'unique'       : one icon per part, regardless of how many columns contain it
+  // vers = 'choose' / 'base'  / 'root'                : Which version is it choose= tree, bush, plant ; base = human, house
+  let containerCh = document.querySelector(`#size-choose-icon-row`);
+  let containerBa = document.querySelector(`#size-base-icon-row`);
+  let containerRo = document.querySelector(`#size-root-icon-row`);
+  
+  if (!containerCh) { console.warn('Missing #size-choose-icon-row container'); return; }
+  if (!containerBa) { console.warn('Missing #size-base-icon-row container'); return; }
+  if (!containerRo) { console.warn('Missing #size-root-icon-row container'); return; }
+  const fragCH = document.createDocumentFragment();
+  const fragBa = document.createDocumentFragment();
+  const fragRo = document.createDocumentFragment();
+  iconSizeTargets.forEach(({ id, vers}) => { 
+     if (vers === 'choose') {
+           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           if (svg) fragCH.appendChild(svg);
+       }
+    if (vers === 'base') {
+           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           if (svg) fragBa.appendChild(svg);
+       } 
+    if (vers === 'root') {
+           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           if (svg) fragRo.appendChild(svg);
+       } 
+     
+   } 
+   containerCh.innerHTML = '';
+   containerCh.appendChild(fragCH);
+  containerBa.innerHTML = '';
+   containerBa.appendChild(fragBa);
+  containerRo.innerHTML = '';
+   containerRo.appendChild(fragRo);
+}
 // ── Size icons ───────────────────────────────────────────────────────────────
 
 function applySizeIcons(plant,FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
   console.log("típus: " +type);
-  const humanSvg = document.getElementById("size-human-icon-1");
+  const humanSvg = document.getElementById("size-human-icon");
   if (!humanSvg) return;
-  const treeSvg  = document.getElementById("size-tree-icon-2");
+  const treeSvg  = document.getElementById("size-tree-icon");
   if (!treeSvg) return;
-  const bushSvg  = document.getElementById("size-bush-icon-1");
+  const bushSvg  = document.getElementById("size-bush-icon");
   if (!bushSvg) return;
-  const plantSvg = document.getElementById("size-plant-icon-1");
+  const plantSvg = document.getElementById("size-plant-icon");
   if (!plantSvg) return;
   
   const wAvg = plant[FM.plant_width_average_mm];
@@ -674,15 +759,8 @@ function applySizeIcons(plant,FM) {
   
 console.log("test in sie fc FM p widht: "+wAvg);
 
- const iconSizeTargets = [
-  { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
-  { id: "size-house-icon-1", w: 6000,  h: 4000 },
-  { id: "size-root-icon-1",  w: rootW, h: rootH },
-  { id: "size-plant-icon-1", w: wAvg,  h: hAvg },
-  { id: "size-bush-icon-1",  w: wAvg,  h: hAvg }
-  ];
-
   iconSizeTargets.forEach(({ id, w, h }) => {
+    if id (!== "size-human-icon"){
     const el = document.getElementById(id);
     if (!el) return;
     try {
@@ -694,7 +772,7 @@ console.log("test in sie fc FM p widht: "+wAvg);
     } catch (err) {
       console.warn(`Unable to resize ${id}:`, err);
     }
-  });
+  }});
 
   // Show only the correct plant type icon
   [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
@@ -814,7 +892,7 @@ async function syncViewBoxes() {
  * @param {string} folderPath - Path to your svg folder (e.g., '/assets/icons/')
  * @param {string} id - Optional ID for the element
  *//*
-async function makeSvgIconFromFile(term, folderPath = './', id = null) {
+async function makePartSvgIconFromFile(term, folderPath = './', id = null) {
   try {
     // Class
     const def = PART_ICON_MAP[term];
