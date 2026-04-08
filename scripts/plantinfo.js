@@ -178,13 +178,13 @@ const BASIC_FIED_MAP = [
   { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not", i18n:"listofvarieties" },
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
-const iconSizeTargets = [
-  { id: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "use_tree_size"},
-  { id: "size-house-icon", w: 6000,  h: 4000 , vers: "base", svgname: "use_house_size"},
-  { id: "size-root-icon",  w: rootW, h: rootH , vers: "root", svgname: "use_root_size"},
-  { id: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose", svgname: "use_plant_size"},
-  { id: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose", svgname: "use_bush_size"},
-  { id: "size-human-icon",  w: 300,  h: 1800 , vers: "base", svgname: "use_human_size"}
+const ICON_SIZE_TARGETS = [
+  { symbolid: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", symbol: "#icon-tree-size"},
+  { symbolid: "size-house-icon", w: 6000,  h: 4000 , vers: "base", symbol: "use_house_size"},
+  { symbolid: "size-root-icon",  w: rootW, h: rootH , vers: "root", symbol: "use_root_size"},
+  { symbolid: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose", symbol: "use_plant_size"},
+  { symbolid: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose", symbol: "use_bush_size"},
+  { symbolid: "size-human-icon",  w: 300,  h: 1800 , vers: "base", symbol: "use_human_size"}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
@@ -337,13 +337,13 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   return svg;
 }
 
-function makeSizeSvgIcon(id = null, class1 = null; type = 'display:inline-block') {
+function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block') {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
-console.log("make svg from: "+id);
+  console.log("make svg from: "+symbolid);
       // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(id);;
-     if (!sourceSvg1) { console.log("not found: "+id);return;}
+      const sourceSvg1 = document.getElementById(symbolid);;
+     if (!sourceSvg1) { console.log("not found: "+symbolid);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
     const originalWidth = sourceSvg1.getAttribute('width');
@@ -356,21 +356,20 @@ console.log("make svg from: "+id);
     } else {
       // Default fallback
       svg.setAttribute('viewBox', '0 0 512 512');
-      console.log("make svg from: "+id+"set default viewbox: 0 0 512 512 ");
+      console.log("make svg from: "+symbolid+"set default viewbox: 0 0 512 512 ");
     }
    //setting
-  svg.setAttribute('class', class1);
+  // svg.setAttribute('class', class1);
   //svg.setAttribute('viewBox', '0 0 512 512');
   //svg.setAttribute('aria-hidden', 'true');
   //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
   svg.style.cssText = type;
-  if (id) {
-    const makeID = `${term}-${id}`;
-    svg.setAttribute('id', makeID);
+  if (symbolid) {
+    svg.setAttribute('id', symbolid);
   }
   const use = document.createElementNS(svgns, 'use');
-  use.setAttribute('href', def.symbol);
-  use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', def.symbol);
+  use.setAttribute('href', symbol);
+  use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbol);
   svg.appendChild(use);
   return svg;
 }
@@ -716,17 +715,17 @@ function insertSizeIconsRow(plant, mode) {
   const fragCH = document.createDocumentFragment();
   const fragBa = document.createDocumentFragment();
   const fragRo = document.createDocumentFragment();
-  iconSizeTargets.forEach(({ id, vers}) => { 
+  ICON_SIZE_TARGETS.forEach(({ symbolid, vers, symbol}) => { 
      if (vers === 'choose') {
-           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
            if (svg) fragCH.appendChild(svg);
        }
     if (vers === 'base') {
-           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           let svg = makeSizeSvgIcon(isymbolid,symbol,'display:inline-block');
            if (svg) fragBa.appendChild(svg);
        } 
     if (vers === 'root') {
-           let svg = makeSizeSvgIcon(id,'display:inline-block');
+           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
            if (svg) fragRo.appendChild(svg);
        } 
      
@@ -759,7 +758,7 @@ function applySizeIcons(plant,FM) {
   
 console.log("test in sie fc FM p widht: "+wAvg);
 
-  iconSizeTargets.forEach(({ id, w, h }) => {
+  ICON_SIZE_TARGETS.forEach(({ id, w, h }) => {
     if id (!== "size-human-icon"){
     const el = document.getElementById(id);
     if (!el) return;
