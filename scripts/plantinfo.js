@@ -33,6 +33,15 @@ const PART_ICON_MAP = {
   none:  { class: 'none-harvest-icon',  symbol: '#icon-none',  symbolid: 'icon-none'  },
 };
 
+const T_CODE_MAP = {
+  shade_tolerance: { F: 'full shade', S: 'semi-shade', N: 'no shade' },
+  moisture_need: { D: 'dry',  M: 'moist', We: 'wet', Wa: 'water'},
+  soil_need: { L: 'light (sandy)',M: 'medium', H: 'heavy (clay)' },
+  ph_need: { A: 'acid',  N: 'neutral',  B: 'basic (alkaline)' },
+  growth_rate: { S: 'slow', M: 'medium', F: 'fast' },
+  wind_tolerance: { L: 'low', M: 'moderate', H: 'high'}
+};
+
 // CSV column → part term mapping for the planning table harvest row
 const HARVEST_PART_COLUMNS = [
   { key: 'Leaf_Harvesting_time_month',      term: 'leaf'      },
@@ -139,12 +148,12 @@ const BASIC_FIED_MAP = [
   { key:'fruit_width_mm', symbol:"#fruit_width_mm", data:"Fruit_width_mm", icon:"", typ:'splitminus', use:"create", i18n:"fruitwidth" },
   { key:'fruit_weight_mm', symbol:"#fruit_weight_mm", data:"Fruit_weight_mm", icon:"", typ:'splitminus', use:"create", i18n:"fruitweight" },
 
-  { key:'shade_tolerance', symbol:"#shade_tolerance", data:"Shade_tolerance", icon:"", typ:'normal', use:"create", i18n:"shadetolerance" },
-  { key:'moisture_need', symbol:"#moisture_need", data:"Moisture_need", icon:"", typ:'normal', use:"create", i18n:"moistureneed" },
-  { key:'soil_need', symbol:"#soil_need", data:"Soil_need", icon:"", typ:'normal', use:"create", i18n:"soilneed" },
-  { key:'ph_need', symbol:"#ph_need", data:"PH_need", icon:"", typ:'normal', use:"create", i18n:"phneed" },
-  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"u_growing_speed.svg", typ:'normal', use:"create", i18n:"growthrate" },
-  { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'normal', use:"create", i18n:"windtolerance" },
+  { key:'shade_tolerance', symbol:"#shade_tolerance", data:"Shade_tolerance", icon:"", typ:'coded', use:"create", i18n:"shadetolerance" },
+  { key:'moisture_need', symbol:"#moisture_need", data:"Moisture_need", icon:"", typ:'coded', use:"create", i18n:"moistureneed" },
+  { key:'soil_need', symbol:"#soil_need", data:"Soil_need", icon:"", typ:'coded', use:"create", i18n:"soilneed" },
+  { key:'ph_need', symbol:"#ph_need", data:"PH_need", icon:"", typ:'coded', use:"create", i18n:"phneed" },
+  { key:'growth_rate', symbol:"#growth_rate", data:"Growth_rate", icon:"u_growing_speed.svg", typ:'coded', use:"create", i18n:"growthrate" },
+  { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'coded', use:"create", i18n:"windtolerance" },
   { key:'watering_regime', symbol:"#watering_regime", data:"Watering_regime", icon:"", typ:'split', use:"create", i18n:"wateringregime" },
   { key:'pest_resistance', symbol:"#pest_resistance", data:"Pest_resistance", icon:"", typ:'split', use:"create", i18n:"pestresistance" },
   
