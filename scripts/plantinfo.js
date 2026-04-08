@@ -179,12 +179,12 @@ const BASIC_FIED_MAP = [
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
 const ICON_SIZE_TARGETS = [
-  { symbolid: "size-tree-icon",  w: wAvg,  h: hAvg , vers: "choose", symbol: "#icon-tree-size"},
-  { symbolid: "size-house-icon", w: 6000,  h: 4000 , vers: "base", symbol: "use_house_size"},
-  { symbolid: "size-root-icon",  w: rootW, h: rootH , vers: "root", symbol: "use_root_size"},
-  { symbolid: "size-plant-icon", w: wAvg,  h: hAvg , vers: "choose", symbol: "use_plant_size"},
-  { symbolid: "size-bush-icon",  w: wAvg,  h: hAvg , vers: "choose", symbol: "use_bush_size"},
-  { symbolid: "size-human-icon",  w: 300,  h: 1800 , vers: "base", symbol: "use_human_size"}
+  { symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
+  { symbolid: "size-house-icon", vers: "base", symbol: "use_house_size"},
+  { symbolid: "size-root-icon",   vers: "root", symbol: "use_root_size"},
+  { symbolid: "size-plant-icon",  vers: "choose", symbol: "use_plant_size"},
+  { symbolid: "size-bush-icon",  vers: "choose", symbol: "use_bush_size"},
+  { symbolid: "size-human-icon",  vers: "base", symbol: "use_human_size"}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
@@ -752,10 +752,19 @@ function applySizeIcons(plant,FM) {
   const hAvg = plant[FM.plant_height_average_mm];
   const rootW = plant[FM.plant_root_width_average_mm];
   const rootH = plant[FM.plant_root_depth_average_mm];
+
+  const SIZE_TARGETS = [
+  { id: "size-tree-icon",  w: wAvg,  h: hAvg },
+  { id: "size-house-icon", w: 6000,  h: 4000 },
+  { id: "size-root-icon",  w: rootW, h: rootH },
+  { id: "size-plant-icon", w: wAvg,  h: hAvg },
+  { id: "size-bush-icon",  w: wAvg,  h: hAvg },
+  { id: "size-human-icon",  w: 300,  h: 1800 }
+  ];
   
 console.log("test in sie fc FM p widht: "+wAvg);
 
-  ICON_SIZE_TARGETS.forEach(({ id, w, h }) => {
+  SIZE_TARGETS.forEach(({ id, w, h }) => {
     if (id !== "size-human-icon"){
     const el = document.getElementById(id);
     if (!el) return;
