@@ -161,8 +161,8 @@ const BASIC_FIED_MAP = [
   { key:'foliage_type', symbol:"#foliage_type", data:"Foliage_type", icon:"", typ:'split', use:"create", i18n:"foliagetype" },
   { key:'flower_type', symbol:"#flower_type", data:"Flower_type", icon:"", typ:'split', use:"create", i18n:"flowertype" },
 
-  { key:'storage_duration_month', symbol:"#storage_duration_month", data:"Storage_duration_month", icon:"", typ:'normal', use:"create", i18n:"storageduration" },
-  { key:'yield_per_plant', symbol:"#yield_per_plant", data:"Yield_per_plant", icon:"", typ:'split', use:"create", i18n:"yieldperplant" },
+  { key:'storage_duration_month', symbol:"#storage_duration_month", data:"Storage_duration_month", icon:"", typ:'splitminus', use:"create", i18n:"storageduration" },
+  { key:'yield_per_plant', symbol:"#yield_per_plant", data:"Yield_per_plant", icon:"", typ:'splitminus', use:"create", i18n:"yieldperplant" },
   
   { key:'companion_plants', symbol:"#companion_plants", data:"Companion_plants", icon:"", typ:'split', use:"create", i18n:"companionplants" },
   { key:'allopatic_effect', symbol:"#allopatic_effect", data:"Allopatic_effect", icon:"", typ:'split', use:"create", i18n:"allopaticeffect" },
