@@ -866,8 +866,7 @@ async function loadPlantImage(plant) {
 }
 
 // 1. Run this once when your app loads to "fix" the hidden templates
-async function syncViewBoxes() {
-    const container = document.getElementById('icon-container');
+async function syncViewBoxes(container) {
     const svgs = container.querySelectorAll('svg');
 
     for (let svg of svgs) {
@@ -1048,7 +1047,11 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
 (async function init() {
   setupLanguageButtons();
-  await syncViewBoxes();
+  let container = document.getElementById('icon-container');
+  await syncViewBoxes(container);
+  container = document.getElementById('icon-container-size');
+  await syncViewBoxes(container);
+  
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
   const identityfamily    = document.querySelector("#identity-family");
