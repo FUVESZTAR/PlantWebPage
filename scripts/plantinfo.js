@@ -184,7 +184,7 @@ const ICON_SIZE_TARGETS = [
   { id: 'size-root-icon',   vers: 'root', symbol: '#icon-root-size' , symbolid: 'icon-root-size'},
   { id: 'size-plant-icon',  vers: 'choose', symbol: '#icon-plant-size' , symbolid: 'icon-plant-size'},
   { id: 'size-bush-icon',  vers: 'choose', symbol: '#icon-bush-size' , symbolid: 'icon-bush-size'},
-  { id: 'size-human-icon',  vers: 'base', symbol: '#icon-human-size' , symbolid: 'icon-human-size'}
+  //{ id: 'size-human-icon',  vers: 'base', symbol: '#icon-human-size' , symbolid: 'icon-human-size'}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
@@ -772,13 +772,13 @@ function applySizeIcons(plant,FM) {
   { id: "size-root-icon",  w: rootW, h: rootH },
   { id: "size-plant-icon", w: wAvg,  h: hAvg },
   { id: "size-bush-icon",  w: wAvg,  h: hAvg },
-  { id: "size-human-icon",  w: 300,  h: 1800 }
+  //{ id: "size-human-icon",  w: 300,  h: 1800 }
   ];
   
 console.log("test in sie fc FM p widht: "+wAvg);
 
   SIZE_TARGETS.forEach(({ id, w, h }) => {
-    if (id !== "size-human-icon"){
+   if (id !== "size-human-icon"){
     const el = document.getElementById(id);
     if (!el) return;
     try {
@@ -790,7 +790,8 @@ console.log("test in sie fc FM p widht: "+wAvg);
     } catch (err) {
       console.warn(`Unable to resize ${id}:`, err);
     }
-  }});
+  }
+  });
 
   // Show only the correct plant type icon
   [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
