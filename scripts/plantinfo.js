@@ -337,7 +337,7 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   return svg;
 }
 //<svg id="icon-tree-size"><use href="icons/use_tree_size.svg"></use></svg>size-plant-icon
- { symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
+ //{ symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
 function makeSizeSvgIcon(symbolid = null, symbol, type = 'display:inline-block') {
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
