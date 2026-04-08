@@ -233,7 +233,7 @@ function getCalender1MonthLabels() {
 
 // ── SVG helpers ──────────────────────────────────────────────────────────────
 
-function readSvgPixelSize(svgElement) {
+/*function readSvgPixelSize(svgElement) {
   const widthAttr  = Number.parseFloat(svgElement.getAttribute("width"));
   const heightAttr = Number.parseFloat(svgElement.getAttribute("height"));
   if (Number.isFinite(widthAttr) && Number.isFinite(heightAttr)) {
@@ -248,6 +248,24 @@ function readSvgPixelSize(svgElement) {
   const heightCss = Number.parseFloat(computed.height);
   if (Number.isFinite(widthCss) && Number.isFinite(heightCss)) {
     return { width: widthCss, height: heightCss };
+  }
+  throw new Error("Unable to detect SVG dimensions.");
+}*/
+
+function readSvgPixelSize(svgElement) {
+    const sourceSvg1 = document.getElementById(def.symbolid);;
+     if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
+    // This ensures the icon always fits perfectly
+    const originalViewBox = sourceSvg1.getAttribute('viewBox');
+    const widthAttr = sourceSvg1.getAttribute('width');
+    const heightAttr = sourceSvg1.getAttribute('height');
+  
+  if (Number.isFinite(widthAttr) && Number.isFinite(heightAttr)) {
+    return { width: widthAttr, height: heightAttr };
+  }
+  const viewBox = sourceSvg1.getAttribute('viewBox');
+  if (viewBox?.width > 0 && viewBox?.height > 0) {
+    return { width: viewBox.width, height: viewBox.height };
   }
   throw new Error("Unable to detect SVG dimensions.");
 }
