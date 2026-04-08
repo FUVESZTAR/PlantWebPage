@@ -756,7 +756,7 @@ function applySizeIcons(plant,FM) {
 console.log("test in sie fc FM p widht: "+wAvg);
 
   ICON_SIZE_TARGETS.forEach(({ id, w, h }) => {
-    if id (!== "size-human-icon"){
+    if (id !== "size-human-icon"){
     const el = document.getElementById(id);
     if (!el) return;
     try {
