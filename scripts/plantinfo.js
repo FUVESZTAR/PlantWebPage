@@ -180,11 +180,11 @@ const BASIC_FIED_MAP = [
 ];
 const ICON_SIZE_TARGETS = [
   { symbolid: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size"},
-  { symbolid: "size-house-icon", vers: "base", symbol: "use_house_size"},
-  { symbolid: "size-root-icon",   vers: "root", symbol: "use_root_size"},
-  { symbolid: "size-plant-icon",  vers: "choose", symbol: "use_plant_size"},
-  { symbolid: "size-bush-icon",  vers: "choose", symbol: "use_bush_size"},
-  { symbolid: "size-human-icon",  vers: "base", symbol: "use_human_size"}
+  { symbolid: "size-house-icon", vers: "base", symbol: "#icon-house-size"},
+  { symbolid: "size-root-icon",   vers: "root", symbol: "#icon-root-size"},
+  { symbolid: "size-plant-icon",  vers: "choose", symbol: "#icon-plant-size"},
+  { symbolid: "size-bush-icon",  vers: "choose", symbol: "#icon-bush-size"},
+  { symbolid: "size-human-icon",  vers: "base", symbol: "#icon-human-size"}
   ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
