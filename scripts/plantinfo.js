@@ -718,7 +718,7 @@ function insertSizeIconsRow() {
            if (svg) fragCH.appendChild(svg);
        }
     if (vers === 'base') {
-           let svg = makeSizeSvgIcon(isymbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
            if (svg) fragBa.appendChild(svg);
        } 
     if (vers === 'root') {
