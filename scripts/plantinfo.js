@@ -726,7 +726,7 @@ function insertSizeIconsRow(plant, mode) {
            if (svg) fragRo.appendChild(svg);
        } 
      
-   } 
+   });
    containerCh.innerHTML = '';
    containerCh.appendChild(fragCH);
   containerBa.innerHTML = '';
