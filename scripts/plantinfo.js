@@ -705,7 +705,7 @@ function insertSizeIconsRow() {
   let containerCh = document.querySelector(`#size-choose-icon-row`);
   let containerBa = document.querySelector(`#size-base-icon-row`);
   let containerRo = document.querySelector(`#size-root-icon-row`);
-  
+  console.log("running size icon crate.");
   if (!containerCh) { console.warn('Missing #size-choose-icon-row container'); return; }
   if (!containerBa) { console.warn('Missing #size-base-icon-row container'); return; }
   if (!containerRo) { console.warn('Missing #size-root-icon-row container'); return; }
@@ -715,15 +715,24 @@ function insertSizeIconsRow() {
   ICON_SIZE_TARGETS.forEach(({ symbolid, vers, symbol}) => { 
      if (vers === 'choose') {
            let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
-           if (svg) fragCH.appendChild(svg);
+           if (svg) {
+             fragCH.appendChild(svg);
+            console.log("create icon: "+symbol);
+           }
        }
     if (vers === 'base') {
            let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
-           if (svg) fragBa.appendChild(svg);
+           if (svg) {
+             fragBa.appendChild(svg);
+           console.log("create icon: "+symbol);
+           }
        } 
     if (vers === 'root') {
            let svg = makeSizeSvgIcon(symbolid,symbol,'display:inline-block');
-           if (svg) fragRo.appendChild(svg);
+           if (svg) {
+           fragRo.appendChild(svg);
+           console.log("create icon: "+symbol);
+           }
        } 
      
    });
