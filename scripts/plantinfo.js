@@ -960,19 +960,34 @@ async function makePartSvgIconFromFile(term, folderPath = './', id = null) {
   }
 }
 */
+// decodeValue 
+   // shade_tolerance: { F: 'full shade', S: 'semi-shade', N: 'no shade' },
+function getCodeValue(key, value) {
+  if (!value || !T_CODE_MAP[key]) return value || "";
+
+  // handle multiple values like "F|S"
+  const values = value.split("|");
+
+  return values
+    .map(v => T_CODE_MAP[key][v] || v)
+    .join(", ");
+}
 // ── Field ganerator  ─────────────────────────────────────────────────────────────────────
 function renderFields(containerId, map, plant) {
   const container = document.getElementById(containerId);
   if (!container) return;
-
+// renderFields("fields1", BASIC_FIED_MAP, plant)
   // Clear previous content
   container.innerHTML = "";
-
+  // { key:'shade_tolerance', symbol:"#shade_tolerance", data:"Shade_tolerance", icon:"", typ:'coded', use:"create", i18n:"shadetolerance" },
+   // shade_tolerance: { F: 'full shade', S: 'semi-shade', N: 'no shade' },
   // Helper formatter
-  const formatValue = (value, type) => {
+  const formatValue = (value, type, key) => {
     if (!value) return "";
 
     switch (type) {
+      case "coded":
+         getCodeValue(key, value);
       case "split":
         return splitPipe(value).join(", ");
       case "splitminus":
@@ -990,14 +1005,14 @@ function renderFields(containerId, map, plant) {
 
     if (item.use === "fill"){
             const rawValue1 = plant[item.data];
-            const formattedValue1 = formatValue(rawValue1, item.typ);
+            const formattedValue1 = formatValue(rawValue1, item.typ, item.key);
             const input1 = document.querySelector(item.symbol);
             console.log("chosen item to fill: "+item.symbol);
             if (input1) input1.value = formattedValue1 || "";
     } else if (item.use === "create"){
 
       const rawValue = plant[item.data];
-      const formattedValue = formatValue(rawValue, item.typ);
+      const formattedValue = formatValue(rawValue, item.typ, item.key);
 
       // Create card element
       const card = document.createElement("div");
