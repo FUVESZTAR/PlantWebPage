@@ -78,7 +78,7 @@ function doPost(e) {
   var MAX_ID   = 50;
   var nfcId   = String(data.nfcId   || '').trim();
   var plantId   = String(data.plantId   || '').trim();
-  var nfcTyp   = String(data.nfctyp   || '').trim();
+  var nfcTyp   = String(data.nfcTyp   || '').trim();
   var datum   = String(data.datum   || '').trim();
   var nfcCreated   = String(data.nfcCreated   || '').trim();
   var nfcPos   = String(data.nfcPos   || '').trim();
@@ -88,7 +88,7 @@ function doPost(e) {
   if (nfcData.length === 0 || nfcData.length > MAX_DATA ||
       nfcId.length > MAX_ID || link.length > MAX_DATA|| 
       plantId.length > MAX_DATA|| nfcTyp.length > MAX_DATA|| 
-      datum.length > MAX_DATA|| nfcCreated.length > MAX_DATA
+      datum.length > MAX_DATA|| nfcCreated.length > MAX_DATA ||
       nfcPos.length > MAX_DATA) {
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Input validation failed.' }))
