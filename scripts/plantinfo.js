@@ -698,7 +698,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
 // ── Size icons row ───────────────────────────────────────────────────────
 
-function insertSizeIconsRow(plant, mode) {
+function insertSizeIconsRow() {
   // mode = 'per-category' : one icon per part per category column (original behaviour)
   // mode = 'unique'       : one icon per part, regardless of how many columns contain it
   // vers = 'choose' / 'base'  / 'root'                : Which version is it choose= tree, bush, plant ; base = human, house
@@ -1105,8 +1105,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
       const el = document.querySelector(selector);
       if (el) el.value = value || "";
     });*/
+
     renderFields("fields1", BASIC_FIED_MAP, plant);
-    applyTranslations();
     
     const nfcEl = document.querySelector("#nfc-link");
     if (nfcEl) nfcEl.textContent = `${plant.Plant_ID}  / ${primaryName} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
@@ -1140,11 +1140,13 @@ document.querySelector("#back-button").addEventListener("click", () => {
     const edibilityClassValue = applyIconColours();
     
     // ── Size icons ────────────────────────────────────────────────────────
+    insertSizeIconsRow();
     applySizeIcons(plant,FM);
 
     // ── Image (non-blocking) ──────────────────────────────────────────────
     loadPlantImage(plant); // intentionally not awaited — fires & forgets
-
+    
+    applyTranslations();
   } catch (error) {
     console.error("Error loading plant data:", error);
     document.querySelector("#primary-title").textContent = t('detail.error.loadPlant');
