@@ -305,7 +305,7 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   console.log("make svg from: "+def.symbolid);
 
       // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(def.symbolid);;
+      const sourceSvg1 = document.getElementById(def.symbolid);
      if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
@@ -342,10 +342,9 @@ function makeSizeSvgIcon(id = null, symbolid = null, symbol = null, type = 'disp
   const svgns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgns, 'svg');
   console.log("make svg from: "+symbolid);
-      // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(symbolid);;
+      // Take viewBox / dimensions from the source element so the icon scales correctly
+      const sourceSvg1 = document.getElementById(symbolid);
      if (!sourceSvg1) { console.log("not found: "+symbolid);return;}
-    // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
     const originalWidth = sourceSvg1.getAttribute('width');
     const originalHeight = sourceSvg1.getAttribute('height');
@@ -354,10 +353,14 @@ function makeSizeSvgIcon(id = null, symbolid = null, symbol = null, type = 'disp
     } else if (originalWidth && originalHeight) {
       // Fallback if viewBox is missing but dimensions exist
       svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+      // Propagate explicit pixel dimensions so readSvgPixelSize reads them via
+      // attribute lookup (step 1) rather than treating the viewBox as pixels.
+      svg.setAttribute('width', originalWidth);
+      svg.setAttribute('height', originalHeight);
     } else {
       // Default fallback
       svg.setAttribute('viewBox', '0 0 512 512');
-      console.log("make svg from: "+symbolid+"set default viewbox: 0 0 512 512 ");
+      console.log("make svg from: "+symbolid+" set default viewbox: 0 0 512 512 ");
     }
    //setting
   // svg.setAttribute('class', class1);
