@@ -36,7 +36,7 @@ let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
-let hwId = null;
+let hwId = "none";
 let updateNFCPreviewFn = null;
 const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
@@ -610,11 +610,6 @@ function calculateSize(text) {
 
     try {
       const ndef = new NDEFReader();
-       ndef.onreading = (event) => {
-           hwId = event.serialNumber;
-           console.log("HW ID: "+ event.serialNumber);
-           hwIdText.textContent = hwId;
-       }
       await ndef.write({
         records: [
           { recordType: "text", data: nfcData },
@@ -622,6 +617,11 @@ function calculateSize(text) {
         ]
       });
       showError(errorMsg, msg('err_nfc_ok'), "success");
+      ndef.onreading = (event) => {
+           hwId = event.serialNumber;
+           console.log("HW ID: "+ event.serialNumber);
+           hwIdText.textContent = hwId;
+       }
     } catch (error) {
       showError(errorMsg, msg('err_nfc_write') + error);
       console.error(error);
@@ -646,7 +646,7 @@ function calculateSize(text) {
     linkPreview.textContent = msg('ph_link_preview');
     linkSize.textContent = "0 B";
     totalSize.textContent = "0 B";
-    hwIdText.textContent = "";
+    hwIdText.textContent = "none";
   }
 
   function showError(el, message, type = "error") {
