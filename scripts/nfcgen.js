@@ -54,7 +54,7 @@ const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
-const hwIdText = document.getElementById("hwIdStatus");
+const hwIdText = document.getElementById("hwId");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
