@@ -549,7 +549,7 @@ function calculateSize(text) {
     const nfcPos     = posPacketOut.textContent;
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
-    const hwID      = hwIDStatus.textContent;
+    const hwID      = hwIdStatus.textContent;
     
     if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
@@ -614,7 +614,6 @@ function calculateSize(text) {
            hwId = event.serialNumber;
            setStatus(hwId, "black",hwIdStatus);
        }
-      event.serialNumber
       await ndef.write({
         records: [
           { recordType: "text", data: nfcData },
