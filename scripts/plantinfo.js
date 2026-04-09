@@ -553,39 +553,26 @@ function edibilityClass(term) {
   }
 
 function applyIconColours() {
-  // Colour all harvest icons
+  // Colour all harvest icons by edibility (covers planning table and harv row)
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
-    const filter = `.${part}-harvest-icon`;
     const icons = document.querySelectorAll(`.${part}-harvest-icon`);
-    console.log("part: "+icons+" filter: "+filter+" color: "+cls);
     icons.forEach(svg => {
       svg.classList.remove("green", "red", "black", "yellow");
       svg.classList.add(cls);
     });
   });
 
-  // Med / harv icon visibility — fix: hide default only when at least one part is visible
- /* ["med", "harv"].forEach(type => {
-    const defaultIcon = document.getElementById(`none-${type}-icon`);
-    let anyVisible = false;
-
+  // Override med row icons with medicinal colouring: green = medicinal, black = not
+  const medContainer = document.getElementById('part-icons-row-med');
+  if (medContainer) {
     PARTS.forEach(part => {
-      const svg = document.getElementById(`${part}-${type}-icon`);
-      if (!svg) return;
-
-      const isVisible =
-        type === "med"  ? medicinalText.includes(part) :
-        edibilityClass(part) !== "black";
-
-      svg.style.display = isVisible ? "block" : "none";
-      if (isVisible) anyVisible = true;
-      if (type === "harv" && !isVisible) svg.classList.add("black");
+      medContainer.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
+        svg.classList.remove("green", "red", "black", "yellow");
+        svg.classList.add(medicinalText.includes(part) ? "green" : "black");
+      });
     });
-
-    if (defaultIcon) defaultIcon.style.display = anyVisible ? "none" : "block";
-  });
-  */
+  }
 
   return edibilityClass; // expose for callers that need it
 }
@@ -645,11 +632,14 @@ function insertCategoryIconsRow(plant, mode, vers) {
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
    
+  // harv uses all category columns; med uses only the medicinal column
+  const columnsToUse = vers === 'med' ? ['Medicinal_parts_all'] : CATEGORY_PART_COLUMNS;
+
   if (mode === 'unique') {
     // Collect all parts that appear in ANY category column, deduplicated
     const seenParts = new Set();
 
-    CATEGORY_PART_COLUMNS.forEach(key => {
+    columnsToUse.forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
       const value = plant[key];
       if (!value || value === '0') return;
@@ -667,7 +657,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
   } else {
     // 'per-category': one icon per part per column
-    CATEGORY_PART_COLUMNS.forEach(key => {
+    columnsToUse.forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
       const value = plant[key];
       if (!value || value === '0') return;
@@ -688,14 +678,6 @@ function insertCategoryIconsRow(plant, mode, vers) {
     if (svg) frag.appendChild(svg);
   }
   
-  /*// Colour icons after all are inserted (single pass)
-  PARTS.forEach(part => {
-    const cls   = edibilityClass(part);
-    document.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
-      svg.classList.remove("green", "red", "black", "yellow");
-      svg.classList.add(cls);
-    });
-  });*/
   container.innerHTML = '';
   container.appendChild(frag);
 }
