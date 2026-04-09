@@ -50,7 +50,7 @@ const nfcPreview = document.getElementById("nfc-preview");
 const linkPreview = document.getElementById("link-preview");
 
   const gennfcBtn = document.getElementById("generate-nfc");
-  const readnfcBtn = document.getElementById("read-nfc");
+  const readNfcBtn = document.getElementById("read-nfc");
   const openLinkBtn = document.getElementById("open-link");
   const qrnfcBtn = document.getElementById("qr-button");
   const copynfcBtn = document.getElementById("copy-nfc");
@@ -80,7 +80,7 @@ const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
-
+const NFC_TYP_LIST= { n: 'n – plant', o: 'o – graft', m: 'm – seed'};
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -156,39 +156,6 @@ async function readNFC(onRead) {
   };
 }
 
-async function populate() {
-
-  // Use language-aware name property
-  const currentLang = (typeof window.getCurrentNfcLang === 'function')
-    ? window.getCurrentNfcLang()
-    : (localStorage.getItem('fuvesztar_lang') || 'hu');
-  const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
-
-  
-  let plants = [];
-  let lastId = null;
-  try {
-     nfcReadFunc();
-  } catch (err) {
-    console.error(err);
-    showError(errorMsg, msg('err_nfc_load'));
-    selector.innerHTML = '<option value="">(error)</option>';
-    return;
-  }
-
- NFC_TYP_LIST= { n: 'n – plant', o: 'o – graft', m: 'm – seed'};
-
-  ///datumInput.value = ;
-
-  // Plant selector change event
-
-    
-    // Populate varieties dropdown based on plant name
-    //populateVarieties(nameValue);
-    
-    //updatePreviews();
-
-
  async function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
             try {
@@ -209,94 +176,20 @@ async function populate() {
                 };
             } catch (err) { setStatus("Read Error", "red"); }
     }
-  
-  
 
 
- /* {
-  id: "04A224B1C93880",
-  records: [
-    { type: "text", value: "Tomato" },
-    { type: "url", value: "https://plant.app/tomato" }
-  ]
-}*/ 
-  
+async function populate() {
 
-  function handlePlantData(data) {
-  const plant = {};
-  let text = "";
-  let link = "";
-  console.log("New tag detected:", data.id); 
-    hwIdText.textContent = data.id;
-  data.records.forEach(r => {
-    if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
-    if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
-  });
-  
-    nfcPreview.textContent = text;
-    linkPreview.textContent= url;
-    /* 5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth  */
-    const keys = ["ncfId","plantId","name","variety","latinName","nfcType","datum","pos","other"];
-    let decodedNfc = decodeToMap(text, keys);
-    console.log(decodedNfc);;
-    
-    nfcIdInput.value= decodedNfc.ncfId.value;
-    plantIdInput.value= decodedNfc.plantId.value;
-    latinNameInput.value= decodedNfc.latinName.value;
-    plantNameInput= decodedNfc.name.value;
-    nameVarietyInput= decodedNfc.variety.value;
-    nfcTypInput.value= decodedNfc.nfcType.value;
-    datumInput.value= decodedNfc.datum.value;
-    //nfcCreated.value = "";
-    //posPacketOut.textContent= decodedNfc.pos.value;
-    
-    egyebInput.value= decodedNfc.other.value;
+  // Use language-aware name property
+  const currentLang = (typeof window.getCurrentNfcLang === 'function')
+    ? window.getCurrentNfcLang()
+    : (localStorage.getItem('fuvesztar_lang') || 'hu');
+  const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
 
+  let plants = [];
+  let lastId = null;
 
-        // Update size indicator
-    if (nfcSize) {
-      const linkSizeBytes = calculateSizeInBytes(link);
-      const nfcSizeBytes = calculateSizeInBytes(text);
-      const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
-      nfcSize.textContent = formatSize(nfcSizeBytes);
-      totalSize.textContent = formatSize(totalSizeBytes);
-      linkSize.textContent = formatSize(linkSizeBytes);
-    } else {
-      linkPreview.textContent = msg('ph_link_preview');
-      nfcPreview.textContent = msg('ph_nfc_preview');
-      if (linkSize) {
-        nfcSize.textContent = "0 B";
-        linkSize.textContent = "0 B";
-        totalSize.textContent = "0 B";
-      }
-    }
-    
-}     //end
-  
-//nfc reading decoding
-const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
-
-  function extractPackets(str) {
-  const packets = [];
-  let index = 0;
-
-  const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
-    packets.push(content);
-    return `__PKT_${index++}__`;
-  });
-
-  return { protectedStr, packets };
-}
-  const parts = protectedStr.split("/");
- 
-  function restorePackets(parts, packets) {
-  return parts.map(p => {
-    const match = p.match(/__PKT_(\d+)__/);
-    return match ? packets[match[1]] : p;
-  });
-}
-  
-function decodeToMap(str, keys) {
+  function decodeToMap(str, keys) {
   const packets = [];
   let index = 0;
 
@@ -307,7 +200,7 @@ function decodeToMap(str, keys) {
   });
 
   // 2. split safely
-  const parts = protectedStr.split("/");
+//  const parts = protectedStr.split("/");
 
   // 3. restore packets
   const values = parts.map(p => {
@@ -322,20 +215,9 @@ function decodeToMap(str, keys) {
 }
   
   //gps
- function nfcReadFunc() {
-
-     readNFC((data) => {
-       if (data.id === lastId) return; // prevent spam
-       lastId = data.id;
-
-       console.log("New tag detected:", data);
-      
-     // update UI
-     handlePlantData(data);
-   });
-  } 
+ 
 //gps decode
-        function unpackBase64(b64) {
+  function unpackBase64(b64) {
             try {
                 const binary = atob(b64);
                 const bytes = new Uint8Array(binary.length);
@@ -349,22 +231,7 @@ function decodeToMap(str, keys) {
                 };
             } catch (e) { return null; }
         }
-
-  function decodeGpS() {
-      const data = unpackBase64(b64);
-                    if (data) {
-                        gpsDispLat.innerText = data.lat;
-                        gpsDispLon.innerText = data.lon;
-                        gpsDispAlt.innerText = data.alt + "m";
-                        gpsDispAcc.innerText = data.acc + "m";
-                    }
-  }
   
-  function updatePreviews() {
-    //update NFC field
-    updateNFCPreview();
-  }
-
   function calculateSizeInBytes(text) {
   // Calculate size in bytes (UTF-8 encoding) - returns NUMBER
   const encoder = new TextEncoder();
@@ -387,7 +254,88 @@ function calculateSize(text) {
   // Kept for backward compatibility - returns STRING
   return formatSize(calculateSizeInBytes(text));
 }
+  
+      // data
+  function handlePlantData(data) {
+    const plant = {};
+    let text = "";
+    let link = "";
+    console.log("New tag detected:", data.id); 
+    hwIdText.textContent = data.id;
+    data.records.forEach(r => {
+      if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
+      if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
+     });
     
+    nfcPreview.textContent = text;
+    linkPreview.textContent= link;
+    /* 5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth  */
+    const keys = ["ncfId","plantId","name","variety","latinName","nfcType","datum","pos","other"];
+    let decodedNfc = decodeToMap(text, keys);
+    console.log(decodedNfc);;
+
+    nfcIdInput.value= decodedNfc.ncfId.value;
+    plantIdInput.value= decodedNfc.plantId.value;
+    latinNameInput.value= decodedNfc.latinName.value;
+    plantNameInput.value = decodedNfc.name.value;
+    nameVarietyInput.value = decodedNfc.variety.value;
+    nfcTypInput.value= decodedNfc.nfcType.value;
+    datumInput.value= decodedNfc.datum.value;
+    //nfcCreated.value = "";
+    //posPacketOut.textContent= decodedNfc.pos.value;
+    
+    egyebInput.value= decodedNfc.other.value;
+
+    const data = unpackBase64(pos);
+      if (data) {
+                        gpsDispLat.innerText = data.lat;
+                        gpsDispLon.innerText = data.lon;
+                        gpsDispAlt.innerText = data.alt + "m";
+                        gpsDispAcc.innerText = data.acc + "m";
+        }
+
+    //size
+    if (link || text) {
+       const linkSizeBytes = calculateSizeInBytes(link);
+       const nfcSizeBytes = calculateSizeInBytes(text);
+       nfcSize.textContent = formatSize(nfcSizeBytes);
+       linkSize.textContent = formatSize(linkSizeBytes);
+       totalSize.textContent = formatSize(nfcSizeBytes + linkSizeBytes);
+    }
+     if (pos) {
+       const posSizeBytes = calculateSizeInBytes(pos);
+       posPacketSize.textContent = formatSize(posSizeBytes);
+    }
+    
+}     //end
+
+  //read
+  function nfcReadFunc() {
+
+     readNFC((data) => {
+       if (data.id === lastId) return; // prevent spam
+       lastId = data.id;
+
+       console.log("New tag detected:", data);
+      
+     // update UI
+     handlePlantData(data);
+   });
+  } 
+
+  
+  try {
+     nfcReadFunc();
+  } catch (err) {
+    console.error(err);
+    showError(errorMsg, msg('err_nfc_load'));
+    selector.innerHTML = '<option value="">(error)</option>';
+    return;
+  }
+
+//nfc reading decoding
+//const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
+
   // Copy NFC Data button
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
@@ -419,10 +367,19 @@ function calculateSize(text) {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
   });
+ 
   // NFC Read button
   readNfcBtn.addEventListener("click", () => {
-    window.location.href = "Homepage.html";
+      try {
+     nfcReadFunc();
+  } catch (err) {
+    console.error(err);
+    showError(errorMsg, msg('err_nfc_load'));
+    selector.innerHTML = '<option value="">(error)</option>';
+    return;
+  }
   });
+ 
   // Back button
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
