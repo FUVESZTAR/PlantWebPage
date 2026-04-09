@@ -1,4 +1,3 @@
-import { loadPlantData } from "./csv-utils.js";
 
 // ── Google Apps Script Web App configuration ─────────────────────────────────
 // Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
@@ -162,70 +161,33 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
   
   let plants = [];
-
+  let lastId = null;
   try {
-    plants = await loadPlantData();
-    // Keep only plants active on the page and in NFC
-    plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
-    plantData = plants;
-    console.log("Plants loaded:", plants.length, "plants");
-    selector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
-    const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
-      a.localeCompare(b)
-    );
-    uniqueNames.forEach((name) => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      selector.appendChild(opt);
-    });
+     readNFC((data) => {
+       if (data.id === lastId) return; // prevent spam
+       lastId = data.id;
+
+      console.log("New tag detected:", data);
+
+     // update UI
+     handlePlantData(data);
+});
   } catch (err) {
     console.error(err);
-    showError(errorMsg, msg('err_plant_load'));
+    showError(errorMsg, msg('err_nfc_load'));
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
-  loadLastNfcId(nfcIdInput, () => updateNFCPreview());
-  // Set current date
-  const today = new Date();
-  const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
-  datumInput.value = dateString;
+  
+  ///datumInput.value = ;
 
   // Plant selector change event
-  selector.addEventListener("change", () => {
-    const nameValue = selector.value;
-    console.log("Plant selected, value:", nameValue);
-    
-    if (nameValue === "") {
-      clearForm();
-      selectedPlantIndex = null;
-      selectedVarietyData = null;
-      customVarietyMode = false;
-      nameVarietyCustomInput.style.display = "none";
-      return;
-    }
-    
-    // Find the Species plant for this name, or fall back to the first match
-    const speciesPlant = plants.find(p => p[nameProp] === nameValue && (p.Name_Variety || "").trim() === "Species");
-    const plant = speciesPlant || plants.find(p => p[nameProp] === nameValue);
-    
-    console.log("Selected plant:", plant);
-    
-    if (plant) {
-      selectedPlantIndex = plants.indexOf(plant);
-      // Fill form fields
-      plantIdInput.value = plant.Plant_ID || "";
-      plantNameInput = plant[nameProp] || "";
-      latinNameInput.value = plant.LatinName || "";
-      datumInput.value = dateString;
-      nfcTypInput.value = "n";
-      egyebInput.value = plant.egyeb || "";
-    }
+
     
     // Populate varieties dropdown based on plant name
-    populateVarieties(nameValue);
+    //populateVarieties(nameValue);
     
-    updatePreviews();
+    //updatePreviews();
   });
  function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
@@ -285,56 +247,6 @@ async function populate() {
     }
   }
 
-  // Variety selector change event
-  nameVarietySelector.addEventListener("change", () => {
-    const value = nameVarietySelector.value;
-    console.log("Variety selected, value:", value);
-    
-    if (value === "") {
-      // Clear variety selection
-      selectedVarietyData = null;
-      customVarietyMode = false;
-      nameVarietyCustomInput.style.display = "none";
-      nameVarietyCustomInput.value = "";
-      updatePreviews();
-      return;
-    }
-    
-    if (value === "__custom__") {
-      // Allow custom text input
-      customVarietyMode = true;
-      selectedVarietyData = null;
-      nameVarietyCustomInput.style.display = "block";
-      nameVarietyCustomInput.value = "";
-      nameVarietyCustomInput.focus();
-      updatePreviews();
-      return;
-    }
-    
-    // Load data from selected variety row
-    customVarietyMode = false;
-    nameVarietyCustomInput.style.display = "none";
-    nameVarietyCustomInput.value = "";
-    
-    const varietyIndex = parseInt(value);
-    const varietyPlant = plants[varietyIndex];
-    
-    console.log("Selected variety plant:", varietyPlant);
-    
-    if (varietyPlant) {
-      selectedVarietyData = varietyPlant;
-      
-      // Update all fields from this variety's data
-      plantIdInput.value = varietyPlant.Plant_ID || "";
-      plantNameInput = varietyPlant[nameProp] || "";
-      latinNameInput.value = varietyPlant.LatinName || "";
-      datumInput.value = dateString;
-      nfcTypInput.value = "n";
-      egyebInput.value = varietyPlant.egyeb || "";
-      
-      updatePreviews();
-    }
-  });
 
  /* {
   id: "04A224B1C93880",
@@ -343,17 +255,7 @@ async function populate() {
     { type: "url", value: "https://plant.app/tomato" }
   ]
 }*/ 
-  let lastId = null;
-
-readNFC((data) => {
-  if (data.id === lastId) return; // prevent spam
-  lastId = data.id;
-
-  console.log("New tag detected:", data);
-
-  // update UI
-  handlePlantData(data);
-});
+  
 
   function handlePlantData(data) {
   const plant = {};
@@ -365,22 +267,7 @@ readNFC((data) => {
   });
 
   renderFields("fields1", BASIC_FIED_MAP, plant);
-}
-
-  // Custom variety input change event
-  nameVarietyCustomInput.addEventListener("change", updatePreviews);
-  nameVarietyCustomInput.addEventListener("input", updatePreviews);
-
-  // Input change events - update previews
-  [plantIdInput, latinNameInput, datumInput, nfcTypInput, egyebInput].forEach(input => {
-    input.addEventListener("change", updatePreviews);
-    input.addEventListener("input", updatePreviews);
-  });
- //listener for nfcID change
-    [nfcIdInput].forEach(input => {
-    input.addEventListener("change", updatePreviews);
-    input.addEventListener("input", updatePreviews);
-  });      
+}     
   //gps
 
         function packBase64(lat, lon, alt) {
@@ -482,14 +369,6 @@ readNFC((data) => {
     updateNFCPreview();
   }
 
-  function getVarietyText() {
-    if (customVarietyMode && nameVarietyCustomInput.value) {
-      return nameVarietyCustomInput.value;
-    } else {
-      return nameVarietySelector.options[nameVarietySelector.selectedIndex]?.text || 
-             nameVarietySelector.value;
-    }
-  }
   function calculateSizeInBytes(text) {
   // Calculate size in bytes (UTF-8 encoding) - returns NUMBER
   const encoder = new TextEncoder();
@@ -522,14 +401,9 @@ function calculateSize(text) {
     const datum = datumInput.value;
     const nfcTyp = nfcTypInput.value;
     const egyeb = egyebInput.value;
-    let link = "";
-    if (plantId) {
-      const baseUrl = window.location.origin;
-      link = `${baseUrl}/W/P.html?id=${encodeURIComponent(plantId)}`;
-      linkPreview.textContent = link;
-    }
+    const link = linkPreview.textContent;
     
-    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfcTyp}/${datum}${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
+    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfcTyp}/${datum}/${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
     nfcPreview.textContent = nfcData;
     
     // Update size indicator
@@ -558,7 +432,7 @@ function calculateSize(text) {
 
     });
   
-  gpsStopBtn.addEventListener("click", stopLiveCapture);
+  /*gpsStopBtn.addEventListener("click", stopLiveCapture);
     
   // Generate NFC button
   gennfcBtn.addEventListener("click", () => {
@@ -593,7 +467,7 @@ function calculateSize(text) {
       showError(errorMsg, msg('err_qr_ok'), "success");
     }
   });
-
+*/
   // Copy NFC Data button
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
@@ -630,7 +504,7 @@ function calculateSize(text) {
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
   });
-
+  /*
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   saveNfcBtn.addEventListener("click", async () => {
     updatePreviews();
@@ -680,10 +554,10 @@ function calculateSize(text) {
       saveNfcBtn.disabled = false;
       updatePreviews();
     }
-  });
+  });*/
 
   //save end
-
+ /*
   // NFC Write button – writes nfc-preview (text) and link-preview (url) to a physical NFC tag
   const nfcWriteBtn = document.getElementById("nfc-write-button");
   nfcWriteBtn.addEventListener("click", async () => {
@@ -719,7 +593,7 @@ function calculateSize(text) {
     } finally {
       nfcWriteBtn.disabled = false;
     }
-  });
+  });*/
 
   function clearForm() {
     plantIdInput.value = "";
