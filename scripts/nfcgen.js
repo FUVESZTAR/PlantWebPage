@@ -36,6 +36,7 @@ let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
+let hwId = null;
 let updateNFCPreviewFn = null;
 const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
@@ -48,7 +49,7 @@ const gpsDispAcc = document.getElementById('gpsDispAcc');
 const updateTimer = document.getElementById('updateTimer');
 const posPacketOut = document.getElementById('posPacketOut');
 const posPacketSize = document.getElementById('posPacketSize');
-                
+const hwIdStatus = document.getElementById('hwIdStatus');                
 const gpsStatus = document.getElementById('gpsStatus');
 const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
@@ -60,8 +61,8 @@ const othCardBody = document.getElementById('oth_card_body');
         let timerInterval;
         let watchId = null;
 
-        function setStatus(msg_text, color) {
-            const s = gpsStatus;
+        function setStatus(msg_text, color, statusItem) {
+            const s = statusItem;
             s.textContent = msg_text;
             s.style.background = color;
             s.style.color = "white";
@@ -324,7 +325,7 @@ async function populate() {
             gpsStartBtn.style.display = "none";
             gpsStopBtn.style.display = "block";
             liveDot.style.display = "inline";
-            setStatus(msg('gps_standby').replace('Standing by','Fetching GPS satellites…'), "orange");
+            setStatus(msg('gps_standby').replace('Standing by','Fetching GPS satellites…'), "orange",gpsStatus);
 
             const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
 
@@ -340,9 +341,9 @@ async function populate() {
                 gpsDispAlt.textContent = Math.round(currentData.alt) + "m";
                 gpsDispAcc.textContent = Math.round(acc) + "m";
 
-                setStatus(`Updating… (${Math.round(acc)}m accuracy)`, "#0056b3");
+                setStatus(`Updating… (${Math.round(acc)}m accuracy)`, "#0056b3",gpsStatus);
 
-            }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
+            }, (err) => setStatus("GPS Error: " + err.message, "red",gpsStatus), options);
 
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
@@ -374,7 +375,7 @@ async function populate() {
             liveDot.style.display = "none";
             updateTimer.textContent = "Status: Data Locked";
  
-            setStatus("Tracking Stopped. Data preserved.", "#333");
+            setStatus("Tracking Stopped. Data preserved.", "#333",gpsStatus);
             gpsPacket=gpstext;
             updatePreviews();
         }
@@ -608,6 +609,11 @@ function calculateSize(text) {
 
     try {
       const ndef = new NDEFReader();
+       ndef.onreading = (event) => {
+           hwId = event.serialNumber;
+           setStatus(hwId, "black",hwIdStatus);
+       }
+      event.serialNumber
       await ndef.write({
         records: [
           { recordType: "text", data: nfcData },
