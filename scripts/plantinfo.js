@@ -718,21 +718,21 @@ function insertSizeIconsRow() {
   const fragRo = document.createDocumentFragment();
   ICON_SIZE_TARGETS.forEach(({ id, symbolid, vers, symbol}) => { 
      if (vers === 'choose') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
            if (svg) {
              fragCH.appendChild(svg);
             console.log("create icon: "+symbol);
            }
        }
     if (vers === 'base') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
            if (svg) {
              fragBa.appendChild(svg);
            console.log("create icon: "+symbol);
            }
        } 
     if (vers === 'root') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:inline-block');
+           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
            if (svg) {
            fragRo.appendChild(svg);
            console.log("create icon: "+symbol);
