@@ -282,16 +282,6 @@ body {
   background: var(--green-pale);
   color: var(--muted);
 }
-#hwIdStatus {
-  text-align: center;
-  font-weight: 600;
-  font-size: .84rem;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  transition: .3s;
-  background: var(--green-pale);
-  color: var(--muted);
-}
 .live-indicator {
   color: var(--green-light);
   animation: blink 1s infinite;
@@ -592,6 +582,10 @@ button:disabled { opacity:.55; cursor:not-allowed; }
         </div>
         <div style="text-align:right;font-size:.78rem;color:var(--muted)">
           <span data-i18n="lbl_total_size">Total:</span> <span id="total-size">0 B</span>
+          <div class="form-group">
+              <label for="hwId" data-i18n="hwId">NFC HW ID</label>
+              <input type="text" id="hwId" />
+           </div>
         </div>
       </div></div></div>
     </div>
@@ -614,7 +608,6 @@ button:disabled { opacity:.55; cursor:not-allowed; }
         <div class="btn-grid cols-3">
           <button id="generate-nfc"   class="btn-primary"   type="button" data-i18n="btn_generate">Generate NFC</button>
           <button id="nfc-write-button" class="btn-primary" type="button" data-i18n="btn_write">Write NFC</button>
-          <div id="hwIdStatus">.</div>
           <button id="save-nfc"       class="btn-primary"   type="button" data-i18n="btn_save">Save NFC</button>
         </div>
         <div class="btn-grid">
@@ -645,7 +638,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       data_card_title:  'Data',
       data_card_sub:    'Data stored in NFC',
       plantId:           'Plant ID',
-      nfcId:       'NFC ID',
+      nfcId:            'NFC ID',
+      hwId:             'NFC HW ID',
       lbl_latin:        'Latin Name',
       lbl_datum:        'Date',
       lbl_nfcTyp:       'NFC Type',
@@ -716,7 +710,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       data_card_title:  'Adatok',
       data_card_sub:    'Az NFC-be kerülő adatok',
       plantId:           'Növ. ID',
-      nfcId:       'NFC ID',
+      nfcId:             'NFC ID',
+      hwId:             'NFC HW ID',
       lbl_latin:        'Latin név',
       lbl_datum:        'Dátum',
       lbl_nfcTyp:       'NFC típus',
