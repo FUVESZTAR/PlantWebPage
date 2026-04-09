@@ -852,8 +852,10 @@ async function loadPlantImage(plant) {
 }
 
 // 1. Run this once when your app loads to "fix" the hidden templates
+// No-op when icon-container has been replaced by inline symbols (viewBoxes are already correct).
 async function syncViewBoxes() {
     const container = document.getElementById('icon-container');
+    if (!container) return;
     const svgs = container.querySelectorAll('svg');
 
     for (let svg of svgs) {
