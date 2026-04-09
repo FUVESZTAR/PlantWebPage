@@ -36,6 +36,7 @@ let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
+let hwId = "none";
 const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
 const gpsStopBtn = document.getElementById('gpsStopBtn');
@@ -53,6 +54,7 @@ const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
+const hwIdText = document.getElementById("hwId");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -130,12 +132,10 @@ async function readNFC(onRead) {
 }
 
 async function populate() {
-  const selector = document.getElementById("plant-selector");
   const plantIdInput = document.getElementById("plantId");
   const datumInput = document.getElementById("datum");
-  let plantNameInput = "";
-  const nameVarietySelector = document.getElementById("name-variety");
-  const nameVarietyCustomInput = document.getElementById("name-variety-custom");
+  let plantNameInput = document.getElementById("name-plant");
+  const nameVarietyInput = document.getElementById("name-variety");
   const latinNameInput = document.getElementById("latin-name");
   const nfcTypInput = document.getElementById("nfcTyp");
   const egyebInput = document.getElementById("egyeb");
@@ -170,7 +170,9 @@ async function populate() {
     selector.innerHTML = '<option value="">(error)</option>';
     return;
   }
-  
+
+ NFC_TYP_LIST= { n: 'n – plant', o: 'o – graft', m: 'm – seed'};
+
   ///datumInput.value = ;
 
   // Plant selector change event
@@ -219,14 +221,26 @@ async function populate() {
   const plant = {};
   let name = "";
   let url = "";
-  console.log("New tag detected:", data.id);  
+  console.log("New tag detected:", data.id); 
+    hwIdText.textContent = data.id;
   data.records.forEach(r => {
     if (r.type === "text") { name = r.value; console.log("Text: ", r.value);}
     if (r.type === "url") { url = r.value; console.log("URL: ", r.value);} 
   });
   
     nfcPreview.textContent = "data. "+name + "lnk: "+ url;
-
+    /* 5/1/Alma/Species/Malus domestica/n/2026-04-09/  */
+    
+    nfcIdInput.value= "";
+    plantIdInput.value= "";
+    latinNameInput.value= "";
+    plantNameInput= "";
+    nfcTypInput.value= "";
+    datumInput.value= "";
+    nfcCreated.value = "";
+    posPacketOut.textContent= "";
+    linkPreview.textContent= "";
+    egyebInput.value= "";
 }     
 
   
