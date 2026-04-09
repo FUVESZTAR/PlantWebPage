@@ -178,7 +178,7 @@ const BASIC_FIED_MAP = [
   { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not", i18n:"listofvarieties" },
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
-const ICON_SIZE_TARGETS = [
+const ICON_SIZE_TARGETS2 = [
   { id: 'size-tree-icon',   vers: 'choose', symbol: '#icon-tree-size', symbolid: 'icon-tree-size'},
   { id: 'size-house-icon', vers: 'base', symbol: '#icon-house-size' , symbolid: 'icon-house-size'},
   { id: 'size-root-icon',   vers: 'root', symbol: '#icon-root-size' , symbolid: 'icon-root-size'},
@@ -238,7 +238,7 @@ function getCalender1MonthLabels() {
 
 // ── SVG helpers ──────────────────────────────────────────────────────────────
 
-/*function readSvgPixelSize(svgElement) {
+function readSvgPixelSize(svgElement) {
   const widthAttr  = Number.parseFloat(svgElement.getAttribute("width"));
   const heightAttr = Number.parseFloat(svgElement.getAttribute("height"));
   if (Number.isFinite(widthAttr) && Number.isFinite(heightAttr)) {
@@ -255,8 +255,8 @@ function getCalender1MonthLabels() {
     return { width: widthCss, height: heightCss };
   }
   throw new Error("Unable to detect SVG dimensions.");
-}*/
-
+}
+/*
 function readSvgPixelSize(svgElement) {
   const widthAttr  = Number.parseFloat(svgElement.getAttribute("width"));
   const heightAttr = Number.parseFloat(svgElement.getAttribute("height"));
@@ -278,7 +278,7 @@ function readSvgPixelSize(svgElement) {
     return { width: widthCss, height: heightCss };
   }
   throw new Error("Unable to detect SVG dimensions.");
-}
+}*/
 
 function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize, keepAspectRatio = false }) {
   const basePixels = readSvgPixelSize(baseSvg);
@@ -752,33 +752,31 @@ function insertSizeIconsRow() {
 function applySizeIcons(plant,FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
   console.log("típus: " +type);
-  const humanSvg = document.getElementById("size-human-icon");
+  const humanSvg = document.getElementById("size-human-icon-1");
   if (!humanSvg) return;
-  const treeSvg  = document.getElementById("size-tree-icon");
+  const treeSvg  = document.getElementById("size-tree-icon-2");
   if (!treeSvg) return;
-  const bushSvg  = document.getElementById("size-bush-icon");
+  const bushSvg  = document.getElementById("size-bush-icon-1");
   if (!bushSvg) return;
-  const plantSvg = document.getElementById("size-plant-icon");
+  const plantSvg = document.getElementById("size-plant-icon-1");
   if (!plantSvg) return;
   
   const wAvg = plant[FM.plant_width_average_mm];
   const hAvg = plant[FM.plant_height_average_mm];
   const rootW = plant[FM.plant_root_width_average_mm];
   const rootH = plant[FM.plant_root_depth_average_mm];
-
-  const SIZE_TARGETS = [
-  { id: "size-tree-icon",  w: wAvg,  h: hAvg },
-  { id: "size-house-icon", w: 6000,  h: 4000 },
-  { id: "size-root-icon",  w: rootW, h: rootH },
-  { id: "size-plant-icon", w: wAvg,  h: hAvg },
-  { id: "size-bush-icon",  w: wAvg,  h: hAvg },
-  //{ id: "size-human-icon",  w: 300,  h: 1800 }
-  ];
   
 console.log("test in sie fc FM p widht: "+wAvg);
 
-  SIZE_TARGETS.forEach(({ id, w, h }) => {
-   if (id !== "size-human-icon"){
+ const iconSizeTargets = [
+  { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
+  { id: "size-house-icon-1", w: 6000,  h: 4000 },
+  { id: "size-root-icon-1",  w: rootW, h: rootH },
+  { id: "size-plant-icon-1", w: wAvg,  h: hAvg },
+  { id: "size-bush-icon-1",  w: wAvg,  h: hAvg }
+  ];
+
+  iconSizeTargets.forEach(({ id, w, h }) => {
     const el = document.getElementById(id);
     if (!el) return;
     try {
@@ -790,7 +788,6 @@ console.log("test in sie fc FM p widht: "+wAvg);
     } catch (err) {
       console.warn(`Unable to resize ${id}:`, err);
     }
-  }
   });
 
   // Show only the correct plant type icon
@@ -802,21 +799,6 @@ console.log("test in sie fc FM p widht: "+wAvg);
 }
 
 // ── Image loader ─────────────────────────────────────────────────────────────
-/* old
-async function loadPlantImage(plant) {
-  const imgText  = `${plant.Plant_ID}_${plant.LatinName}_${plant.Name_Variety}`;
-  const searchId = normalizeName(imgText);
-  const imgEl    = document.getElementById("plantImg");
-  if (!imgEl) return;
-  try {
-    const response = await fetch("images/images.json");
-    const data     = await response.json();
-    imgEl.src = data[searchId] ? `images/${data[searchId][0]}` : "images/default.jpg";
-  } catch {
-    imgEl.src = "images/default.jpg";
-  }
-}
-*/
 async function loadPlantImage(plant) {
   const imgEl = document.getElementById("plantImg");
   if (!imgEl) return;
@@ -870,7 +852,8 @@ async function loadPlantImage(plant) {
 }
 
 // 1. Run this once when your app loads to "fix" the hidden templates
-async function syncViewBoxes(container) {
+async function syncViewBoxes() {
+    const container = document.getElementById('icon-container');
     const svgs = container.querySelectorAll('svg');
 
     for (let svg of svgs) {
@@ -1051,10 +1034,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
 
 (async function init() {
   setupLanguageButtons();
-  let container = document.getElementById('icon-container');
-  await syncViewBoxes(container);
-  container = document.getElementById('icon-container-size');
-  await syncViewBoxes(container);
+  await syncViewBoxes();
   
   const title             = document.querySelector("#primary-title");
   const subtitle          = document.querySelector("#secondary-title");
@@ -1105,41 +1085,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
     medicinalText      = buildSearchText(plant.Medicinal_parts_all,       true);
     
     // ── Form fields ───────────────────────────────────────────────────────
-    /*const fieldMap = {
-      "#name_sz":                                    plant.Name_SZ,
-      "#plant_type":                                 splitPipe(plant.Plant_type).join(", "),
-      "#uses":                                       splitPipe(plant.Uses).join(", "),
-      "#medicinal_use":                              plant.Medicinal_use,
-      "#preparation_to_edibility":                   splitPipe(plant.Preparation_all).join(", "),
-      "#plant_flower_color":                         plant.Plant_flower_color,
-      "#plant_height_max_mm":                        plant.Plant_height_max_mm,
-      "#plant_width_max_mm":                         plant.Plant_width_max_mm,
-      "#plant_root_depth_average_mm":                 plant.Plant_root_depth_average_mm,
-      "#plant_root_width_average_mm":                plant.Plant_root_width_average_mm,
-      "#plant_height_average_mm":                    plant.Plant_height_average_mm,
-      "#plant_width_average_mm":                     plant.Plant_width_average_mm,
-      "#plant_space_filling_mm":                     plant.Plant_space_filling_mm,
-      "#plant_root_type":                            plant.Plant_root_type,
-      "#plant_growing_lifecycle":                    plant.Plant_growing_lifecycle,
-      "#plant_growing_habit":                        plant.Plant_growing_habit,
-      "#days_to_harvest":                            plant.Days_to_Harvest,
-      "#days_to_maturity":                           plant.Days_to_Maturity,
-      "#Hardiness_Zone_USDA":                        plant.Hardiness_Zone_USDA,
-      "#plant_planting_seed_depth_mm":                plant.Plant_planting_seed_depth_mm,
-      "#plant_planting_seed_soil_temperature_celsius": plant.Plant_planting_seed_soil_temperature_celsius,
-      "#plant_planting_plant_distance_mm":           plant.Plant_planting_plant_distance_mm,
-      "#plant_description":                          plant.Plant_description,
-      "#plant_seed_germination_time_days":           plant.Days_to_Germination,
-      "#plant_seed_survival_time_month":             plant.Plant_seed_survival_time_month,
-      "#plant_dangers_to_humans":                    plant.Dangers_of_plant,
-    };
-    Object.entries(fieldMap).forEach(([selector, value]) => {
-      const el = document.querySelector(selector);
-      if (el) el.value = value || "";
-    });*/
-
     renderFields("fields1", BASIC_FIED_MAP, plant);
-    
+    // NFC link
     const nfcEl = document.querySelector("#nfc-link");
     if (nfcEl) nfcEl.textContent = `${plant.Plant_ID}  / ${primaryName} / ${plant.Name_Variety || ""} / ${plant.LatinName || ""} / ${window.location.href}`;
    
@@ -1172,7 +1119,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
     const edibilityClassValue = applyIconColours();
     
     // ── Size icons ────────────────────────────────────────────────────────
-    insertSizeIconsRow();
+    //insertSizeIconsRow();
     applySizeIcons(plant,FM);
 
     // ── Image (non-blocking) ──────────────────────────────────────────────
