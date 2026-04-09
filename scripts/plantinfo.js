@@ -266,7 +266,7 @@ function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize
   targetSvg.style.height = `${th}px`;
 }
 
-function makeSvgIcon(term, id = null, type = 'display:inline-block') {
+function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   const def = PART_ICON_MAP[term];
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
@@ -567,7 +567,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
     seenParts.forEach(part => {
       const id  = `${vers}-icon`;
-      const svg = makeSvgIcon(part, id,'display:inline-block');
+      const svg = makePartSvgIcon(part, id,'display:inline-block');
       if (svg) frag.appendChild(svg);
       iconsmade = iconsmade+1;
     });
@@ -582,7 +582,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
       String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
         .forEach(part => {
           const id  = `${vers}-icon-${key}`;
-          const svg = makeSvgIcon(part, id,'display:inline-block');
+          const svg = makePartSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
           iconsmade++;
         });
@@ -591,7 +591,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // none icon
   if (iconsmade == 0) {
     const id  = `none-${vers}-icon`;
-    const svg = makeSvgIcon('none', id,'display:inline-block');
+    const svg = makePartSvgIcon('none', id,'display:inline-block');
     if (svg) frag.appendChild(svg);
   }
   
