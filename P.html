@@ -540,7 +540,23 @@ button {
 	</symbol>
     <symbol id="icon-height" viewBox="0 0 16 16"><path d="m9 15.46 2.74-4-1-.71-2.1 3.09V2.16l2.1 3.09 1-.71L9 .54a1.25 1.25 0 0 0-2 0l-2.74 4 1 .71 2.12-3.09v11.68l-2.11-3.09-1 .71 2.74 4a1.25 1.25 0 0 0 1.99 0z"/>
 	</symbol>
-    <!-- plant size symbols -->
+    <!-- plant size symbols - loaded from external SVG files -->
+    <symbol id="icon-tree-size" viewBox="0 0 675 810">
+      <image href="icons/use_tree_size.svg" width="675" height="810"/>
+    </symbol>
+    <symbol id="icon-bush-size" viewBox="0 0 675 645">
+      <image href="icons/use_bush_size.svg" width="675" height="645"/>
+    </symbol>
+    <symbol id="icon-plant-size" viewBox="0 0 638 810">
+      <image href="icons/use_plant_size.svg" width="638" height="810"/>
+    </symbol>
+    <symbol id="icon-house-size" viewBox="0 0 32 32">
+      <image href="icons/use_house_size.svg" width="32" height="32"/>
+    </symbol>
+    <symbol id="icon-root-size" viewBox="0 0 810 712">
+      <image href="icons/use_root_size.svg" width="810" height="712"/>
+    </symbol>
+    <!-- human reference symbol (inline path) -->
     <symbol id="icon-human-size" viewBox="0 0 4 22">
           <path d="M3.9 1.999A1.9 1.9 0 1 1 2 0.1a1.9 1.9 0 0 1 1.9 1.899zM3.544 5h-3.088a1.855 1.855 0 0 0-1.8 1.405l-1.662 6.652a.667.667 0 0 0 .14.573.873.873 0 0 0 .665.33.718.718 0 0 0 .653-.445L0 8.1V12l-.922 9.219a.71.71 0 0 0 .707.781h.074a.69.69 0 0 0 .678-.563L2 13.583l1.463 7.854a.69.69 0 0 0 .678.563h.074a.71.71 0 0 0 .707-.781L4 12V8.1l1.548 5.415a.718.718 0 0 0 .653.444.873.873 0 0 0 .665-.329.667.667 0 0 0 .14-.573l-1.662-6.652A1.855 1.855 0 0 0 3.544 5z"/>
     </symbol>
@@ -618,14 +634,7 @@ button {
 		<svg id="icon-pollen"><use href="icons/use_pollen.svg"></use></svg>
 		<svg id="icon-shoot"><use href="icons/use_shoot.svg"></use></svg>
 		</div>
-	<div id="icon-container-size" style="display:none;">
-		<svg id="icon-tree-size"><use href="icons/use_tree_size.svg"></use></svg>
-		<svg id="icon-bush-size"><use href="icons/use_bush_size.svg"></use></svg>
-		<svg id="icon-plant-size"><use href="icons/use_plant_size.svg"></use></svg>
-		<svg id="icon-house-size"><use href="icons/use_house_size.svg"></use></svg>
-		<svg id="icon-human-size3" width="60" height="60"><use href="icons/use_human_size.svg"></use></svg>
-		<svg id="icon-root-size"><use href="icons/use_root_size.svg"></use></svg>
-	</div>
+	<!-- icon-container-size removed: size symbols are now defined in the SVG defs block above -->
 <div class="header-content">
     <!-- Language switcher -->
     <div class="lang-switcher">
@@ -697,7 +706,7 @@ button {
                 </div>
                 <div class="cell-size-icons_r3">
                     <div id="size-base-icon-row"></div>
-					<svg id=""><use href="#icon-human-size"></use></svg>
+					<svg id="size-human-icon" width="11" height="60"><use href="#icon-human-size"></use></svg>
 					 <!-- <svg id="size-house-icon-1"><use href="#icon-house-size"></use></svg>-->
                 </div>
                 <div class="cell-size-icons_r1">
