@@ -36,7 +36,7 @@ body {
 
 .grid-size-icons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(1, 1fr);
   gap: 0px;
   /*justify-items: center; /* horizontal center */
@@ -595,7 +595,7 @@ button {
             </div>   
         </div>
 -->
-            <!-- 2 soros, 4 oszlopos rács -->
+            <!-- 2 soros, 3 oszlopos rács -->
             <div class="grid-size-icons">
                 <div class="cell-size-icons_r1">
                     <div class="grid-size-info-icons">
@@ -612,17 +612,17 @@ button {
                     </div>   
                 </div>
                 <div class="cell-size-icons_r1">
-                    <div id="size-choose-icon-row"></div>
-					<svg id="size-tree-icon-1"  width="148px" height="184px"><use href="#icon-tree-size"></use></svg>
-                    <svg id="size-plant-icon-1" width="100px" height="100px"><use href="#icon-plant-size"></use></svg>
-                    <svg id="size-bush-icon-1"  width="100px" height="100px"><use href="#icon-bush-size"></use></svg>
+					<div style="display: flex; align-items: flex-end; gap: 8px; overflow-x: auto;">
+					  <svg id="size-plant-icon-1"  width="100px" height="100px"><use href="#icon-plant-size"></use></svg>
+					  <svg id="size-tree-icon-1"   width="148px" height="184px"><use href="#icon-tree-size"></use></svg>
+					  <svg id="size-bush-icon-1"   width="100px" height="100px"><use href="#icon-bush-size"></use></svg>
+					</div>
                 </div>
                 <div class="cell-size-icons_r3">
-                    <svg id="size-human-icon-1" width="31px" height="66px"><use href="#icon-human-size"></use></svg>
+					<div style="display: flex; align-items: flex-end; gap: 8px; overflow-x: auto;">
+                    <svg id="size-human-icon-1"  width="31px"  height="66px"><use href="#icon-human-size"></use></svg>
 					<svg id="size-house-icon-1"  width="150px" height="150px"><use href="#icon-house-size"></use></svg>
-                </div>
-                <div class="cell-size-icons_r1">
-                    
+				    </div>
                 </div>
                 <div class="cell-size-icons_r2">
                     <div class="grid-size-info-icons">
@@ -639,14 +639,13 @@ button {
                     </div>   
                 </div>
                 <div class="cell-size-icons_r2">
-					 <svg id="size-root-icon-1" width="100px" height="100px"><use href="#icon-root-size"></use></svg>
-                </div>
-                <div class="cell-size-icons_r2">
+					<div style="display: flex; align-items: flex-end; gap: 8px; overflow-x: auto;">
+					 <svg id="size-root-icon-1"   width="100px" height="100px"><use href="#icon-root-size"></use></svg>
+					</div>
                 </div>
                 <div class="cell-size-icons_r2">
                 </div>
             </div>             
-            
             <!-- info: inline-use versions of the leaf symbol with colors -->
             <div class="row">
                  <label data-i18n="detail.label.edibilityTitle">Edibility:</label>
