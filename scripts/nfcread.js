@@ -182,7 +182,7 @@ async function populate() {
     //updatePreviews();
 
 
- function decodebase64() {
+ async function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
             try {
                 const ndef = new NDEFReader();
@@ -231,7 +231,7 @@ async function populate() {
 
   
   //gps
- fuction nfcReadFunc() {
+ function nfcReadFunc() {
 
      readNFC((data) => {
        if (data.id === lastId) return; // prevent spam
@@ -500,7 +500,7 @@ function calculateSize(text) {
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
     latinNameInput.value = "";
-    datumInput.value = dateString;
+    datumInput.value = new Date().toISOString().split('T')[0];
     nfcTypInput.value = "n";
     egyebInput.value = "";
     nfcPreview.textContent = msg('ph_nfc_preview');
