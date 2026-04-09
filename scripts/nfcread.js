@@ -228,6 +228,8 @@ async function populate() {
     nfcPreview.textContent = "data. "+name + "lnk: "+ url;
 
 }     
+
+  
   //gps
  fuction nfcReadFunc() {
 
@@ -235,7 +237,7 @@ async function populate() {
        if (data.id === lastId) return; // prevent spam
        lastId = data.id;
 
-      console.log("New tag detected:", data);
+       console.log("New tag detected:", data);
       
      // update UI
      handlePlantData(data);
