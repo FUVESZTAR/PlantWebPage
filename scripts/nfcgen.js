@@ -617,21 +617,23 @@ function calculateSize(text) {
         ]
       });
       showError(errorMsg, msg('err_nfc_ok'), "success");
-    } catch (error) {
-      showError(errorMsg, msg('err_nfc_write') + error);
-      console.error(error);
-    } finally {
       try {
-        nfcWriteBtn.disabled = false;
-        ndef.onreading = (event) => {
+          const ndef2 = new NDEFReader();
+          await ndef2.scan();
+          ndef2.onreading = (event) => {
             let uid = event.serialNumber;
             console.log("Tag UID:", event.serialNumber);
             hwIdText.textContent = uid ;
           };
-      } catch (error) {
-         showError(errorMsg, msg('err_nfc_read') + error);
-          console.error(error);
-      }
+        } catch (error) {
+        showError(errorMsg, msg('err_nfc_read') + error);
+         console.error(error);
+        } 
+    } catch (error) {
+      showError(errorMsg, msg('err_nfc_write') + error);
+      console.error(error);
+    } finally {
+        nfcWriteBtn.disabled = false;
     } 
   });//end
 
