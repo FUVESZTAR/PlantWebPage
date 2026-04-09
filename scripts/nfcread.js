@@ -86,6 +86,50 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
   }
 }
 
+
+
+async function readNFC(onRead) {
+  if (!("NDEFReader" in window)) return;
+
+  const ndef = new NDEFReader();
+  await ndef.scan();
+
+  ndef.onreading = (event) => {
+    const result = {
+      id: event.serialNumber,
+      records: []
+    };
+
+    for (const record of event.message.records) {
+      let value = "";
+
+      switch (record.recordType) {
+        case "text":
+          value = new TextDecoder(record.encoding).decode(record.data);
+          break;
+
+        case "url":
+          value = new TextDecoder().decode(record.data);
+          break;
+
+        case "mime":
+          value = new TextDecoder().decode(record.data);
+          break;
+
+        default:
+          value = new TextDecoder().decode(record.data);
+      }
+
+      result.records.push({
+        type: record.recordType,
+        value
+      });
+    }
+
+    onRead(result);
+  };
+}
+
 async function populate() {
   const selector = document.getElementById("plant-selector");
   const plantIdInput = document.getElementById("plantId");
@@ -183,7 +227,27 @@ async function populate() {
     
     updatePreviews();
   });
-
+ function decodebase64() {
+            if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
+            try {
+                const ndef = new NDEFReader();
+                await ndef.scan();
+                setStatus("Ready to Read - Tap Tag", "blue");
+                ndef.onreading = event => {
+                    const decoder = new TextDecoder();
+                    const b64 = decoder.decode(event.message.records[0].data);
+                    const data = unpackBase64(b64);
+                    if (data) {
+                        document.getElementById('read-display').style.display = "block";
+                        document.getElementById('read-lat').innerText = data.lat;
+                        document.getElementById('read-lon').innerText = data.lon;
+                        document.getElementById('read-alt').innerText = data.alt + "m";
+                        setStatus("Tag Decoded!", "green");
+                    }
+                };
+            } catch (err) { setStatus("Read Error", "red"); }
+    }
+  
   // Populate varieties dropdown
   function populateVarieties(plantName) {
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
@@ -271,6 +335,37 @@ async function populate() {
       updatePreviews();
     }
   });
+
+ /* {
+  id: "04A224B1C93880",
+  records: [
+    { type: "text", value: "Tomato" },
+    { type: "url", value: "https://plant.app/tomato" }
+  ]
+}*/ 
+  let lastId = null;
+
+readNFC((data) => {
+  if (data.id === lastId) return; // prevent spam
+  lastId = data.id;
+
+  console.log("New tag detected:", data);
+
+  // update UI
+  handlePlantData(data);
+});
+
+  function handlePlantData(data) {
+  const plant = {};
+  let name = "";
+  let url = "";
+  data.records.forEach(r => {
+    if (r.type === "text") name = r.value;
+    if (r.type === "url") url = r.value;
+  });
+
+  renderFields("fields1", BASIC_FIED_MAP, plant);
+}
 
   // Custom variety input change event
   nameVarietyCustomInput.addEventListener("change", updatePreviews);
@@ -380,7 +475,8 @@ async function populate() {
             gpsPacket=gpstext;
             updatePreviews();
         }
- 
+
+  
   function updatePreviews() {
     //update NFC field
     updateNFCPreview();
