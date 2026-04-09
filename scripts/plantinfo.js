@@ -178,14 +178,6 @@ const BASIC_FIED_MAP = [
   { key:'list_of_varieties', symbol:"#list_of_varieties", data:"List_of_varieties", icon:"", typ:'split', use:"not", i18n:"listofvarieties" },
   { key:'egyeb', symbol:"#egyeb", data:"Egyéb", icon:"", typ:'normal', use:"not", i18n:"egyeb" }
 ];
-const ICON_SIZE_TARGETS2 = [
-  { id: 'size-tree-icon',   vers: 'choose', symbol: '#icon-tree-size', symbolid: 'icon-tree-size'},
-  { id: 'size-house-icon', vers: 'base', symbol: '#icon-house-size' , symbolid: 'icon-house-size'},
-  { id: 'size-root-icon',   vers: 'root', symbol: '#icon-root-size' , symbolid: 'icon-root-size'},
-  { id: 'size-plant-icon',  vers: 'choose', symbol: '#icon-plant-size' , symbolid: 'icon-plant-size'},
-  { id: 'size-bush-icon',  vers: 'choose', symbol: '#icon-bush-size' , symbolid: 'icon-bush-size'},
-  //{ id: 'size-human-icon',  vers: 'base', symbol: '#icon-human-size' , symbolid: 'icon-human-size'}
-  ];
 // Category CSV columns to render icons for
 const CATEGORY_PART_COLUMNS = [
   'Raw_edible_parts_all',
@@ -256,29 +248,6 @@ function readSvgPixelSize(svgElement) {
   }
   throw new Error("Unable to detect SVG dimensions.");
 }
-/*
-function readSvgPixelSize(svgElement) {
-  const widthAttr  = Number.parseFloat(svgElement.getAttribute("width"));
-  const heightAttr = Number.parseFloat(svgElement.getAttribute("height"));
-  if (Number.isFinite(widthAttr) && Number.isFinite(heightAttr) && widthAttr > 0 && heightAttr > 0) {
-    return { width: widthAttr, height: heightAttr };
-  }
-  const viewBox = svgElement.viewBox?.baseVal;
-  if (viewBox?.width > 0 && viewBox?.height > 0) {
-    return { width: viewBox.width, height: viewBox.height };
-  }
-  const rect = svgElement.getBoundingClientRect();
-  if (rect.width > 0 && rect.height > 0) {
-    return { width: rect.width, height: rect.height };
-  }
-  const computed = window.getComputedStyle(svgElement);
-  const widthCss  = Number.parseFloat(computed.width);
-  const heightCss = Number.parseFloat(computed.height);
-  if (Number.isFinite(widthCss) && Number.isFinite(heightCss) && widthCss > 0 && heightCss > 0) {
-    return { width: widthCss, height: heightCss };
-  }
-  throw new Error("Unable to detect SVG dimensions.");
-}*/
 
 function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize, keepAspectRatio = false }) {
   const basePixels = readSvgPixelSize(baseSvg);
@@ -297,7 +266,7 @@ function resizeSvgByReference({ baseSvg, targetSvg, baseRealSize, targetRealSize
   targetSvg.style.height = `${th}px`;
 }
 
-function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
+function makeSvgIcon(term, id = null, type = 'display:inline-block') {
   const def = PART_ICON_MAP[term];
   if (!def) return null;
   const svgns = 'http://www.w3.org/2000/svg';
@@ -305,7 +274,7 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   console.log("make svg from: "+def.symbolid);
 
       // 4. DYNAMICALLY take parameters from the file
-      const sourceSvg1 = document.getElementById(def.symbolid);
+      const sourceSvg1 = document.getElementById(def.symbolid);;
      if (!sourceSvg1) { console.log("not found: "+def.symbolid);return;}
     // This ensures the icon always fits perfectly
     const originalViewBox = sourceSvg1.getAttribute('viewBox');
@@ -336,47 +305,7 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   svg.appendChild(use);
   return svg;
 }
-//<svg id="icon-tree-size"><use href="icons/use_tree_size.svg"></use></svg>size-plant-icon
- //{ id: "size-tree-icon",   vers: "choose", symbol: "#icon-tree-size" , symbolid: 'icon-tree-size' },
-function makeSizeSvgIcon(id = null, symbolid = null, symbol = null, type = 'display:inline-block') {
-  const svgns = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgns, 'svg');
-  console.log("make svg from: "+symbolid);
-      // Take viewBox / dimensions from the source element so the icon scales correctly
-      const sourceSvg1 = document.getElementById(symbolid);
-     if (!sourceSvg1) { console.log("not found: "+symbolid);return;}
-    const originalViewBox = sourceSvg1.getAttribute('viewBox');
-    const originalWidth = sourceSvg1.getAttribute('width');
-    const originalHeight = sourceSvg1.getAttribute('height');
-    if (originalViewBox) {
-      svg.setAttribute('viewBox', originalViewBox);
-    } else if (originalWidth && originalHeight) {
-      // Fallback if viewBox is missing but dimensions exist
-      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
-      // Propagate explicit pixel dimensions so readSvgPixelSize reads them via
-      // attribute lookup (step 1) rather than treating the viewBox as pixels.
-      svg.setAttribute('width', originalWidth);
-      svg.setAttribute('height', originalHeight);
-    } else {
-      // Default fallback
-      svg.setAttribute('viewBox', '0 0 512 512');
-      console.log("make svg from: "+symbolid+" set default viewbox: 0 0 512 512 ");
-    }
-   //setting
-  // svg.setAttribute('class', class1);
-  //svg.setAttribute('viewBox', '0 0 512 512');
-  //svg.setAttribute('aria-hidden', 'true');
-  //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
-  svg.style.cssText = type;
-  if (id) {
-    svg.setAttribute('id', id);
-  }
-  const use = document.createElementNS(svgns, 'use');
-  use.setAttribute('href', symbol);
-  use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbol);
-  svg.appendChild(use);
-  return svg;
-}
+
 // ── Identity filter links ────────────────────────────────────────────────────
 
 function setIdentityFilterLink(element, filterType, value) {
@@ -553,26 +482,17 @@ function edibilityClass(term) {
   }
 
 function applyIconColours() {
-  // Colour all harvest icons by edibility (covers planning table and harv row)
+  // Colour all harvest icons
   PARTS.forEach(part => {
     const cls   = edibilityClass(part);
+    const filter = `.${part}-harvest-icon`;
     const icons = document.querySelectorAll(`.${part}-harvest-icon`);
+    console.log("part: "+icons+" filter: "+filter+" color: "+cls);
     icons.forEach(svg => {
       svg.classList.remove("green", "red", "black", "yellow");
       svg.classList.add(cls);
     });
   });
-
-  // Override med row icons with medicinal colouring: green = medicinal, black = not
-  const medContainer = document.getElementById('part-icons-row-med');
-  if (medContainer) {
-    PARTS.forEach(part => {
-      medContainer.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
-        svg.classList.remove("green", "red", "black", "yellow");
-        svg.classList.add(medicinalText.includes(part) ? "green" : "black");
-      });
-    });
-  }
 
   return edibilityClass; // expose for callers that need it
 }
@@ -632,14 +552,11 @@ function insertCategoryIconsRow(plant, mode, vers) {
   if (!container) { console.warn('Missing #part-icons-row container'); return; }
   const frag = document.createDocumentFragment();
    
-  // harv uses all category columns; med uses only the medicinal column
-  const columnsToUse = vers === 'med' ? ['Medicinal_parts_all'] : CATEGORY_PART_COLUMNS;
-
   if (mode === 'unique') {
     // Collect all parts that appear in ANY category column, deduplicated
     const seenParts = new Set();
 
-    columnsToUse.forEach(key => {
+    CATEGORY_PART_COLUMNS.forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
       const value = plant[key];
       if (!value || value === '0') return;
@@ -650,14 +567,14 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
     seenParts.forEach(part => {
       const id  = `${vers}-icon`;
-      const svg = makePartSvgIcon(part, id,'display:inline-block');
+      const svg = makeSvgIcon(part, id,'display:inline-block');
       if (svg) frag.appendChild(svg);
       iconsmade = iconsmade+1;
     });
 
   } else {
     // 'per-category': one icon per part per column
-    columnsToUse.forEach(key => {
+    CATEGORY_PART_COLUMNS.forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(plant, key)) return;
       const value = plant[key];
       if (!value || value === '0') return;
@@ -665,7 +582,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
       String(value).toLowerCase().split('|').map(v => v.trim()).filter(Boolean)
         .forEach(part => {
           const id  = `${vers}-icon-${key}`;
-          const svg = makePartSvgIcon(part, id,'display:inline-block');
+          const svg = makeSvgIcon(part, id,'display:inline-block');
           if (svg) frag.appendChild(svg);
           iconsmade++;
         });
@@ -674,140 +591,72 @@ function insertCategoryIconsRow(plant, mode, vers) {
   // none icon
   if (iconsmade == 0) {
     const id  = `none-${vers}-icon`;
-    const svg = makePartSvgIcon('none', id,'display:inline-block');
+    const svg = makeSvgIcon('none', id,'display:inline-block');
     if (svg) frag.appendChild(svg);
   }
+  
+  // Colour icons after all are inserted (single pass)
+  PARTS.forEach(part => {
+    const cls   = edibilityClass(part);
+    document.querySelectorAll(`.${part}-harvest-icon`).forEach(svg => {
+      svg.classList.remove("green", "red", "black", "yellow");
+      svg.classList.add(cls);
+    });
+  });
   
   container.innerHTML = '';
   container.appendChild(frag);
 }
 
-// ── Size icons row ───────────────────────────────────────────────────────
-
-function insertSizeIconsRow() {
-  // mode = 'per-category' : one icon per part per category column (original behaviour)
-  // mode = 'unique'       : one icon per part, regardless of how many columns contain it
-  // vers = 'choose' / 'base'  / 'root'                : Which version is it choose= tree, bush, plant ; base = human, house
-  let containerCh = document.querySelector(`#size-choose-icon-row`);
-  let containerBa = document.querySelector(`#size-base-icon-row`);
-  let containerRo = document.querySelector(`#size-root-icon-row`);
-  console.log("running size icon crate.");
-  if (!containerCh) { console.warn('Missing #size-choose-icon-row container'); return; }
-  if (!containerBa) { console.warn('Missing #size-base-icon-row container'); return; }
-  if (!containerRo) { console.warn('Missing #size-root-icon-row container'); return; }
-  const fragCH = document.createDocumentFragment();
-  const fragBa = document.createDocumentFragment();
-  const fragRo = document.createDocumentFragment();
-  ICON_SIZE_TARGETS.forEach(({ id, symbolid, vers, symbol}) => { 
-     if (vers === 'choose') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
-           if (svg) {
-             fragCH.appendChild(svg);
-            console.log("create icon: "+symbol);
-           }
-       }
-    if (vers === 'base') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
-           if (svg) {
-             fragBa.appendChild(svg);
-           console.log("create icon: "+symbol);
-           }
-       } 
-    if (vers === 'root') {
-           let svg = makeSizeSvgIcon(id,symbolid,symbol,'display:block');
-           if (svg) {
-           fragRo.appendChild(svg);
-           console.log("create icon: "+symbol);
-           }
-       } 
-     
-   });
-   containerCh.innerHTML = '';
-   containerCh.appendChild(fragCH);
-  containerBa.innerHTML = '';
-   containerBa.appendChild(fragBa);
-  containerRo.innerHTML = '';
-   containerRo.appendChild(fragRo);
-}
 // ── Size icons ───────────────────────────────────────────────────────────────
 
-function applySizeIcons(plant, FM) {
+function applySizeIcons(plant,FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
+  console.log("típus: " +type);
+  const humanSvg = document.getElementById("size-human-icon-1");
+  if (!humanSvg) return;
+  const treeSvg  = document.getElementById("size-tree-icon-2");
+  if (!treeSvg) return;
+  const bushSvg  = document.getElementById("size-bush-icon-1");
+  if (!bushSvg) return;
+  const plantSvg = document.getElementById("size-plant-icon-1");
+  if (!plantSvg) return;
+  
+  const wAvg = plant[FM.plant_width_average_mm];
+  const hAvg = plant[FM.plant_height_average_mm];
+  const rootW = plant[FM.plant_root_width_average_mm];
+  const rootH = plant[FM.plant_root_depth_average_mm];
+  
+console.log("test in sie fc FM p widht: "+wAvg);
 
-  const humanSvg  = document.getElementById("size-human-icon-1");
-  const treeSvg   = document.getElementById("size-tree-icon-1");
-  const bushSvg   = document.getElementById("size-bush-icon-1");
-  const plantSvg  = document.getElementById("size-plant-icon-1");
-  const houseSvg  = document.getElementById("size-house-icon-1");
-  const rootSvg   = document.getElementById("size-root-icon-1");
+ const iconSizeTargets = [
+  { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
+  { id: "size-house-icon-1", w: 6000,  h: 4000 },
+  { id: "size-root-icon-1",  w: rootW, h: rootH },
+  { id: "size-plant-icon-1", w: wAvg,  h: hAvg },
+  { id: "size-bush-icon-1",  w: wAvg,  h: hAvg }
+  ];
 
-  if (!humanSvg) { console.warn("Human icon missing"); return; }
-
-  // --- Step 1: Establish px/mm scale from the human icon ---
-  // Human icon pixel dimensions (from the HTML attributes)
-  const HUMAN_PX_H  = 66;   // px height of human SVG element
-  const HUMAN_MM_H  = 1800; // real-world height in mm
-
-  const pxPerMm = HUMAN_PX_H / HUMAN_MM_H;
-  console.log(`Scale: ${pxPerMm.toFixed(4)} px/mm`);
-
-  // --- Step 2: Read plant data ---
-  const plantWmm  = Number(plant[FM.plant_width_max_mm])          || 1000;
-  const plantHmm  = Number(plant[FM.plant_height_max_mm])         || 1000;
-  const rootWmm   = Number(plant[FM.plant_root_width_average_mm]) || 500;
-  const rootHmm   = Number(plant[FM.plant_root_depth_average_mm]) || 500;
-
-  // House is fixed real-world reference: ~6000mm wide, ~4000mm tall
-  const HOUSE_W_MM = 6000;
-  const HOUSE_H_MM = 4000;
-
-  // --- Step 3: Helper to resize an SVG to match real-world mm at our scale ---
-  function scaleIcon(svgEl, realWmm, realHmm) {
-    if (!svgEl) return;
-    const targetPxW = realWmm * pxPerMm;
-    const targetPxH = realHmm * pxPerMm;
-
-    // Get the icon's natural aspect ratio from its viewBox
-    const vb = svgEl.viewBox?.baseVal;
-    if (vb && vb.width > 0 && vb.height > 0) {
-      // Fit within target box while preserving aspect ratio
-      const iconAspect   = vb.width / vb.height;
-      const targetAspect = targetPxW / targetPxH;
-      let finalW, finalH;
-      if (iconAspect > targetAspect) {
-        finalW = targetPxW;
-        finalH = targetPxW / iconAspect;
-      } else {
-        finalH = targetPxH;
-        finalW = targetPxH * iconAspect;
-      }
-      svgEl.style.width  = `${finalW}px`;
-      svgEl.style.height = `${finalH}px`;
-    } else {
-      // Fallback: just set directly
-      svgEl.style.width  = `${targetPxW}px`;
-      svgEl.style.height = `${targetPxH}px`;
+  iconSizeTargets.forEach(({ id, w, h }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+      resizeSvgByReference({
+        baseSvg: humanSvg, targetSvg: el,
+        baseRealSize: DEFAULT_BASE_REAL_SIZE_MM,
+        targetRealSize: { width: Number(w), height: Number(h) },
+      });
+    } catch (err) {
+      console.warn(`Unable to resize ${id}:`, err);
     }
-    console.log(`${svgEl.id}: ${svgEl.style.width} x ${svgEl.style.height} (real: ${realWmm}x${realHmm}mm)`);
-  }
+  });
 
-  // --- Step 4: Apply scale to each icon ---
-  scaleIcon(houseSvg,  HOUSE_W_MM, HOUSE_H_MM);
-  scaleIcon(treeSvg,   plantWmm,   plantHmm);
-  scaleIcon(bushSvg,   plantWmm,   plantHmm);
-  scaleIcon(plantSvg,  plantWmm,   plantHmm);
-  scaleIcon(rootSvg,   rootWmm,    rootHmm);
-
-  // Human icon stays at fixed pixel size (it defines the scale)
-  humanSvg.style.width  = `${HUMAN_PX_H * (31/66)}px`; // maintain its aspect
-  humanSvg.style.height = `${HUMAN_PX_H}px`;
-
-  // --- Step 5: Show only the right plant type icon ---
+  // Show only the correct plant type icon
   [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
 
-  if      (type.includes("Tree")) { if (treeSvg)  treeSvg.style.display  = "block"; }
-  else if (type.includes("Bush")) { if (bushSvg)  bushSvg.style.display  = "block"; }
-  else                            { if (plantSvg) plantSvg.style.display = "block"; }
+  if      (type === "Tree")  { if (treeSvg)  treeSvg.style.display  = ""; }
+  else if (type === "Bush")  { if (bushSvg)  bushSvg.style.display  = ""; }
+  else                       { if (plantSvg) plantSvg.style.display = ""; }
 }
 
 // ── Image loader ─────────────────────────────────────────────────────────────
@@ -897,68 +746,7 @@ async function syncViewBoxes() {
     }
 }
 
-// Asynchronously creates an SVG icon by fetching it from a folder not used
-/**
- * Asynchronously creates an SVG icon by fetching it from a folder
- * and dynamically adopting its internal viewBox.
- * * @param {string} term - The filename (e.g., 'bark1')
- * @param {string} folderPath - Path to your svg folder (e.g., '/assets/icons/')
- * @param {string} id - Optional ID for the element
- *//*
-async function makePartSvgIconFromFile(term, folderPath = './', id = null) {
-  try {
-    // Class
-    const def = PART_ICON_MAP[term];
-    if (!def) return null;
-    
-    // 1. Fetch the SVG file from the folder
-    const response = await fetch(`${folderPath}${term}.svg`);
-    if (!response.ok) throw new Error(`SVG ${term} not found`);
-    
-    const svgText = await response.text();
 
-    // 2. Parse the text into a DOM object
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
-    const sourceSvg = xmlDoc.querySelector('svg');
-
-    if (!sourceSvg) throw new Error(`Invalid SVG content for ${term}`);
-
-    // 3. Create the new SVG element for your page
-    const svgns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgns, 'svg');
-
-    // 4. DYNAMICALLY take parameters from the file
-    // This ensures the icon always fits perfectly
-    const originalViewBox = sourceSvg.getAttribute('viewBox');
-    const originalWidth = sourceSvg.getAttribute('width');
-    const originalHeight = sourceSvg.getAttribute('height');
-
-    if (originalViewBox) {
-      svg.setAttribute('viewBox', originalViewBox);
-    } else if (originalWidth && originalHeight) {
-      // Fallback if viewBox is missing but dimensions exist
-      svg.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
-    } else {
-      // Default fallback
-      svg.setAttribute('viewBox', '0 0 512 512');
-    }
-
-    // 5. Apply styling and IDs
-    svg.setAttribute('class', def.class);
-    svg.style.cssText = 'display:inline-block; width:24px; height:24px; fill:currentColor;';
-    if (id) svg.setAttribute('id', `${term}-${id}`);
-    
-    // 6. Move the paths/content from the loaded file into your new SVG
-    svg.innerHTML = sourceSvg.innerHTML;
-
-    return svg;
-  } catch (err) {
-    console.error("Error loading SVG:", err);
-    return null;
-  }
-}
-*/
 // decodeValue 
    // shade_tolerance: { F: 'full shade', S: 'semi-shade', N: 'no shade' },
 function getCodeValue(key, value) {
@@ -1121,14 +909,13 @@ document.querySelector("#back-button").addEventListener("click", () => {
         : `<li>${t('detail.noVarieties')}</li>`;
     }
     
+        // ── Icon colouring (single pass) ──────────────────────────────────────
+    const edibilityClassValue = applyIconColours();
     
     // ── Harvest icons in table + category icons row (one colourByTerm pass)
     insertPartIconsInTable(plant);
     insertCategoryIconsRow(plant,"unique","harv");
     insertCategoryIconsRow(plant,"unique","med");
-
-    // ── Icon colouring (single pass) ──────────────────────────────────────
-    const edibilityClassValue = applyIconColours();
     
     // ── Size icons ────────────────────────────────────────────────────────
     //insertSizeIconsRow();
