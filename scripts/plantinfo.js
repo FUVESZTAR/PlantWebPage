@@ -610,7 +610,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 
 // ── Size icons ───────────────────────────────────────────────────────────────
 
-function applySizeIcons(plant,FM) {
+function applySizeIcons_old(plant,FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
   console.log("típus: " +type);
   const humanSvg = document.getElementById("size-human-icon-1");
@@ -660,12 +660,12 @@ console.log("test in sie fc FM p widht: "+wAvg);
 }
 
 
-//- cl 
-function applySizeIcons2(plant, FM) {
+//- cl -- new size icons
+function applySizeIcons(plant, FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
 
   const humanSvg  = document.getElementById("size-human-icon-1");
-  const treeSvg   = document.getElementById("size-tree-icon-1");
+  const treeSvg   = document.getElementById("size-tree-icon-2");
   const bushSvg   = document.getElementById("size-bush-icon-1");
   const plantSvg  = document.getElementById("size-plant-icon-1");
   const houseSvg  = document.getElementById("size-house-icon-1");
