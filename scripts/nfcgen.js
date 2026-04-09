@@ -617,18 +617,23 @@ function calculateSize(text) {
         ]
       });
       showError(errorMsg, msg('err_nfc_ok'), "success");
-      ndef.onreading = (event) => {
-           hwId = event.serialNumber;
-           console.log("HW ID: "+ event.serialNumber);
-           hwIdText.textContent = hwId;
-       }
     } catch (error) {
       showError(errorMsg, msg('err_nfc_write') + error);
       console.error(error);
     } finally {
-      nfcWriteBtn.disabled = false;
-    }
-  });
+      try {
+        nfcWriteBtn.disabled = false;
+        ndef.onreading = (event) => {
+            let uid = event.serialNumber;
+            console.log("Tag UID:", event.serialNumber);
+            hwIdText.textContent = uid ;
+          };
+      } catch (error) {
+         showError(errorMsg, msg('err_nfc_read') + error);
+          console.error(error);
+      }
+    } 
+  });//end
 
   function clearForm() {
     plantIdInput.value = "";
