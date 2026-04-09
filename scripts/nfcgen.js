@@ -612,6 +612,7 @@ function calculateSize(text) {
       const ndef = new NDEFReader();
        ndef.onreading = (event) => {
            hwId = event.serialNumber;
+           console.log("HW ID: "+ event.serialNumber);
            hwIdText.textContent = hwId;
        }
       await ndef.write({
