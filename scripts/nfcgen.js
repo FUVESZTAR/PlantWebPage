@@ -48,13 +48,13 @@ const gpsDispAlt = document.getElementById('gpsDispAlt');
 const gpsDispAcc = document.getElementById('gpsDispAcc');
 const updateTimer = document.getElementById('updateTimer');
 const posPacketOut = document.getElementById('posPacketOut');
-const posPacketSize = document.getElementById('posPacketSize');
-const hwIdStatus = document.getElementById('hwIdStatus');                
+const posPacketSize = document.getElementById('posPacketSize');                
 const gpsStatus = document.getElementById('gpsStatus');
 const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
+const hwIdText = document.getElementById("hwIdStatus");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -549,7 +549,7 @@ function calculateSize(text) {
     const nfcPos     = posPacketOut.textContent;
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
-    const hwID      = hwIdStatus.textContent;
+    const hwID      = hwIdText.textContent;
     
     if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
@@ -612,7 +612,7 @@ function calculateSize(text) {
       const ndef = new NDEFReader();
        ndef.onreading = (event) => {
            hwId = event.serialNumber;
-           setStatus(hwId, "black",hwIdStatus);
+           hwIdText.textContent = hwId;
        }
       await ndef.write({
         records: [
@@ -645,6 +645,7 @@ function calculateSize(text) {
     linkPreview.textContent = msg('ph_link_preview');
     linkSize.textContent = "0 B";
     totalSize.textContent = "0 B";
+    hwIdText.textContent = "";
   }
 
   function showError(el, message, type = "error") {
