@@ -219,30 +219,81 @@ async function populate() {
 
   function handlePlantData(data) {
   const plant = {};
-  let name = "";
+  let text = "";
   let url = "";
   console.log("New tag detected:", data.id); 
     hwIdText.textContent = data.id;
   data.records.forEach(r => {
-    if (r.type === "text") { name = r.value; console.log("Text: ", r.value);}
+    if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
     if (r.type === "url") { url = r.value; console.log("URL: ", r.value);} 
   });
   
-    nfcPreview.textContent = "data. "+name + "lnk: "+ url;
-    /* 5/1/Alma/Species/Malus domestica/n/2026-04-09/  */
+    nfcPreview.textContent = text;
+    linkPreview.textContent= url;
+    /* 5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth  */
+    const keys = ["ncfId","plantId","name","variety","latinName","nfcType","datum","pos","other"];
+    let decodedNfc = decodeToMap(text, keys);
+    console.log(decodedNfc);;
     
-    nfcIdInput.value= "";
-    plantIdInput.value= "";
-    latinNameInput.value= "";
-    plantNameInput= "";
-    nfcTypInput.value= "";
-    datumInput.value= "";
-    nfcCreated.value = "";
-    posPacketOut.textContent= "";
-    linkPreview.textContent= "";
-    egyebInput.value= "";
+    nfcIdInput.value= decodedNfc.ncfId.value;
+    plantIdInput.value= decodedNfc.plantId.value;
+    latinNameInput.value= decodedNfc.latinName.value;
+    plantNameInput= decodedNfc.name.value;
+    nameVarietyInput= decodedNfc.variety.value;
+    nfcTypInput.value= decodedNfc.nfcType.value;
+    datumInput.value= decodedNfc.datum.value;
+    //nfcCreated.value = "";
+    posPacketOut.textContent= decodedNfc.pos.value;
+    
+    egyebInput.value= decodedNfc.other.value;
 }     
+//nfc reading decoding
+const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
 
+  function extractPackets(str) {
+  const packets = [];
+  let index = 0;
+
+  const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
+    packets.push(content);
+    return `__PKT_${index++}__`;
+  });
+
+  return { protectedStr, packets };
+}
+  const parts = protectedStr.split("/");
+ 
+  function restorePackets(parts, packets) {
+  return parts.map(p => {
+    const match = p.match(/__PKT_(\d+)__/);
+    return match ? packets[match[1]] : p;
+  });
+}
+  
+function decodeToMap(str, keys) {
+  const packets = [];
+  let index = 0;
+
+  // 1. protect packets
+  const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
+    packets.push(content);
+    return `__PKT_${index++}__`;
+  });
+
+  // 2. split safely
+  const parts = protectedStr.split("/");
+
+  // 3. restore packets
+  const values = parts.map(p => {
+    const match = p.match(/__PKT_(\d+)__/);
+    return match ? packets[match[1]] : p;
+  });
+
+  // 4. map
+  return Object.fromEntries(
+    keys.map((k, i) => [k, { value: values[i] ?? "" }])
+  );
+}
   
   //gps
  function nfcReadFunc() {
