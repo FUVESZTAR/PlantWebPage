@@ -754,7 +754,7 @@ function applySizeIcons(plant,FM) {
   console.log("típus: " +type);
   const humanSvg = document.getElementById("size-human-icon-1");
   if (!humanSvg) return;
-  const treeSvg  = document.getElementById("size-tree-icon-2");
+  const treeSvg  = document.getElementById("size-tree-icon-1");
   if (!treeSvg) return;
   const bushSvg  = document.getElementById("size-bush-icon-1");
   if (!bushSvg) return;
@@ -769,7 +769,7 @@ function applySizeIcons(plant,FM) {
 console.log("test in sie fc FM p widht: "+wAvg);
 
  const iconSizeTargets = [
-  { id: "size-tree-icon-2",  w: wAvg,  h: hAvg },
+  { id: "size-tree-icon-1",  w: wAvg,  h: hAvg },
   { id: "size-house-icon-1", w: 6000,  h: 4000 },
   { id: "size-root-icon-1",  w: rootW, h: rootH },
   { id: "size-plant-icon-1", w: wAvg,  h: hAvg },
