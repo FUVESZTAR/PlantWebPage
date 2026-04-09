@@ -37,24 +37,50 @@ let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
 let hwId = "none";
+
 const nfcIdInput = document.getElementById("nfcId");
-const gpsStartBtn = document.getElementById('gpsStartBtn');
-const gpsStopBtn = document.getElementById('gpsStopBtn');
-const liveDot = document.getElementById('liveDot');
+const plantIdInput = document.getElementById("plantId");
+const datumInput = document.getElementById("datum");
+const plantNameInput = document.getElementById("name-plant");
+const nameVarietyInput = document.getElementById("name-variety");
+const latinNameInput = document.getElementById("latin-name");
+const nfcTypInput = document.getElementById("nfcTyp");
+const egyebInput = document.getElementById("egyeb");
+const nfcPreview = document.getElementById("nfc-preview");
+const linkPreview = document.getElementById("link-preview");
+
+  const gennfcBtn = document.getElementById("generate-nfc");
+  const readnfcBtn = document.getElementById("read-nfc");
+  const openLinkBtn = document.getElementById("open-link");
+  const qrnfcBtn = document.getElementById("qr-button");
+  const copynfcBtn = document.getElementById("copy-nfc");
+  const copylinkBtn = document.getElementById("copy-link");
+  const backBtn = document.getElementById("back-button");
+  const saveNfcBtn = document.getElementById("save-nfc");
+  const errorMsg = document.getElementById("error-message");
+
 const gpsDispLat = document.getElementById('gpsDispLat');
 const gpsDispLon = document.getElementById('gpsDispLon');
 const gpsDispAlt = document.getElementById('gpsDispAlt');
 const gpsDispAcc = document.getElementById('gpsDispAcc');
-const updateTimer = document.getElementById('updateTimer');
-const posPacketOut = document.getElementById('posPacketOut');
 const posPacketSize = document.getElementById('posPacketSize');
-                
+
+const nfcSize = document.getElementById("nfc-size");
+const linkSize = document.getElementById("link-size");
+const totalSize = document.getElementById("total-size");
+
+const hwIdText = document.getElementById("hwId");
+
+const gpsStartBtn = document.getElementById('gpsStartBtn');
+const gpsStopBtn = document.getElementById('gpsStopBtn');
+const liveDot = document.getElementById('liveDot');
+           
 const gpsStatus = document.getElementById('gpsStatus');
 const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
-const hwIdText = document.getElementById("hwId");
+
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 };
         let lastUpdateTime = Date.now();
@@ -132,33 +158,13 @@ async function readNFC(onRead) {
 }
 
 async function populate() {
-  const plantIdInput = document.getElementById("plantId");
-  const datumInput = document.getElementById("datum");
-  let plantNameInput = document.getElementById("name-plant");
-  const nameVarietyInput = document.getElementById("name-variety");
-  const latinNameInput = document.getElementById("latin-name");
-  const nfcTypInput = document.getElementById("nfcTyp");
-  const egyebInput = document.getElementById("egyeb");
-  const nfcPreview = document.getElementById("nfc-preview");
-  const nfcSize = document.getElementById("nfc-size");
 
   // Use language-aware name property
   const currentLang = (typeof window.getCurrentNfcLang === 'function')
     ? window.getCurrentNfcLang()
     : (localStorage.getItem('fuvesztar_lang') || 'hu');
   const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
-  const linkPreview = document.getElementById("link-preview");
-  const linkSize = document.getElementById("link-size");
-  const totalSize = document.getElementById("total-size");
-  const gennfcBtn = document.getElementById("generate-nfc");
-  const readnfcBtn = document.getElementById("read-nfc");
-  const openLinkBtn = document.getElementById("open-link");
-  const qrnfcBtn = document.getElementById("qr-button");
-  const copynfcBtn = document.getElementById("copy-nfc");
-  const copylinkBtn = document.getElementById("copy-link");
-  const backBtn = document.getElementById("back-button");
-  const saveNfcBtn = document.getElementById("save-nfc");
-  const errorMsg = document.getElementById("error-message");
+
   
   let plants = [];
   let lastId = null;
@@ -220,12 +226,12 @@ async function populate() {
   function handlePlantData(data) {
   const plant = {};
   let text = "";
-  let url = "";
+  let link = "";
   console.log("New tag detected:", data.id); 
     hwIdText.textContent = data.id;
   data.records.forEach(r => {
     if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
-    if (r.type === "url") { url = r.value; console.log("URL: ", r.value);} 
+    if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
   });
   
     nfcPreview.textContent = text;
@@ -243,10 +249,31 @@ async function populate() {
     nfcTypInput.value= decodedNfc.nfcType.value;
     datumInput.value= decodedNfc.datum.value;
     //nfcCreated.value = "";
-    posPacketOut.textContent= decodedNfc.pos.value;
+    //posPacketOut.textContent= decodedNfc.pos.value;
     
     egyebInput.value= decodedNfc.other.value;
-}     
+
+
+        // Update size indicator
+    if (nfcSize) {
+      const linkSizeBytes = calculateSizeInBytes(link);
+      const nfcSizeBytes = calculateSizeInBytes(text);
+      const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
+      nfcSize.textContent = formatSize(nfcSizeBytes);
+      totalSize.textContent = formatSize(totalSizeBytes);
+      linkSize.textContent = formatSize(linkSizeBytes);
+    } else {
+      linkPreview.textContent = msg('ph_link_preview');
+      nfcPreview.textContent = msg('ph_nfc_preview');
+      if (linkSize) {
+        nfcSize.textContent = "0 B";
+        linkSize.textContent = "0 B";
+        totalSize.textContent = "0 B";
+      }
+    }
+    
+}     //end
+  
 //nfc reading decoding
 const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
 
@@ -308,7 +335,7 @@ function decodeToMap(str, keys) {
      handlePlantData(data);
    });
   } 
-//gps
+//gps decode
         function unpackBase64(b64) {
             try {
                 const binary = atob(b64);
@@ -318,10 +345,21 @@ function decodeToMap(str, keys) {
                 return {
                     lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
                     lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
-                    alt: view.getUint16(8) - 1000
+                    alt: view.getUint16(8) - 1000,
+                    acc: 0
                 };
             } catch (e) { return null; }
         }
+
+  function decodeGpS() {
+      const data = unpackBase64(b64);
+                    if (data) {
+                        gpsDispLat.innerText = data.lat;
+                        gpsDispLon.innerText = data.lon;
+                        gpsDispAlt.innerText = data.alt + "m";
+                        gpsDispAcc.innerText = data.acc + "m";
+                    }
+  }
   
   function updatePreviews() {
     //update NFC field
@@ -350,83 +388,7 @@ function calculateSize(text) {
   // Kept for backward compatibility - returns STRING
   return formatSize(calculateSizeInBytes(text));
 }
-
-  function updateNFCPreview() {
-    const plantId = plantIdInput.value;
-    nfcIdValue = nfcIdInput.value;
-    const plantName = plantNameInput;
-    const nameVariety = getVarietyText();
-    const latinName = latinNameInput.value;
-    const datum = datumInput.value;
-    const nfcTyp = nfcTypInput.value;
-    const egyeb = egyebInput.value;
-    const link = linkPreview.textContent;
     
-    const nfcData = `${nfcIdValue}/${plantId}/${plantName}/${nameVariety}/${latinName}/${nfcTyp}/${datum}/${gpsCardToggle.classList.contains('on') ? '/' + gpsPacket : ''}${othCardToggle.classList.contains('on') ? '/' + egyeb : ''}/`;
-    nfcPreview.textContent = nfcData;
-    
-    // Update size indicator
-    if (nfcSize) {
-      const linkSizeBytes = calculateSizeInBytes(link);
-      const nfcSizeBytes = calculateSizeInBytes(nfcData);
-      const totalSizeBytes = linkSizeBytes + nfcSizeBytes;
-      nfcSize.textContent = formatSize(nfcSizeBytes);
-      totalSize.textContent = formatSize(totalSizeBytes);
-      linkSize.textContent = formatSize(linkSizeBytes);
-    } else {
-      linkPreview.textContent = msg('ph_link_preview');
-      nfcPreview.textContent = msg('ph_nfc_preview');
-      if (linkSize) {
-        nfcSize.textContent = "0 B";
-        linkSize.textContent = "0 B";
-        totalSize.textContent = "0 B";
-      }
-    }   
-  }
-  updateNFCPreviewFn = updateNFCPreview;
-  //Gps
-  gpsStartBtn.addEventListener("click", () => {
-    console.log("button pressed startLiveCapture");
-    startLiveCapture();
-
-    });
-  
-  /*gpsStopBtn.addEventListener("click", stopLiveCapture);
-    
-  // Generate NFC button
-  gennfcBtn.addEventListener("click", () => {
-    loadLastNfcId(nfcIdInput);
-    updatePreviews();
-    const nfcData = nfcPreview.textContent;
-    
-    if (selectedPlantIndex == null) {
-      showError(errorMsg, msg('err_no_plant'));
-      return;
-    }
-  });
-
-    // Generate QR NFC button
-  qrnfcBtn.addEventListener("click", () => {
-    updatePreviews();
-    const nfcData = nfcPreview.textContent;
-    const link = linkPreview.textContent;
-    const combined = nfcData + " " + link;
-    if (selectedPlantIndex == null) {
-      showError(errorMsg, msg('err_no_plant'));
-      return;
-    }
-    
-    const encodedData = encodeURIComponent(combined);
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedData}`;
-    
-    const win = window.open(qrCodeUrl, "_blank");
-    if (!win) {
-      showError(errorMsg, msg('err_qr_fail'));
-    } else {
-      showError(errorMsg, msg('err_qr_ok'), "success");
-    }
-  });
-
   // Copy NFC Data button
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
