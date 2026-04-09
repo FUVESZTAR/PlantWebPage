@@ -163,15 +163,7 @@ async function populate() {
   let plants = [];
   let lastId = null;
   try {
-     readNFC((data) => {
-       if (data.id === lastId) return; // prevent spam
-       lastId = data.id;
-
-      console.log("New tag detected:", data);
-
-     // update UI
-     handlePlantData(data);
-});
+     nfcReadFunc();
   } catch (err) {
     console.error(err);
     showError(errorMsg, msg('err_nfc_load'));
@@ -188,7 +180,8 @@ async function populate() {
     //populateVarieties(nameValue);
     
     //updatePreviews();
-  });
+
+
  function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
             try {
@@ -210,42 +203,7 @@ async function populate() {
             } catch (err) { setStatus("Read Error", "red"); }
     }
   
-  // Populate varieties dropdown
-  function populateVarieties(plantName) {
-    nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
-    customVarietyMode = false;
-    nameVarietyCustomInput.style.display = "none";
-    nameVarietyCustomInput.value = "";
-    
-    if (!plantName) {
-      return;
-    }
-    
-    // Find all plants with same name (language-aware)
-    const varietiesSet = new Set();
-    
-    plants.forEach((plant, idx) => {
-      if (plant[nameProp] === plantName) {
-        const variety = (plant.Name_Variety || "").trim();
-        if (variety && !varietiesSet.has(variety)) {
-          varietiesSet.add(variety);
-          const opt = document.createElement("option");
-          opt.value = idx;
-          opt.textContent = variety;
-          nameVarietySelector.appendChild(opt);
-        }
-      }
-    });
-    
-    console.log("Found varieties:", varietiesSet.size);
-    
-    // Default to "Species" variety when available
-    const speciesOption = Array.from(nameVarietySelector.options).find(opt => opt.textContent === "Species");
-    if (speciesOption) {
-      nameVarietySelector.value = speciesOption.value;
-      nameVarietySelector.dispatchEvent(new Event('change'));
-    }
-  }
+  
 
 
  /* {
@@ -261,31 +219,28 @@ async function populate() {
   const plant = {};
   let name = "";
   let url = "";
+  console.log("New tag detected:", data.id);  
   data.records.forEach(r => {
-    if (r.type === "text") name = r.value;
-    if (r.type === "url") url = r.value;
+    if (r.type === "text") { name = r.value; console.log("Text: ", r.value);}
+    if (r.type === "url") { url = r.value; console.log("URL: ", r.value);} 
   });
+  
+    nfcPreview.textContent = "data. "+name + "lnk: "+ url;
 
-  renderFields("fields1", BASIC_FIED_MAP, plant);
 }     
   //gps
+ fuction nfcReadFunc() {
 
-        function packBase64(lat, lon, alt) {
-            const latInt = Math.round((lat + 90) * 1000000); 
-            const lonInt = Math.round((lon + 180) * 1000000);
-            const altInt = Math.round(alt + 1000);
+     readNFC((data) => {
+       if (data.id === lastId) return; // prevent spam
+       lastId = data.id;
 
-            const buffer = new ArrayBuffer(10);
-            const view = new DataView(buffer);
-            view.setUint32(0, latInt); 
-            view.setUint32(4, lonInt); 
-            view.setUint16(8, altInt); 
-
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-            return btoa(binary);
-        }
+      console.log("New tag detected:", data);
+      
+     // update UI
+     handlePlantData(data);
+   });
+  } 
 //gps
         function unpackBase64(b64) {
             try {
@@ -300,69 +255,6 @@ async function populate() {
                 };
             } catch (e) { return null; }
         }
-//gps
-        function startLiveCapture() {
-           console.log("Start capture");
-            if (watchId) navigator.geolocation.clearWatch(watchId);
-            
-            gpsStartBtn.style.display = "none";
-            gpsStopBtn.style.display = "block";
-            liveDot.style.display = "inline";
-            setStatus(msg('gps_standby').replace('Standing by','Fetching GPS satellites…'), "orange");
-
-            const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
-
-            watchId = navigator.geolocation.watchPosition((pos) => {
-                lastUpdateTime = Date.now();
-                currentData.lat = pos.coords.latitude;
-                currentData.lon = pos.coords.longitude;
-                currentData.alt = pos.coords.altitude || 0;
-                const acc = pos.coords.accuracy;
-
-                gpsDispLat.textContent = currentData.lat.toFixed(6);
-                gpsDispLon.textContent = currentData.lon.toFixed(6);
-                gpsDispAlt.textContent = Math.round(currentData.alt) + "m";
-                gpsDispAcc.textContent = Math.round(acc) + "m";
-
-                setStatus(`Updating… (${Math.round(acc)}m accuracy)`, "#0056b3");
-
-            }, (err) => setStatus("GPS Error: " + err.message, "red"), options);
-
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
-                updateTimer.textContent = `Last improvement: ${seconds}s ago`;
-            }, 1000);
-        }
-
-        function stopLiveCapture() {
-            console.log("Stop");
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-
-                //calculation
-                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
-                const gpstext = `L|${b64}|L`;
-                posPacketOut.textContent = gpstext;
-                posPacketSize.textContent = `${b64.length} B`;
-                
-            gpsStartBtn.style.display = "block";
-            gpsStartBtn.textContent = msg('btn_gps_start');
-            gpsStopBtn.style.display = "none";
-            liveDot.style.display = "none";
-            updateTimer.textContent = "Status: Data Locked";
- 
-            setStatus("Tracking Stopped. Data preserved.", "#333");
-            gpsPacket=gpstext;
-            updatePreviews();
-        }
-
   
   function updatePreviews() {
     //update NFC field
@@ -467,7 +359,7 @@ function calculateSize(text) {
       showError(errorMsg, msg('err_qr_ok'), "success");
     }
   });
-*/
+
   // Copy NFC Data button
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
@@ -499,7 +391,10 @@ function calculateSize(text) {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
   });
-
+  // NFC Read button
+  readNfcBtn.addEventListener("click", () => {
+    window.location.href = "Homepage.html";
+  });*/
   // Back button
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
@@ -554,10 +449,10 @@ function calculateSize(text) {
       saveNfcBtn.disabled = false;
       updatePreviews();
     }
-  });*/
+  });
 
   //save end
- /*
+
   // NFC Write button – writes nfc-preview (text) and link-preview (url) to a physical NFC tag
   const nfcWriteBtn = document.getElementById("nfc-write-button");
   nfcWriteBtn.addEventListener("click", async () => {
@@ -627,30 +522,8 @@ function calculateSize(text) {
   }
 
   // Set current date on load
-  datumInput.value = dateString;
+ // datumInput.value = dateString;
 
-  // Pre-select plant and variety from URL params (when navigating from Homepage)
-  const params = new URLSearchParams(window.location.search);
-  const paramName = params.get('name');
-  const paramplantId = params.get('plantId');
-
-  if (paramName) {
-    selector.value = paramName;
-    selector.dispatchEvent(new Event('change'));
-
-    if (paramplantId) {
-      // Find the option whose plant has the matching plantId
-      const matchOpt = Array.from(nameVarietySelector.options).find(opt => {
-        if (!opt.value || opt.value === '__custom__') return false;
-        const idx = parseInt(opt.value);
-        return String(plants[idx]?.Plant_ID) === paramplantId;
-      });
-      if (matchOpt) {
-        nameVarietySelector.value = matchOpt.value;
-        nameVarietySelector.dispatchEvent(new Event('change'));
-      }
-    }
-  }
 }
 
 if (document.readyState === "loading") {
