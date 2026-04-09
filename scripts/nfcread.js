@@ -93,8 +93,7 @@ const othCardBody = document.getElementById('oth_card_body');
             s.style.background = color;
             s.style.color = "white";
         }
-/**
- * Fetches the last value from column A of the NFC list sheet via the
+/* Fetches the last value from column A of the NFC list sheet via the
  * Apps Script Web App and pre-fills the NFC ID input.
  */
 async function loadLastNfcId(nfcIdInput, onLoaded) {
@@ -423,7 +422,7 @@ function calculateSize(text) {
   // NFC Read button
   readNfcBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
-  });*/
+  });
   // Back button
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
