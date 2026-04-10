@@ -156,6 +156,7 @@ const BASIC_FIED_MAP = [
   { key:'wind_tolerance', symbol:"#wind_tolerance", data:"Wind_tolerance", icon:"", typ:'coded', use:"create", i18n:"windtolerance" },
   { key:'watering_regime', symbol:"#watering_regime", data:"Watering_regime", icon:"", typ:'split', use:"create", i18n:"wateringregime" },
   { key:'pest_resistance', symbol:"#pest_resistance", data:"Pest_resistance", icon:"", typ:'split', use:"create", i18n:"pestresistance" },
+  { key:'nitrogen_fixer', symbol:"#nitrogen_fixer", data:"Nitrogen_fixer", icon:"", typ:'split', use:"create", i18n:"nitrogenfixer" },
   
   { key:'plant_root_type', symbol:"#plant_root_type", data:"Plant_root_type", typ:'split', icon:"", use:"create", i18n:"roottype" },
   { key:'foliage_type', symbol:"#foliage_type", data:"Foliage_type", icon:"", typ:'split', use:"create", i18n:"foliagetype" },
@@ -172,6 +173,7 @@ const BASIC_FIED_MAP = [
 
   { key:'active_in_page', symbol:"#active_in_page", data:"Active_in_page", icon:"", typ:'normal', use:"calc", i18n:"activeinpage" },
   { key:'active_in_nfc', symbol:"#active_in_nfc", data:"Active_in_NFC", icon:"", typ:'normal', use:"calc", i18n:"activeinnfc" },
+  { key:'data_status', symbol:"#data_status", data:"Data_status", icon:"", typ:'normal', use:"calc", i18n:"datastatus" },
   
   { key:'source_of_plant', symbol:"#source_of_plant", data:"Source_of_plant", icon:"", typ:'normal', use:"not", i18n:"sourceofplant" },
   { key:'status_datasource', symbol:"#status_datasource", data:"Status/datasource", icon:"", typ:'normal', use:"not", i18n:"statusdatasource" },
@@ -894,7 +896,7 @@ function renderFields(containerId, map, plant) {
       value.className = "field-card__value" + (formattedValue ? "" : " field-card__value--empty");
       value.id = item.key;
       value.textContent = formattedValue || "–";
-
+       
       card.appendChild(label);
       card.appendChild(value);
       container.appendChild(card);
@@ -958,6 +960,12 @@ document.querySelector("#back-button").addEventListener("click", () => {
     setIdentityFilterLink(identitylatinName, "latin",  plant.LatinName);
     if (identityvariety) identityvariety.innerHTML = `<strong> / ${plant.Name_Variety || ""}</strong>`;
     
+    // write it if data is not ready
+    If (plant.Data_status==="No") {  
+      const message1=document.getElementById('data_status'); 
+      message1.textContent = "Database not yet filled!";
+    }
+       
     // ── Build search texts once ───────────────────────────────────────────
     edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
     ediblePreparedText = buildSearchText(plant.Prepared_edible_parts_all, true);
