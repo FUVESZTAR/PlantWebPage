@@ -36,10 +36,8 @@ async function populate() {
   const backBtn = document.getElementById("back-btn");
   const errorMsg = document.getElementById("error-message");
   const nfcListBtn = document.getElementById("nfc-list-btn");
-  nfcListBtn.disabled = false;
-  listBtn.disabled = false;
   openBtn.disabled = true;
-  nfcBtn.disabled = false;
+  nfcGenBtn.disabled = false;
   varietySelector.disabled = true;
 
   let plants = []; // Declare plants outside try block so it's accessible in event handlers
@@ -78,7 +76,7 @@ async function populate() {
     if (!selectedName) {
       varietySelector.disabled = true;
       openBtn.disabled = true;
-      nfcBtn.disabled = false;
+      nfcGenBtn.disabled = true;
       return;
     }
 
@@ -106,14 +104,14 @@ async function populate() {
 
     varietySelector.disabled = false;
     openBtn.disabled = false;
-    nfcBtn.disabled = false;
+    nfcGenBtn.disabled = false;
   }
 
   selector.addEventListener("change", populateVarietiesForSelection);
 
   varietySelector.addEventListener("change", () => {
     openBtn.disabled = !selector.value;
-    nfcBtn.disabled = false;
+    nfcGenBtn.disabled = false;
   });
 
   openBtn.addEventListener("click", () => {
