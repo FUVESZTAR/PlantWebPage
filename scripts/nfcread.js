@@ -51,6 +51,7 @@ const linkPreview = document.getElementById("link-preview");
 
   const readNfcBtn = document.getElementById("read-nfc");
   const openLinkBtn = document.getElementById("open-link");
+const clearBtn = document.getElementById("clear-button");
   const copyNfcBtn = document.getElementById("copy-nfc");
   const copyLinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
@@ -185,7 +186,7 @@ async function populate() {
 
   let plants = [];
   let lastId = null;
-    
+  
   function decodeToMap(str, keys) {
      const packets = [];
      let index = 0;
@@ -251,6 +252,7 @@ function handlePlantData(data) {
     const plant = {};
     let text = "";
     let link = "";
+    clearForm();
     console.log("New tag detected:", data.id); 
     hwIdText.value = data.id;
     data.records.forEach(r => {
@@ -407,10 +409,24 @@ function handlePlantData(data) {
     }
   });
   //save end
-  openLinkBtn.addEventListener("click", () => {
-     link
-     backBtn.addEventListener("click", () => {
-       window.location.href = "Homepage.html";
+  //open link
+   openLinkBtn.addEventListener("click", () => {
+    const link = linkPreview.textContent.trim();
+    if (!link) {
+        console.warn("Link is empty");
+        return;
+    }
+    try {
+        new URL(link); // validate
+        window.location.href = link;
+      } catch {
+       console.error("Invalid URL:", link);
+    }
+});
+  
+  // clear with button
+   clearBtn.addEventListener("click", () => {
+     clearForm();
       });
   // clear all
   function clearForm() {
