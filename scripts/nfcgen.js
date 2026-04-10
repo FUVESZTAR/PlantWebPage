@@ -36,7 +36,7 @@ let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
-let hwId = "none";
+let serialNum = "none";
 let updateNFCPreviewFn = null;
 const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
@@ -54,7 +54,7 @@ const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
-const hwIdText = document.getElementById("hwId");
+const serialNumText = document.getElementById("serialNum");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 , acc: 0 };
         let lastUpdateTime = Date.now();
@@ -560,7 +560,7 @@ function calculateSize(text) {
     const nfcPos     = posPacketOut.textContent;
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
-    const hwID      = hwIdText.textContent;
+    const serialNum  = serialNumText.value; 
     
     if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
@@ -579,7 +579,7 @@ function calculateSize(text) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other: egyeb,hwID }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other: egyeb,serialNum }),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
@@ -634,7 +634,7 @@ function calculateSize(text) {
           ndef2.onreading = (event) => {
             let uid = event.serialNumber;
             console.log("Tag UID:", event.serialNumber);
-            hwIdText.textContent = uid ;
+            serialNumText.value = uid ;
           };
         } catch (error) {
         showError(errorMsg, msg('err_nfc_read') + error);
@@ -664,7 +664,7 @@ function calculateSize(text) {
     linkPreview.textContent = msg('ph_link_preview');
     linkSize.textContent = "0 B";
     totalSize.textContent = "0 B";
-    hwIdText.textContent = "none";
+    serialNumText.textContent = "none";
   }
 
   function showError(el, message, type = "error") {
