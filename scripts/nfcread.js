@@ -49,7 +49,7 @@ const nfcPreview = document.getElementById("nfc-preview");
 const linkPreview = document.getElementById("link-preview");
 
   const readNfcBtn = document.getElementById("read-nfc");
-  const openLinkBtn = document.getElementById("open-link");
+  const openLinkBtn = document.getElementById("open-link-button");
 const clearBtn = document.getElementById("clear-button");
   const copyNfcBtn = document.getElementById("copy-nfc");
 const genNfcBtn = document.getElementById("gen-nfc");
@@ -69,7 +69,7 @@ const nfcSize = document.getElementById("nfc-size");
 const linkSize = document.getElementById("link-size");
 const totalSize = document.getElementById("total-size");
 
-const serialNumText = document.getElementById("serialNr ");
+const serialNumText = document.getElementById("serialNr");
 
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardBody = document.getElementById('oth_card_body');
