@@ -44,13 +44,17 @@ async function loadNfcData() {
       });
       return {
         nfcId:          findVal(entry, 'NFC_ID'),
+        nfcType:        findVal(entry, 'NFC_type'),
         nfcText:        findVal(entry, 'NFC_text'),
         link:           findVal(entry, 'NFC_link'),
         plantId:        findVal(entry, 'Plant_ID'),
         created:        findVal(entry, 'NFC_created'),
         datum:          findVal(entry, 'Datum'),
         location:       findVal(entry, 'Location'),
+        other:           findVal(entry, 'Other'),
         nfcPosition:    findVal(entry, 'NFC_position'),
+        nfcSerialNr:    findVal(entry, 'NFC_serial_nr'),
+        nfcStatus:    findVal(entry, 'NFC_status'),
       };
     });
 }
@@ -93,8 +97,11 @@ function renderRows(rows) {
     const tdNfcId = document.createElement('td');
     tdNfcId.textContent = row.nfcId;
 
-    const tdNfc = document.createElement('td');
-    tdNfc.textContent = row.nfcText;
+    const tdNfcType = document.createElement('td');
+    tdNfcType.textContent = row.nfcType;
+    
+    const tdNfcText = document.createElement('td');
+    tdNfcText.textContent = row.nfcText;
 
     const tdLink = document.createElement('td');
     if (row.link && /^https?:\/\//i.test(row.link)) {
@@ -107,26 +114,29 @@ function renderRows(rows) {
     } else {
       tdLink.textContent = row.link;
     }
-
-    const tdPlantId = document.createElement('td');
-    tdPlantId.textContent = row.plantId;
-
+    
+    const tdNfcSerial = document.createElement('td');
+    tdNfcSerial.textContent = row.nfcSerialNr;
+    
     const tdCreated = document.createElement('td');
     tdCreated.textContent = row.created;
 
+    const tdPlantId = document.createElement('td');
+    tdPlantId.textContent = row.plantId;
+    
     const tdDatum = document.createElement('td');
     tdDatum.textContent = row.datum;
+    
+    const tdNfcPosition = document.createElement('td');
+    tdNfcPosition.textContent = row.nfcPosition;
+ 
+    const tdNfcStatus = document.createElement('td');
+    tdNfcStatus.textContent = row.nfcStatus;
 
-    const tdLocation = document.createElement('td');
-    tdLocation.textContent = row.location;
-
-    const tdGps = document.createElement('td');
-    tdGps.textContent = row.nfcPosition;
-
-    const tdAltitude = document.createElement('td');
-    tdAltitude.textContent = row.altitude || '';
-
-    tr.append(tdNfcId, tdNfc, tdLink, tdPlantId, tdCreated, tdDatum, tdLocation, tdGps, tdAltitude);
+    const tdOther = document.createElement('td');
+    tdOther.textContent = row.other;
+    
+    tr.append(tdNfcId, tdNfcStatus, tdNfcType, tdNfcText, tdLink, tdNfcSerial, tdCreated, tdPlantId,  tdDatum, tdNfcPosition, tdOther);
     tbody.appendChild(tr);
   });
 }
