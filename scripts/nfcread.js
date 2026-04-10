@@ -76,9 +76,7 @@ const gpsStopBtn = document.getElementById('gpsStopBtn');
 const liveDot = document.getElementById('liveDot');
            
 const gpsStatus = document.getElementById('gpsStatus');
-const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
-const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
 const NFC_TYP_LIST= { n: 'n – plant', o: 'o – graft', m: 'm – seed'};
 //gps
@@ -512,25 +510,3 @@ if (document.readyState === "loading") {
   populate();
 }
 
-gpsCardToggle.addEventListener('click', () => {
-  gpsCardToggle.classList.toggle('on');
-  const isOn = gpsCardToggle.classList.contains('on');
-  gpsCardBody.style.display = isOn ? 'block' : 'none';
-  // Auto-open the GPS panel when turning on
-  const gpsPanel = document.getElementById('panel-gps');
-  if (isOn && gpsPanel && !gpsPanel.classList.contains('open')) {
-    gpsPanel.classList.add('open');
-  }
-  if (updateNFCPreviewFn) updateNFCPreviewFn();
-});
-
-othCardToggle.addEventListener('click', () => {
-  othCardToggle.classList.toggle('on');
-  const isOn = othCardToggle.classList.contains('on');
-  othCardBody.style.display = isOn ? 'block' : 'none';
-  // Auto-open the Other panel when turning on
-  const othPanel = document.getElementById('panel-other');
-  if (isOn && othPanel && !othPanel.classList.contains('open')) {
-    othPanel.classList.add('open');
-  }
-});
