@@ -85,7 +85,7 @@ function buildDropdown(selectEl, allValues, placeholder) {
 
 function renderRows(rows) {
   const tbody = document.getElementById('nfc-list-body');
-  const colCount = document.querySelectorAll('.nfc-list-table thead th').length || 9;
+  const colCount = document.querySelectorAll('.nfc-list-table thead th').length || 12;
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="${colCount}">${t('nfc.empty')}</td></tr>`;
     return;
@@ -135,8 +135,11 @@ function renderRows(rows) {
 
     const tdOther = document.createElement('td');
     tdOther.textContent = row.other;
+
+    const tdLocation = document.createElement('td');
+    tdLocation.textContent = row.location;
     
-    tr.append(tdNfcId, tdNfcStatus, tdNfcType, tdNfcText, tdLink, tdNfcSerial, tdCreated, tdPlantId,  tdDatum, tdNfcPosition, tdOther);
+    tr.append(tdNfcId, tdNfcStatus, tdNfcType, tdNfcText, tdLink, tdNfcSerial, tdCreated, tdPlantId,  tdDatum, tdNfcPosition, tdLocation, tdOther);
     tbody.appendChild(tr);
   });
 }
@@ -156,7 +159,7 @@ async function populate() {
     console.error(err);
     errorMsg.textContent = t('nfc.error.loadFailed');
     document.getElementById('nfc-list-body').innerHTML =
-      `<tr><td colspan="${document.querySelectorAll('.nfc-list-table thead th').length || 9}">${t('nfc.error.loadData')}</td></tr>`;
+      `<tr><td colspan="${document.querySelectorAll('.nfc-list-table thead th').length || 12}">${t('nfc.error.loadData')}</td></tr>`;
     return;
   }
 
