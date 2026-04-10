@@ -611,7 +611,7 @@ function insertCategoryIconsRow(plant, mode, vers) {
 }
 
 // ── Size icons ───────────────────────────────────────────────────────────────
-
+/*
 function applySizeIcons_old(plant,FM) {
   const type = splitPipe(plant[FM.plant_type]).join(", ");
   console.log("típus: " +type);
@@ -737,6 +737,111 @@ function applySizeIcons(plant, FM) {
   // --- Step 5: Show only the right plant type icon ---
   [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
 
+  if      (type.includes("Tree")) { if (treeSvg)  treeSvg.style.display  = "block"; }
+  else if (type.includes("Bush")) { if (bushSvg)  bushSvg.style.display  = "block"; }
+  else                            { if (plantSvg) plantSvg.style.display = "block"; }
+}*/
+
+async function applySizeIcons(plant, FM) {
+  const type = splitPipe(plant[FM.plant_type]).join(", ");
+
+  const humanSvg  = document.getElementById("size-human-icon-1");
+  const treeSvg   = document.getElementById("size-tree-icon-2");
+  const bushSvg   = document.getElementById("size-bush-icon-1");
+  const plantSvg  = document.getElementById("size-plant-icon-1");
+  const houseSvg  = document.getElementById("size-house-icon-1");
+  const rootSvg   = document.getElementById("size-root-icon-1");
+
+  if (!humanSvg) { console.warn("Human icon missing"); return; }
+
+  const HUMAN_PX_H = 66;
+  const HUMAN_MM_H = 1800;
+  const pxPerMm    = HUMAN_PX_H / HUMAN_MM_H;
+
+  const plantWmm = Number(plant[FM.plant_width_max_mm])          || 1000;
+  const plantHmm = Number(plant[FM.plant_height_max_mm])         || 1000;
+  const rootWmm  = Number(plant[FM.plant_root_width_average_mm]) || 500;
+  const rootHmm  = Number(plant[FM.plant_root_depth_average_mm]) || 500;
+  const HOUSE_W_MM = 6000;
+  const HOUSE_H_MM = 4000;
+
+  // ── Step 1: fix viewBox BEFORE sizing ──────────────────────────────────
+  // For each SVG that uses a <use>, measure the real content bbox
+  // and override the viewBox so no empty space is included
+  function fixViewBox(svgEl) {
+    if (!svgEl) return;
+
+    // Temporarily make visible so getBBox works
+    const prevDisplay    = svgEl.style.display;
+    const prevVisibility = svgEl.style.visibility;
+    svgEl.style.display    = 'block';
+    svgEl.style.visibility = 'hidden'; // visible to browser but not to user
+
+    try {
+      const useEl = svgEl.querySelector('use');
+      if (!useEl) return;
+
+      const bbox = useEl.getBBox();
+      console.log(`${svgEl.id} getBBox:`, bbox);
+
+      if (bbox.width > 0 && bbox.height > 0) {
+        const pad = 2;
+        svgEl.setAttribute('viewBox',
+          `${bbox.x - pad} ${bbox.y - pad} ${bbox.width + pad * 2} ${bbox.height + pad * 2}`
+        );
+        console.log(`${svgEl.id} viewBox fixed to content bounds`);
+      }
+    } catch (e) {
+      console.warn(`fixViewBox failed for ${svgEl.id}:`, e);
+    }
+
+    svgEl.style.display    = prevDisplay;
+    svgEl.style.visibility = prevVisibility;
+  }
+
+  // Fix viewBox for all plant type icons
+  // (house and root already work, but doesn't hurt to fix them too)
+  [treeSvg, bushSvg, plantSvg, rootSvg, houseSvg].forEach(fixViewBox);
+
+  // ── Step 2: now scale based on corrected viewBox ────────────────────────
+  function scaleIcon(svgEl, realWmm, realHmm) {
+    if (!svgEl) return;
+
+    const targetPxW = realWmm * pxPerMm;
+    const targetPxH = realHmm * pxPerMm;
+
+    const vb = svgEl.viewBox?.baseVal;
+    if (vb && vb.width > 0 && vb.height > 0) {
+      const iconAspect   = vb.width / vb.height;
+      const targetAspect = targetPxW / targetPxH;
+      let finalW, finalH;
+      if (iconAspect > targetAspect) {
+        finalW = targetPxW;
+        finalH = targetPxW / iconAspect;
+      } else {
+        finalH = targetPxH;
+        finalW = targetPxH * iconAspect;
+      }
+      svgEl.style.width  = `${finalW}px`;
+      svgEl.style.height = `${finalH}px`;
+    } else {
+      svgEl.style.width  = `${targetPxW}px`;
+      svgEl.style.height = `${targetPxH}px`;
+    }
+    console.log(`${svgEl.id}: ${svgEl.style.width} x ${svgEl.style.height} (real: ${realWmm}x${realHmm}mm)`);
+  }
+
+  scaleIcon(houseSvg,  HOUSE_W_MM, HOUSE_H_MM);
+  scaleIcon(treeSvg,   plantWmm,   plantHmm);
+  scaleIcon(bushSvg,   plantWmm,   plantHmm);
+  scaleIcon(plantSvg,  plantWmm,   plantHmm);
+  scaleIcon(rootSvg,   rootWmm,    rootHmm);
+
+  humanSvg.style.width  = `${HUMAN_PX_H * (31/66)}px`;
+  humanSvg.style.height = `${HUMAN_PX_H}px`;
+
+  // ── Step 3: show correct plant type ────────────────────────────────────
+  [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
   if      (type.includes("Tree")) { if (treeSvg)  treeSvg.style.display  = "block"; }
   else if (type.includes("Bush")) { if (bushSvg)  bushSvg.style.display  = "block"; }
   else                            { if (plantSvg) plantSvg.style.display = "block"; }
