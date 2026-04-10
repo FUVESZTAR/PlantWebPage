@@ -1,7 +1,8 @@
 import { loadPlantData } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 
-document.querySelector('#nfc-button').addEventListener('click', () => {
+const nfcGenBtn = document.getElementById("nfc-gen-button");
+nfcGenBtn.addEventListener('click', () => {
   const nameEl = document.getElementById('plant-selector');
   const varEl = document.getElementById('plant-selector-variety');
   const name = nameEl ? nameEl.value : '';
@@ -30,7 +31,7 @@ async function populate() {
   const selector = document.getElementById("plant-selector");
   const varietySelector = document.getElementById("plant-selector-variety");
   const openBtn = document.getElementById("open-view");
-  const nfcBtn = document.getElementById("nfc-button");
+  const nfcReadBtn = document.getElementById("nfc-read-button");
   const listBtn = document.getElementById("plant-list-btn");
   const backBtn = document.getElementById("back-btn");
   const errorMsg = document.getElementById("error-message");
@@ -149,11 +150,16 @@ async function populate() {
     });
   }
     // Back button
+  if (backBtn) {
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
-  });
+  });}
+   // Back button
+  if (nfcReadBtn) {
+  nfcReadBtn.addEventListener("click", () => {
+    window.location.href = 'Nfcreader.html';
+  });}
 } // end populate
-
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => { setupLanguageButtons(); populate(); });
