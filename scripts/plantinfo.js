@@ -1069,8 +1069,9 @@ document.querySelector("#back-button").addEventListener("click", () => {
     const message1=document.getElementById('data_status');
     if (plant.Data_status==="No") {  
       message1.textContent = "Database not yet filled!";
-      message1.style.display = "block";
-    } else {message1.style.display = "none"; }
+      message1.style.display = "inline-block";
+      console.log("data not ready. plant.Data_status= "+plant.Data_status);
+    } else {message1.style.display = "none"; console.log("data ready. plant.Data_status= "+plant.Data_status);}
        
     // ── Build search texts once ───────────────────────────────────────────
     edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
