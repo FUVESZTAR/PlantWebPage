@@ -296,7 +296,7 @@ function makePartSvgIcon(term, id = null, type = 'display:inline-block') {
   //svg.setAttribute('viewBox', '0 0 512 512');
   //svg.setAttribute('aria-hidden', 'true');
   //svg.style.cssText = 'width:20px;height:20px;display:inline-block;margin-right:6px';
-  svg.style.cssText = type;
+  svg.style.cssText = type; //'display:inline-block'
   if (id) {
     const makeID = `${term}-${id}`;
     svg.setAttribute('id', makeID);
@@ -654,7 +654,7 @@ console.log("test in sie fc FM p widht: "+wAvg);
   });
 
   // Show only the correct plant type icon
-  [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });
+  [treeSvg, bushSvg, plantSvg].forEach(s => { if (s) s.style.display = "none"; });  
 
   if      (type === "Tree")  { if (treeSvg)  treeSvg.style.display  = ""; }
   else if (type === "Bush")  { if (bushSvg)  bushSvg.style.display  = ""; }
@@ -961,10 +961,11 @@ document.querySelector("#back-button").addEventListener("click", () => {
     if (identityvariety) identityvariety.innerHTML = `<strong> / ${plant.Name_Variety || ""}</strong>`;
     
     // write it if data is not ready
-    If (plant.Data_status==="No") {  
-      const message1=document.getElementById('data_status'); 
+    const message1=document.getElementById('data_status');
+    if (plant.Data_status==="No") {  
       message1.textContent = "Database not yet filled!";
-    }
+      message1.style.display = "block";
+    } else {message1.style.display = "none"; }
        
     // ── Build search texts once ───────────────────────────────────────────
     edibleText         = buildSearchText(plant.Raw_edible_parts_all,      true);
