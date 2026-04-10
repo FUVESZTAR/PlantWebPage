@@ -283,7 +283,7 @@ function handlePlantData(data) {
     let text = "";
     let link = "";
     console.log("New tag detected:", data.id); 
-    hwIdText.textContent = data.id;
+    hwIdText.value = data.id;
     data.records.forEach(r => {
       if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
       if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
