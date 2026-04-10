@@ -668,6 +668,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       err_copy_fail:    'Failed to copy: ',
       err_nfc_ns:       'Web NFC is not supported on this browser/device.',
       err_nfc_write:    'Error: ',
+      err_nfc_read:     'NFC read error: ',
+      err_nfc_scan_ok:  'Scanning active – tap NFC tag…',
       err_nfc_ok:       'Successfully written to NFC tag! ✅',
       err_save_ok:      'NFC saved to list!',
       err_copy_nfc_ok:  'NFC data copied to clipboard!',
@@ -740,6 +742,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       err_copy_fail:    'Másolás sikertelen: ',
       err_nfc_ns:       'A Web NFC nem támogatott ezen a böngészőn/eszközön.',
       err_nfc_write:    'Hiba: ',
+      err_nfc_read:     'NFC olvasási hiba: ',
+      err_nfc_scan_ok:  'Szkennelés aktív – tartsd oda az NFC cimkét…',
       err_nfc_ok:       'Sikeresen írva az NFC cimkére! ✅',
       err_save_ok:      'NFC mentve a listába!',
       err_copy_nfc_ok:  'NFC adat vágólapra másolva!',
@@ -808,5 +812,45 @@ button:disabled { opacity:.55; cursor:not-allowed; }
   </script>
 
   <script src="scripts/nfcread.js" type="module"></script>
+
+<div id="debug-section" style="margin-top:40px;padding:16px;background:#1e1e1e;color:#d4d4d4;font-family:monospace;font-size:13px;border-top:3px solid #555;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <strong style="color:#9cdcfe;font-size:15px;">🛠 Debug Console</strong>
+    <button onclick="document.getElementById('debug-log').replaceChildren()" style="padding:2px 10px;font-size:12px;cursor:pointer;">Clear</button>
+  </div>
+  <div id="debug-log" style="max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;"></div>
+</div>
+<script>
+(function () {
+  const log = document.getElementById('debug-log');
+
+  function appendEntry(level, args) {
+    const line = document.createElement('div');
+    line.style.borderBottom = '1px solid #333';
+    line.style.padding = '2px 0';
+    const colors = { log: '#d4d4d4', warn: '#dcdcaa', error: '#f48771' };
+    const prefixes = { log: '[LOG]', warn: '[WARN]', error: '[ERROR]' };
+    line.style.color = colors[level] || '#d4d4d4';
+    const text = args.map(a => {
+      if (a instanceof Error) return a.stack || String(a);
+      if (typeof a === 'object' && a !== null) {
+        try { return JSON.stringify(a, null, 2); } catch { return String(a); }
+      }
+      return String(a);
+    }).join(' ');
+    line.textContent = `${prefixes[level]} ${text}`;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  const _log   = console.log.bind(console);
+  const _warn  = console.warn.bind(console);
+  const _error = console.error.bind(console);
+
+  console.log = function (...args) { _log(...args);   appendEntry('log',   args); };
+  console.warn  = function (...args) { _warn(...args); appendEntry('warn',  args); };
+  console.error = function (...args) { _error(...args); appendEntry('error', args); };
+})();
+</script>
 </body>
 </html>
