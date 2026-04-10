@@ -36,7 +36,6 @@ let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
-let hwId = "none";
 
 const nfcIdInput = document.getElementById("nfcId");
 const plantIdInput = document.getElementById("plantId");
@@ -68,7 +67,7 @@ const nfcSize = document.getElementById("nfc-size");
 const linkSize = document.getElementById("link-size");
 const totalSize = document.getElementById("total-size");
 
-const serialNum = document.getElementById("hwId");
+const serialNumText = document.getElementById("serialNr ");
 
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardBody = document.getElementById('oth_card_body');
@@ -254,7 +253,7 @@ function handlePlantData(data) {
     let link = "";
     clearForm();
     console.log("New tag detected:", data.id); 
-    serialNum.value = data.id;
+    serialNumText.value = data.id;
     data.records.forEach(r => {
       if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
       if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
@@ -380,7 +379,7 @@ function handlePlantData(data) {
     const nfcPos     = posPacketOut.textContent;
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
-    const serialNum      = serialNum.value;
+    const serialNum      = serialNumText.value;
 
     if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
@@ -446,7 +445,7 @@ function handlePlantData(data) {
     datumInput.value = "";
     nfcTypInput.value = "";
     egyebInput.value = "";
-    serialNum.value = "";
+    serialNumText.value = "";
     nfcPreview.textContent = msg('ph_nfc_preview');
     linkPreview.textContent = msg('ph_link_preview');
     nfcSize.textContent = "0 B";
