@@ -175,7 +175,7 @@ async function readNFC(onRead) {
 
          onRead(result);
       }; //end on reading
-    showError(errorMsg, msg('err_nfc_tap'), "info");
+    showError(errorMsg, msg('err_nfc_scan_ok'), "info");
     } catch (error) {
       showError(errorMsg, msg('err_nfc_read') + error);
       console.error(error);
