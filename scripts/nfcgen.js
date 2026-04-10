@@ -56,7 +56,7 @@ const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
 const hwIdText = document.getElementById("hwId");
 //gps
-        let currentData = { lat: 0, lon: 0, alt: 0 };
+        let currentData = { lat: 0, lon: 0, alt: 0 , acc: 0 };
         let lastUpdateTime = Date.now();
         let timerInterval;
         let watchId = null;
@@ -287,16 +287,18 @@ async function populate() {
   });      
   //gps
 
-        function packBase64(lat, lon, alt) {
+        function packBase64(lat, lon, alt, acc) {
             const latInt = Math.round((lat + 90) * 1000000); 
             const lonInt = Math.round((lon + 180) * 1000000);
             const altInt = Math.round(alt + 1000);
+            const accInt = Math.round(acc + 1000);
 
             const buffer = new ArrayBuffer(10);
             const view = new DataView(buffer);
             view.setUint32(0, latInt); 
             view.setUint32(4, lonInt); 
-            view.setUint16(8, altInt); 
+            view.setUint16(8, altInt);
+            view.setUint16(8, accInt); 
 
             const bytes = new Uint8Array(buffer);
             let binary = '';
@@ -313,7 +315,8 @@ async function populate() {
                 return {
                     lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
                     lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
-                    alt: view.getUint16(8) - 1000
+                    alt: view.getUint16(8) - 1000,
+                    acc: view.getUint16(8) - 1000
                 };
             } catch (e) { return null; }
         }
@@ -334,14 +337,14 @@ async function populate() {
                 currentData.lat = pos.coords.latitude;
                 currentData.lon = pos.coords.longitude;
                 currentData.alt = pos.coords.altitude || 0;
-                const acc = pos.coords.accuracy;
+                currentData.acc = pos.coords.accuracy;
 
                 gpsDispLat.textContent = currentData.lat.toFixed(6);
                 gpsDispLon.textContent = currentData.lon.toFixed(6);
                 gpsDispAlt.textContent = Math.round(currentData.alt) + "m";
-                gpsDispAcc.textContent = Math.round(acc) + "m";
+                gpsDispAcc.textContent = Math.round(currentData.acc) + "m";
 
-                setStatus(`Updating… (${Math.round(acc)}m accuracy)`, "#0056b3",gpsStatus);
+                setStatus(`Updating… (${Math.round(currentData.acc)}m accuracy)`, "#0056b3",gpsStatus);
 
             }, (err) => setStatus("GPS Error: " + err.message, "red",gpsStatus), options);
 
@@ -364,7 +367,7 @@ async function populate() {
             }
 
                 //calculation
-                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt);
+                const b64 = packBase64(currentData.lat, currentData.lon, currentData.alt, currentData.acc);
                 const gpstext = `L|${b64}|L`;
                 posPacketOut.textContent = gpstext;
                 posPacketSize.textContent = `${b64.length} B`;
