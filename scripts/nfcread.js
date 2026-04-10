@@ -115,36 +115,50 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 
 async function readNFC(onRead) {
-  if (!("NDEFReader" in window)) return;
+  if (!('NDEFReader' in window)) {
+      showError(errorMsg, msg('err_nfc_ns'));
+      return;
+    }
+  nfcReadBtn.disabled = true;
+  showError(errorMsg, msg('err_nfc_tap'), "info");
 
-  const ndef = new NDEFReader();
-  await ndef.scan();
+  try {
+ // console.log("NFC read "+ id);
+    const ndef = new NDEFReader();
+    await ndef.scan();
 
-  ndef.onreading = (event) => {
-    const result = {
-      id: event.serialNumber,
-      records: []
-    };
+    ndef.onreading = (event) => {
+       const result = {
+         id: event.serialNumber,
+         records: [],
+       }; } 
+     showError(errorMsg, msg('err_nfc_ok'), "Read success");
+      } catch (error) {
+      showError(errorMsg, msg('err_nfc_read') + error);
+      console.error(error);
+    } finally {
+        nfcReadBtn.disabled = false;
+    } 
+  
+     for (const record of event.message.records) {
+        let value = "";
 
-    for (const record of event.message.records) {
-      let value = "";
+        switch (record.recordType) {
+         case "text":
+           value = new TextDecoder(record.encoding).decode(record.data);
+           break;
 
-      switch (record.recordType) {
-        case "text":
-          value = new TextDecoder(record.encoding).decode(record.data);
-          break;
+         case "url":
+           value = new TextDecoder().decode(record.data);
+           break;
 
-        case "url":
-          value = new TextDecoder().decode(record.data);
-          break;
+         case "mime":
+           value = new TextDecoder().decode(record.data);
+           break;
 
-        case "mime":
-          value = new TextDecoder().decode(record.data);
-          break;
-
-        default:
-          value = new TextDecoder().decode(record.data);
-      }
+         default:
+           value = new TextDecoder().decode(record.data);
+       }
 
       result.records.push({
         type: record.recordType,
@@ -153,8 +167,7 @@ async function readNFC(onRead) {
     }
 
     onRead(result);
-  };
-}
+  }
 
  async function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
@@ -171,6 +184,7 @@ async function readNFC(onRead) {
                         document.getElementById('read-lat').innerText = data.lat;
                         document.getElementById('read-lon').innerText = data.lon;
                         document.getElementById('read-alt').innerText = data.alt + "m";
+                      document.getElementById('read-acc').innerText = data.alt + "m";
                         setStatus("Tag Decoded!", "green");
                     }
                 };
@@ -188,30 +202,29 @@ async function populate() {
 
   let plants = [];
   let lastId = null;
-
+    
   function decodeToMap(str, keys) {
-  const packets = [];
-  let index = 0;
+      const packets = [];
+      let index = 0;
 
-  // 1. protect packets
-  const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
-    packets.push(content);
-    return `__PKT_${index++}__`;
-  });
+      // 1. protect packets
+      const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
+        packets.push(content);
+        return `__PKT_${index++}__`;
+      });
 
-  // 2. split safely
-//  const parts = protectedStr.split("/");
-
-  // 3. restore packets
-  const values = parts.map(p => {
-    const match = p.match(/__PKT_(\d+)__/);
-    return match ? packets[match[1]] : p;
-  });
-
-  // 4. map
-  return Object.fromEntries(
-    keys.map((k, i) => [k, { value: values[i] ?? "" }])
-  );
+      // 2. split safely
+    //  const parts = protectedStr.split("/");
+    
+      // 3. restore packets
+      const values = parts.map(p => {
+        const match = p.match(/__PKT_(\d+)__/);
+        return match ? packets[match[1]] : p;
+      });
+    
+      // 4. map
+      return Object.fromEntries(
+      );
 }
   
   //gps
@@ -290,8 +303,8 @@ function calculateSize(text) {
       if (data) {
                         gpsDispLat.innerText = data.lat;
                         gpsDispLon.innerText = data.lon;
-                        gpsDispAlt.innerText = data.alt + "m";
-                        gpsDispAcc.innerText = data.acc + "m";
+                        gpsDispAlt.innerText = data.alt + " m";
+                        gpsDispAcc.innerText = data.acc + " m";
         }
 
     //size
@@ -307,7 +320,7 @@ function calculateSize(text) {
        posPacketSize.textContent = formatSize(posSizeBytes);
     }
     
-}     //end
+}     //end handle plants
 
   //read
   function nfcReadFunc() {
@@ -315,9 +328,6 @@ function calculateSize(text) {
      readNFC((data) => {
        if (data.id === lastId) return; // prevent spam
        lastId = data.id;
-
-       console.log("New tag detected:", data);
-      
      // update UI
      handlePlantData(data);
    });
@@ -509,7 +519,7 @@ function calculateSize(text) {
   // Set current date on load
  // datumInput.value = dateString;
 
-}
+} //end populate
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", populate);
