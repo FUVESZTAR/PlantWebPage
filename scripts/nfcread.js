@@ -320,6 +320,7 @@ function handlePlantData(data) {
 //const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
 
   // Copy NFC Data button
+   if (copyNfcBtn) {
   copyNfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
@@ -333,9 +334,10 @@ function handlePlantData(data) {
     }).catch(err => {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
-  });
+  });}
 
   // Copy Link button
+  if (copyLinkBtn) {
   copyLinkBtn.addEventListener("click", () => {
     const link = linkPreview.textContent;
     
@@ -349,19 +351,22 @@ function handlePlantData(data) {
     }).catch(err => {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
-  });
+  });}
  
   // NFC Read button
+  if (readNfcBtn) {
   readNfcBtn.addEventListener("click", () => {
      nfcReadFunc();
-  });
+  });}
  
   // Back button
+  if (backBtn) {
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
-  });
+  });}
 
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
+  if (saveNfcBtn) {
   saveNfcBtn.addEventListener("click", async () => {
     const today = new Date();
     const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -407,9 +412,10 @@ function handlePlantData(data) {
     } finally {
       saveNfcBtn.disabled = false;
     }
-  });
+  });}
   //save end
   //open link
+  if (openLinkBtn) {
    openLinkBtn.addEventListener("click", () => {
     const link = linkPreview.textContent.trim();
     if (!link) {
@@ -422,12 +428,13 @@ function handlePlantData(data) {
       } catch {
        console.error("Invalid URL:", link);
     }
-});
+});}
   
   // clear with button
+   if (clearBtn) {
    clearBtn.addEventListener("click", () => {
      clearForm();
-      });
+      });}
   // clear all
   function clearForm() {
     plantIdInput.value = "";
