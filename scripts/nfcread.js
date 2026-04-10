@@ -49,12 +49,12 @@ const egyebInput = document.getElementById("egyeb");
 const nfcPreview = document.getElementById("nfc-preview");
 const linkPreview = document.getElementById("link-preview");
 
-  const gennfcBtn = document.getElementById("generate-nfc");
+  const genNfcBtn = document.getElementById("generate-nfc");
   const readNfcBtn = document.getElementById("read-nfc");
   const openLinkBtn = document.getElementById("open-link");
   const qrnfcBtn = document.getElementById("qr-button");
-  const copynfcBtn = document.getElementById("copy-nfc");
-  const copylinkBtn = document.getElementById("copy-link");
+  const copyNfcBtn = document.getElementById("copy-nfc");
+  const copyLinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
   const errorMsg = document.getElementById("error-message");
@@ -87,7 +87,7 @@ const NFC_TYP_LIST= { n: 'n – plant', o: 'o – graft', m: 'm – seed'};
         let timerInterval;
         let watchId = null;
 
-        function setStatus(msg_text, color) {
+  function setStatus(msg_text, color) {
             const s = gpsStatus;
             s.textContent = msg_text;
             s.style.background = color;
@@ -115,46 +115,61 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 
 async function readNFC(onRead) {
-  if (!("NDEFReader" in window)) return;
+  if (!('NDEFReader' in window)) {
+      showError(errorMsg, msg('err_nfc_ns'));
+      return;
+    } else {
+     nfcReadBtn.disabled = true;
+      showError(errorMsg, msg('err_nfc_tap'), "info");
+  }
+  
+  try {
+ // console.log("NFC read "+ id);
+    const ndef = new NDEFReader();
+    await ndef.scan();
 
-  const ndef = new NDEFReader();
-  await ndef.scan();
+       ndef.onreading = (event) => {
+         const result = {
+           id: event.serialNumber,
+           records: []
+         };
 
-  ndef.onreading = (event) => {
-    const result = {
-      id: event.serialNumber,
-      records: []
-    };
+         for (const record of event.message.records) {
+           let value = "";
 
-    for (const record of event.message.records) {
-      let value = "";
+           switch (record.recordType) {
+             case "text":
+               value = new TextDecoder(record.encoding).decode(record.data);
+               break;
 
-      switch (record.recordType) {
-        case "text":
-          value = new TextDecoder(record.encoding).decode(record.data);
-          break;
+             case "url":
+               value = new TextDecoder().decode(record.data);
+               break;
+     
+             case "mime":
+               value = new TextDecoder().decode(record.data);
+               break;
 
-        case "url":
-          value = new TextDecoder().decode(record.data);
-          break;
+             default:
+               value = new TextDecoder().decode(record.data);
+           }
 
-        case "mime":
-          value = new TextDecoder().decode(record.data);
-          break;
+           result.records.push({
+             type: record.recordType,
+             value
+           });
+         }
 
-        default:
-          value = new TextDecoder().decode(record.data);
-      }
-
-      result.records.push({
-        type: record.recordType,
-        value
-      });
-    }
-
-    onRead(result);
-  };
-}
+         onRead(result);
+      }; //end on reading
+    showError(errorMsg, msg('err_nfc_ok'), "Read success");
+    } catch (error) {
+      showError(errorMsg, msg('err_nfc_read') + error);
+      console.error(error);
+    } finally {
+        nfcReadBtn.disabled = false;
+    } 
+} //end readNFC
 
  async function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
@@ -188,33 +203,29 @@ async function populate() {
 
   let plants = [];
   let lastId = null;
-
+    
   function decodeToMap(str, keys) {
-  const packets = [];
-  let index = 0;
+      const packets = [];
+      let index = 0;
+      // 1. protect packets
+      const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
+        packets.push(content);
+        return `__PKT_${index++}__`;
+      });
+      // 2. split safely
+      const parts = protectedStr.split("/");
 
-  // 1. protect packets
-  const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
-    packets.push(content);
-    return `__PKT_${index++}__`;
-  });
-
-  // 2. split safely
-  const parts = protectedStr.split("/");
-
-  // 3. restore packets
-  const values = parts.map(p => {
-    const match = p.match(/__PKT_(\d+)__/);
-    return match ? packets[match[1]] : p;
-  });
-
-  // 4. map
-  return Object.fromEntries(
-    keys.map((k, i) => [k, { value: values[i] ?? "" }])
-  );
-}
+      // 3. restore packets
+      const values = parts.map(p => {
+        const match = p.match(/__PKT_(\d+)__/);
+        return match ? packets[match[1]] : p;
+      });
+      // 4. map
+      return Object.fromEntries(
+        keys.map((k, i) => [k, { value: values[i] ?? "" }])
+      );
+    } //end decodeToMap
   
-  //gps
  
 //gps decode
   function unpackBase64(b64) {
@@ -230,7 +241,7 @@ async function populate() {
                     acc: 0
                 };
             } catch (e) { return null; }
-        }
+        } // end unpackBase64
   
   function calculateSizeInBytes(text) {
   // Calculate size in bytes (UTF-8 encoding) - returns NUMBER
@@ -256,7 +267,7 @@ function calculateSize(text) {
 }
   
       // data
-  function handlePlantData(data) {
+function handlePlantData(data) {
     const plant = {};
     let text = "";
     let link = "";
@@ -312,33 +323,23 @@ function calculateSize(text) {
 
   //read
   function nfcReadFunc() {
-
      readNFC((data) => {
        if (data.id === lastId) return; // prevent spam
        lastId = data.id;
-
        console.log("New tag detected:", data);
-      
-     // update UI
-     handlePlantData(data);
+       // update UI
+       handlePlantData(data);
    });
   } 
 
+  nfcReadFunc();
   
-  try {
-     nfcReadFunc();
-  } catch (err) {
-    console.error(err);
-    showError(errorMsg, msg('err_nfc_load'));
-    selector.innerHTML = '<option value="">(error)</option>';
-    return;
-  }
 
 //nfc reading decoding
 //const input = "5/1/Alma/Species/Malus domestica/n/2026-04-09/L|BV1KgAq6lQAD6A==|L/oth";
 
   // Copy NFC Data button
-  copynfcBtn.addEventListener("click", () => {
+  copyNfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
     if (isPlaceholder(nfcData)) {
@@ -354,7 +355,7 @@ function calculateSize(text) {
   });
 
   // Copy Link button
-  copylinkBtn.addEventListener("click", () => {
+  copyLinkBtn.addEventListener("click", () => {
     const link = linkPreview.textContent;
     
     if (isPlaceholder(link) || !link) {
@@ -371,14 +372,7 @@ function calculateSize(text) {
  
   // NFC Read button
   readNfcBtn.addEventListener("click", () => {
-      try {
      nfcReadFunc();
-  } catch (err) {
-    console.error(err);
-    showError(errorMsg, msg('err_nfc_load'));
-    selector.innerHTML = '<option value="">(error)</option>';
-    return;
-  }
   });
  
   // Back button
