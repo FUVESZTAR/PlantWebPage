@@ -52,6 +52,7 @@ const linkPreview = document.getElementById("link-preview");
   const openLinkBtn = document.getElementById("open-link");
 const clearBtn = document.getElementById("clear-button");
   const copyNfcBtn = document.getElementById("copy-nfc");
+const genNfcBtn = document.getElementById("gen-nfc");
   const copyLinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
@@ -364,6 +365,12 @@ function handlePlantData(data) {
     window.location.href = "Homepage.html";
   });}
 
+  // Gen NFC button
+  if (genNfcBtn) {
+  genNfcBtn.addEventListener("click", () => {
+    window.location.href = "Nfcgenerator.html";
+  });}
+  
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   if (saveNfcBtn) {
   saveNfcBtn.addEventListener("click", async () => {
