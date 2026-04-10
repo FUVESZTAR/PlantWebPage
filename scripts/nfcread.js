@@ -216,29 +216,27 @@ async function populate() {
   let lastId = null;
     
   function decodeToMap(str, keys) {
-      const packets = [];
-      let index = 0;
-      // 1. protect packets
-      const protectedStr = str.replace(/\/L\|(.*?)\|L\//g, (_, content) => {
-        packets.push(content);
-        return `__PKT_${index++}__`;
-      });
-      // 2. split safely
-      const parts = protectedStr.split("/");
-
-      // 3. restore packets
-      const values = parts.map(p => {
-        const match = p.match(/__PKT_(\d+)__/);
-        return match ? packets[match[1]] : p;
-      });
-      // 4. map
-      return Object.fromEntries(
-        keys.map((k, i) => [k, { value: values[i] ?? "" }])
-      );
-    } //end decodeToMap
-  
+     const packets = [];
+     let index = 0;
+     // 1. protect packets (NO leading/trailing / required)
+     const protectedStr = str.replace(/L\|([\s\S]*?)\|L/g, (_, content) => {
+       packets.push(content);
+       return `__PKT_${index++}__`;
+     });
+     // 2. split normally
+     const parts = protectedStr.split("/");
+     // 3. restore packets
+     const values = parts.map(p => {
+       const match = p.match(/^__PKT_(\d+)__$/);
+       return match ? packets[match[1]] : p;
+     });
+     // 4. map to keys
+     return Object.fromEntries(
+       keys.map((k, i) => [k, { value: values[i] ?? "" }])
+     );
+   }//end decodeToMap
  
-//gps decode
+//unpackBase64
   function unpackBase64(b64) {
             try {
                 const binary = atob(b64);
