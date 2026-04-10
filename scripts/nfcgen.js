@@ -115,6 +115,7 @@ async function populate() {
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
   const errorMsg = document.getElementById("error-message");
+  const nfcWriteBtn = document.getElementById("nfc-write-button");
   
   let plants = [];
 
@@ -458,15 +459,17 @@ function calculateSize(text) {
   }
   updateNFCPreviewFn = updateNFCPreview;
   //Gps
+  if (gpsStartBtn) {
   gpsStartBtn.addEventListener("click", () => {
     console.log("button pressed startLiveCapture");
     startLiveCapture();
 
-    });
-  
+    });}
+  if (gpsStopBtn) {
   gpsStopBtn.addEventListener("click", stopLiveCapture);
-    
+  }  
   // Generate NFC button
+  if (gennfcBtn) {
   gennfcBtn.addEventListener("click", () => {
     loadLastNfcId(nfcIdInput);
     updatePreviews();
@@ -476,9 +479,10 @@ function calculateSize(text) {
       showError(errorMsg, msg('err_no_plant'));
       return;
     }
-  });
+  });}
 
     // Generate QR NFC button
+  if (qrnfcBtn) {
   qrnfcBtn.addEventListener("click", () => {
     updatePreviews();
     const nfcData = nfcPreview.textContent;
@@ -498,9 +502,10 @@ function calculateSize(text) {
     } else {
       showError(errorMsg, msg('err_qr_ok'), "success");
     }
-  });
+  });}
 
   // Copy NFC Data button
+  if (copynfcBtn) {
   copynfcBtn.addEventListener("click", () => {
     const nfcData = nfcPreview.textContent;
     
@@ -514,9 +519,10 @@ function calculateSize(text) {
     }).catch(err => {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
-  });
+  });}
 
   // Copy Link button
+  if (copylinkBtn) {
   copylinkBtn.addEventListener("click", () => {
     const link = linkPreview.textContent;
     
@@ -530,14 +536,16 @@ function calculateSize(text) {
     }).catch(err => {
       showError(errorMsg, msg('err_copy_fail') + err.message);
     });
-  });
+  });}
 
   // Back button
+  if (backBtn) {
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
-  });
+  });}
 
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
+  if (saveNfcBtn) {
   saveNfcBtn.addEventListener("click", async () => {
     updatePreviews();
     const today = new Date();
@@ -587,12 +595,12 @@ function calculateSize(text) {
       saveNfcBtn.disabled = false;
       updatePreviews();
     }
-  });
+  });}
 
   //save end
 
   // NFC Write button – writes nfc-preview (text) and link-preview (url) to a physical NFC tag
-  const nfcWriteBtn = document.getElementById("nfc-write-button");
+  if (nfcWriteBtn) {
   nfcWriteBtn.addEventListener("click", async () => {
     updatePreviews();
     const nfcData = nfcPreview.textContent;
@@ -638,7 +646,7 @@ function calculateSize(text) {
     } finally {
         nfcWriteBtn.disabled = false;
     } 
-  });//end
+  });}//end
 
   function clearForm() {
     plantIdInput.value = "";
@@ -697,14 +705,14 @@ function calculateSize(text) {
       }
     }
   }
-}
+}// end pop
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", populate);
 } else {
   populate();
 }
-
+if (gpsCardToggle) {
 gpsCardToggle.addEventListener('click', () => {
   gpsCardToggle.classList.toggle('on');
   const isOn = gpsCardToggle.classList.contains('on');
@@ -715,8 +723,8 @@ gpsCardToggle.addEventListener('click', () => {
     gpsPanel.classList.add('open');
   }
   if (updateNFCPreviewFn) updateNFCPreviewFn();
-});
-
+});}
+if (othCardToggle) {
 othCardToggle.addEventListener('click', () => {
   othCardToggle.classList.toggle('on');
   const isOn = othCardToggle.classList.contains('on');
@@ -726,4 +734,4 @@ othCardToggle.addEventListener('click', () => {
   if (isOn && othPanel && !othPanel.classList.contains('open')) {
     othPanel.classList.add('open');
   }
-});
+});}
