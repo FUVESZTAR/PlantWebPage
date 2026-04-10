@@ -114,12 +114,25 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
 
 
 
+function showError(el, message, type = "error") {
+  el.textContent = message;
+  el.className = 'status-msg ' + (type === 'success' ? 'success' : type === 'info' ? 'info' : 'error');
+  el.style.display = "block";
+
+  if (type === "success") {
+    setTimeout(() => {
+      el.textContent = "";
+      el.className = 'status-msg';
+    }, 3000);
+  }
+}
+
 async function readNFC(onRead) {
   if (!('NDEFReader' in window)) {
       showError(errorMsg, msg('err_nfc_ns'));
       return;
     } else {
-     nfcReadBtn.disabled = true;
+     readNfcBtn.disabled = true;
       showError(errorMsg, msg('err_nfc_tap'), "info");
   }
   
@@ -162,12 +175,12 @@ async function readNFC(onRead) {
 
          onRead(result);
       }; //end on reading
-    showError(errorMsg, msg('err_nfc_ok'), "Read success");
+    showError(errorMsg, msg('err_nfc_tap'), "info");
     } catch (error) {
       showError(errorMsg, msg('err_nfc_read') + error);
       console.error(error);
     } finally {
-        nfcReadBtn.disabled = false;
+        readNfcBtn.disabled = false;
     } 
 } //end readNFC
 
@@ -486,19 +499,6 @@ function handlePlantData(data) {
     linkPreview.textContent = msg('ph_link_preview');
     linkSize.textContent = "0 B";
     totalSize.textContent = "0 B";
-  }
-
-  function showError(el, message, type = "error") {
-    el.textContent = message;
-    el.className = 'status-msg ' + (type === 'success' ? 'success' : type === 'info' ? 'info' : 'error');
-    el.style.display = "block";
-    
-    if (type === "success") {
-      setTimeout(() => {
-        el.textContent = "";
-        el.className = 'status-msg';
-      }, 3000);
-    }
   }
 
   // Set current date on load
