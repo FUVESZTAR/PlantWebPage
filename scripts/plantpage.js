@@ -32,6 +32,7 @@ async function populate() {
   const openBtn = document.getElementById("open-view");
   const nfcBtn = document.getElementById("nfc-button");
   const listBtn = document.getElementById("plant-list-btn");
+  const backBtn = document.getElementById("plant-list-btn");
   const errorMsg = document.getElementById("error-message");
   const nfcListBtn = document.getElementById("nfc-list-btn");
   nfcListBtn.disabled = false;
@@ -148,6 +149,10 @@ async function populate() {
     });
   }
 }
+  // Back button
+  backBtn.addEventListener("click", () => {
+    window.location.href = "Homepage.html";
+  });
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => { setupLanguageButtons(); populate(); });
