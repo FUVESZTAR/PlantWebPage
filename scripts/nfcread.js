@@ -200,7 +200,7 @@ async function populate() {
   });
 
   // 2. split safely
-//  const parts = protectedStr.split("/");
+  const parts = protectedStr.split("/");
 
   // 3. restore packets
   const values = parts.map(p => {
@@ -286,12 +286,13 @@ function calculateSize(text) {
     
     egyebInput.value= decodedNfc.other.value;
 
-    const data = unpackBase64(pos);
-      if (data) {
-                        gpsDispLat.innerText = data.lat;
-                        gpsDispLon.innerText = data.lon;
-                        gpsDispAlt.innerText = data.alt + "m";
-                        gpsDispAcc.innerText = data.acc + "m";
+    const pos = decodedNfc.pos.value;
+    const gpsData = unpackBase64(pos);
+      if (gpsData) {
+                        gpsDispLat.innerText = gpsData.lat;
+                        gpsDispLon.innerText = gpsData.lon;
+                        gpsDispAlt.innerText = gpsData.alt + "m";
+                        gpsDispAcc.innerText = gpsData.acc + "m";
         }
 
     //size
@@ -478,7 +479,7 @@ function calculateSize(text) {
   function clearForm() {
     plantIdInput.value = "";
     nfcIdInput.value = "";
-    plantNameInput = "";
+    plantNameInput.value = "";
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
