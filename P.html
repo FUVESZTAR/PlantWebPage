@@ -477,7 +477,16 @@ button {
   color: #9ca3af;
   font-style: italic;
 }
-
+	
+.data_message {
+  font-size: .83rem;
+  min-height: 1.2em;
+  padding: 4px 0;
+  text-align: center;
+  font-weight: 500;
+  color:#c62828;
+}
+	
 @media (max-width: 480px) {
   #fields1 {
     grid-template-columns: 1fr;
@@ -572,6 +581,7 @@ button {
             <div class="row">
                  <label data-i18n="detail.label.names">Names:</label>
                  <div id="name_sz">NamesText</div>
+				 <div id="data_status" class="data_message" data-i18n="detail.label.datastatus">""</div>
             </div>
  <!--        <div class="row">
             <div>
