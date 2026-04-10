@@ -172,6 +172,19 @@ button.btn-secondary {
   border: 1px solid var(--border);
 }
 button.btn-secondary:hover:not(:disabled) { background:var(--green-pale); }
+button.btn-link {
+  background: none;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+button.btn-link:hover:not(:disabled) { background:var(--green-pale); }
+button.btn-back {
+  background: none;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  font-size: .85rem;
+}
+button.btn-back:hover { background:var(--green-pale); }
 button:disabled { opacity:.55; cursor:not-allowed; }
 
 /* ── Status / error message ─────────────────────────────────── */
@@ -236,7 +249,7 @@ button:disabled { opacity:.55; cursor:not-allowed; }
           </div>
           <div class="btn-grid">
             <button id="open-view" class="btn-primary" type="button" disabled data-i18n="plantpage.btn.openView">Open Plant View</button>
-            <button id="back-btn" class="btn-secondary" type="button" data-i18n="plantpage.btn.back">← Back</button>
+            <button id="back-btn" class="btn-back" type="button" data-i18n="plantpage.btn.back">← Back</button>
             <button id="nfc-gen-button" class="btn-secondary" type="button" data-i18n="plantpage.btn.nfcGenerator">NFC Generator</button> 
             <button id="nfc-read-btn" class="btn-secondary" type="button" data-i18n="plantpage.btn.nfcRead">NFC Reader</button>
           </div>
@@ -255,8 +268,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
         </div>
         <div class="panel-body-pad">
           <div class="btn-grid">
-            <button id="plant-list-btn" class="btn-secondary" type="button" data-i18n="plantpage.btn.openList">Open Plant List</button>
-            <button id="nfc-list-btn" class="btn-secondary" type="button" data-i18n="plantpage.btn.nfcList">NFC List</button>
+            <button id="plant-list-btn" class="btn-link" type="button" data-i18n="plantpage.btn.openList">Open Plant List</button>
+            <button id="nfc-list-btn" class="btn-link" type="button" data-i18n="plantpage.btn.nfcList">NFC List</button>
           </div>
         </div>
       </div>
