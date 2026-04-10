@@ -113,6 +113,8 @@ async function populate() {
   const copylinkBtn = document.getElementById("copy-link");
   const backBtn = document.getElementById("back-button");
   const saveNfcBtn = document.getElementById("save-nfc");
+  const listNfcBtn = document.getElementById("list-nfc");
+  const readNfcBtn = document.getElementById("read-nfc");
   const errorMsg = document.getElementById("error-message");
   const nfcWriteBtn = document.getElementById("nfc-write-button");
   
@@ -543,6 +545,18 @@ function calculateSize(text) {
     window.location.href = "Homepage.html";
   });}
 
+  // List NFC button
+  if (listNfcBtn) {
+  listNfcBtn.addEventListener("click", () => {
+    window.location.href = "NFCListPage.html";
+  });}
+
+  // Read NFC button
+  if (readNfcBtn) {
+  readNfcBtn.addEventListener("click", () => {
+    window.location.href = "Nfcreader.html";
+  });}
+  
   // Save NFC button – appends a row to the nfc_list sheet via the Apps Script Web App
   if (saveNfcBtn) {
   saveNfcBtn.addEventListener("click", async () => {
