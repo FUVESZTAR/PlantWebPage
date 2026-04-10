@@ -68,7 +68,7 @@ const nfcSize = document.getElementById("nfc-size");
 const linkSize = document.getElementById("link-size");
 const totalSize = document.getElementById("total-size");
 
-const hwIdText = document.getElementById("hwId");
+const serialNum = document.getElementById("hwId");
 
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardBody = document.getElementById('oth_card_body');
@@ -254,7 +254,7 @@ function handlePlantData(data) {
     let link = "";
     clearForm();
     console.log("New tag detected:", data.id); 
-    hwIdText.value = data.id;
+    serialNum.value = data.id;
     data.records.forEach(r => {
       if (r.type === "text") { text = r.value; console.log("Text: ", r.value);}
       if (r.type === "url") { link = r.value; console.log("URL: ", r.value);} 
@@ -380,6 +380,7 @@ function handlePlantData(data) {
     const nfcPos     = posPacketOut.textContent;
     const link       = linkPreview.textContent;
     const egyeb      = egyebInput.value;
+    const serialNum      = serialNum.value;
 
     if (selectedPlantIndex == null) {
       showError(errorMsg, msg('err_no_save'));
@@ -398,7 +399,7 @@ function handlePlantData(data) {
         // Apps Script Web Apps accept text/plain without a CORS preflight.
         // The body is still valid JSON, parsed by the Apps Script handler.
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other: egyeb }),
+        body: JSON.stringify({ key: SHEET_WRITER_SECRET, nfcId, plantId: plantIdValue, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other: egyeb, serialNum}),
         redirect: 'follow',
       });
       const result = await response.json().catch(() => ({}));
@@ -445,8 +446,9 @@ function handlePlantData(data) {
     datumInput.value = "";
     nfcTypInput.value = "";
     egyebInput.value = "";
+    serialNum.value = "";
     nfcPreview.textContent = msg('ph_nfc_preview');
-    nfcPreview.textContent = msg('ph_link_preview');
+    linkPreview.textContent = msg('ph_link_preview');
     nfcSize.textContent = "0 B";
     linkSize.textContent = "0 B";
     totalSize.textContent = "0 B";
