@@ -36,7 +36,6 @@ let customVarietyMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
-let serialNum = "none";
 let updateNFCPreviewFn = null;
 const nfcIdInput = document.getElementById("nfcId");
 const gpsStartBtn = document.getElementById('gpsStartBtn');
@@ -54,7 +53,7 @@ const gpsCardToggle = document.getElementById('gps_card_toggle');
 const gpsCardBody = document.getElementById('gps_card_body');
 const othCardToggle = document.getElementById('oth_card_toggle');
 const othCardBody = document.getElementById('oth_card_body');
-const serialNumText = document.getElementById("serialNum");
+const serialNumText = document.getElementById("serialNr");
 //gps
         let currentData = { lat: 0, lon: 0, alt: 0 , acc: 0 };
         let lastUpdateTime = Date.now();
@@ -632,9 +631,8 @@ function calculateSize(text) {
           const ndef2 = new NDEFReader();
           await ndef2.scan();
           ndef2.onreading = (event) => {
-            let uid = event.serialNumber;
+            serialNumText.value = event.serialNumber;
             console.log("Tag UID:", event.serialNumber);
-            serialNumText.value = uid ;
           };
         } catch (error) {
         showError(errorMsg, msg('err_nfc_read') + error);
