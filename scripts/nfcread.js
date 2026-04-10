@@ -125,7 +125,7 @@ function showError(el, message, type = "error") {
   }
 }
 
-async function readNFC(onRead) {
+async function readNfc(onRead) {
   if (!('NDEFReader' in window)) {
       showError(errorMsg, msg('err_nfc_ns'));
       return;
@@ -180,7 +180,7 @@ async function readNFC(onRead) {
     } finally {
         readNfcBtn.disabled = false;
     } 
-} //end readNFC
+} //end readNfc
 
  async function decodebase64() {
             if (!('NDEFReader' in window)) return setStatus("NFC not supported", "red");
@@ -334,7 +334,7 @@ function handlePlantData(data) {
 
   //read
   function nfcReadFunc() {
-     readNFC((data) => {
+     readNfc((data) => {
        if (data.id === lastId) return; // prevent spam
        lastId = data.id;
        console.log("New tag detected:", data);
