@@ -148,11 +148,12 @@ async function populate() {
       window.location.href = "PlantListPage.html";
     });
   }
-}
-  // Back button
+    // Back button
   backBtn.addEventListener("click", () => {
     window.location.href = "Homepage.html";
   });
+} // end populate
+
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => { setupLanguageButtons(); populate(); });
