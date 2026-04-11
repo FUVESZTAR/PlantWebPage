@@ -193,6 +193,32 @@ body {
 .toggle-sw.on::after { transform:translateX(24px); }
 .toggle-label-on { color:var(--green); font-weight:600; }
 
+/* ── Searchable select ──────────────────────────────────────── */
+.searchable-select-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.searchable-select-wrap .select-search-input {
+  padding: 7px 10px 7px 30px;
+  font-size: .86rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23637263' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 9px center no-repeat;
+  color: var(--charcoal);
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--tr);
+}
+.searchable-select-wrap .select-search-input:focus {
+  border-color: var(--green-mid);
+}
+.searchable-select-wrap .select-search-input::placeholder {
+  color: var(--warm-gray);
+}
+
 /* ── Form elements ──────────────────────────────────────────── */
 .form-group {
   display: flex;
@@ -433,15 +459,25 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-pad">
         <div class="form-group">
           <label for="plant-selector" data-i18n="lbl_plant">Plant Name</label>
-          <select id="plant-selector" aria-label="Select plant">
-            <option value="" data-i18n="opt_loading">Loading plants…</option>
-          </select>
+          <div class="searchable-select-wrap">
+            <input type="text" id="plant-selector-search" class="select-search-input"
+                   data-i18n-placeholder="ph_search_plant" placeholder="Search plants…"
+                   autocomplete="off" />
+            <select id="plant-selector" aria-label="Select plant">
+              <option value="" data-i18n="opt_loading">Loading plants…</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
           <label for="name-variety" data-i18n="lbl_variety">Variety</label>
-          <select id="name-variety">
-            <option value="" data-i18n="opt_variety">Select a variety…</option>
-          </select>
+          <div class="searchable-select-wrap">
+            <input type="text" id="name-variety-search" class="select-search-input"
+                   data-i18n-placeholder="ph_search_variety" placeholder="Search varieties…"
+                   autocomplete="off" />
+            <select id="name-variety">
+              <option value="" data-i18n="opt_variety">Select a variety…</option>
+            </select>
+          </div>
           <input type="text" id="name-variety-custom"
                  data-i18n-placeholder="ph_custom_variety"
                  placeholder="Enter custom variety"
@@ -645,6 +681,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       opt_loading:      'Loading plants…',
       lbl_variety:      'Variety',
       opt_variety:      'Select a variety…',
+      ph_search_plant:  'Search plants…',
+      ph_search_variety:'Search varieties…',
       ph_custom_variety:'Enter custom variety',
       data_card_title:  'Data',
       data_card_sub:    'Data stored in NFC',
@@ -719,6 +757,8 @@ button:disabled { opacity:.55; cursor:not-allowed; }
       opt_loading:      'Növények betöltése…',
       lbl_variety:      'Fajta',
       opt_variety:      'Válassz fajtát…',
+      ph_search_plant:  'Keresés növények között…',
+      ph_search_variety:'Keresés fajták között…',
       ph_custom_variety:'Egyedi fajta megadása',
       data_card_title:  'Adatok',
       data_card_sub:    'Az NFC-be kerülő adatok',
