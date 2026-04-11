@@ -185,18 +185,50 @@ console.log(plant);     // { LatinName: 'Rosa canina', Family: '...', ... }
 console.log(varieties); // ['variety one', 'variety two', ...]
 */
 
-/**
+/** For NFC Generator page
  * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
  * for all rows where Active_in_NFC = "Y".
  * Minimal traffic: only 5 columns, only active rows.
  *
  * @returns {Object[]} Array of plant objects with the selected fields.
  */
-export async function loadActivePlants() {
+export async function loadActiveNFCPlants() {
   // You must use column letters, not header names, in the tq query
-  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN , CR = Active_in_NFC
   // Adjust the letters if your columns are in a different order!
-  const tq = `select A, B, C, D, E where F = 'Y'`;
+  const tq = `select A, B, C, D, E where CR = 'Y'`;
+
+  const gvizResponse = await fetchSheetResponseQr(tq);
+  const { cols, rows } = gvizResponse.table;
+
+  const headers = cols.map(col =>
+    (col.label && col.label.trim()) ? col.label.trim() : col.id
+  );
+
+  return rows
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    .map(row => {
+      const entry = {};
+      headers.forEach((header, index) => {
+        const cell = row.c[index];
+        entry[header] = (cell && cell.v != null) ? cell.v : '';
+      });
+      return entry;
+    });
+}
+
+/**  For Plant List , PlantPage
+ * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
+ * for all rows where Active_in_NFC = "Y".
+ * Minimal traffic: only 5 columns, only active rows.
+ *
+ * @returns {Object[]} Array of plant objects with the selected fields.
+ */
+export async function loadActivePagePlants() {
+  // You must use column letters, not header names, in the tq query
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN, F = Genus	 , G =  Family, CQ = Active_in_page
+  // Adjust the letters if your columns are in a different order!
+  const tq = `select A, B, C, D, E, F, G where CQ = 'Y'`;
 
   const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
@@ -226,3 +258,52 @@ console.log(plants);
 //   { Plant_ID: 2, LatinName: 'Quercus robur', Name_Variety: '...', ... },
 //   ...
 // ]*/
+
+
+/**  For Plant View ("P") page , Plantinfo.js
+ * Load full plant data and all its varieties by Plant_ID (column A).
+ *
+ * @param {number|string} plantId - The Plant_ID to look up.
+ * @returns {{ plant: Object|null, varieties: string[] }}
+ */
+export async function loadPlantIdWithVarieties(plantId) {
+
+  // Step 1: fetch the single row matching the Plant_ID
+  const tq1 = `select * where A = ${plantId} limit 1`;
+  const gvizResponse1 = await fetchSheetResponseQr(tq1);
+  const { cols, rows: rows1 } = gvizResponse1.table;
+
+  const headers = cols.map(col =>
+    (col.label && col.label.trim()) ? col.label.trim() : col.id
+  );
+
+  const validRows1 = rows1.filter(
+    row => row && row.c && row.c.some(cell => cell && cell.v != null)
+  );
+
+  if (validRows1.length === 0) return { plant: null, varieties: [] };
+
+  // Build the plant object from the first (and only) row
+  const plant = {};
+  headers.forEach((header, index) => {
+    const cell = validRows1[0].c[index];
+    plant[header] = (cell && cell.v != null) ? cell.v : '';
+  });
+
+  // Step 2: fetch all Name_Variety values sharing the same LatinName
+  const latinName = plant['LatinName'];
+  const tq2 = `select C where B = '${latinName.replace(/'/g, "\\'")}'`;
+  const gvizResponse2 = await fetchSheetResponseQr(tq2);
+  const { rows: rows2 } = gvizResponse2.table;
+
+  const varieties = rows2
+    .filter(row => row && row.c && row.c[0] && row.c[0].v != null)
+    .map(row => row.c[0].v);
+
+  return { plant, varieties };
+}
+/* use 
+const { plant, varieties } = await loadPlantWithVarieties(42);
+console.log(plant.LatinName);  // 'Rosa canina'
+console.log(varieties);         // ['variety one', 'variety two', ...]
+*/
