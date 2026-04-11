@@ -1,4 +1,4 @@
-import { loadPlantByLatinName, splitPipe, monthsFromValue } from "./csv-utils.js";
+import { loadPlantIdWithVarieties, splitPipe, monthsFromValue } from "./csv-utils.js";
 import { t, getCurrentLang, applyTranslations, setupLanguageButtons } from "./lang.js";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -1039,7 +1039,7 @@ document.querySelector("#back-button").addEventListener("click", () => {
   try {
     // ── Single data load ──────────────────────────────────────────────────
     const lookupNr  = urlPlantId || selectedNr;
-    const plant    = await loadPlantDataID(lookupNr);
+    const { plant, varieties }    = await loadPlantIdWithVarieties(lookupNr);
 
     if (!plant) {
       title.textContent    = t('detail.plantNotFound');
@@ -1089,18 +1089,11 @@ document.querySelector("#back-button").addEventListener("click", () => {
     renderCALENDER1(plant,FM);
 
         // ── Varieties list ────────────────────────────────────────────────────
-    const varieties     = splitPipe(plant.List_of_varieties);
     const varietiesList = document.querySelector("#varieties-list");
-        if (varietiesList) {
-      const speciesKey = plant.LatinName;
-      const varieties  = speciesKey
-        ? plants
-            .filter(p => (p.LatinName) === speciesKey && p.Name_Variety)
-            .filter((p, i, a) => a.findIndex(x => x.Name_Variety === p.Name_Variety) === i)
-        : [];
+     if (varietiesList) {
       varietiesList.innerHTML = varieties.length
-              ? varieties.map(v => `<li><a href="P.html?id=${v.Plant_ID}">${v.Name_Variety}</a></li>`).join("")
-        : `<li>${t('detail.noVarieties')}</li>`;
+       ? varieties.map(v => `<li><a href="P.html?id=${v.Plant_ID}">${v.Name_Variety}</a></li>`).join("")
+       : `<li>${t('detail.noVarieties')}</li>`;
     }
     
         // ── Icon colouring (single pass) ──────────────────────────────────────
