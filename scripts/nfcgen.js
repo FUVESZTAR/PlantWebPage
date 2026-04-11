@@ -48,7 +48,7 @@ export async function loadActiveNFCPlants() {
   // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN , CR = Active_in_NFC
   // Adjust the letters if your columns are in a different order!
   const tq = `select A, B, C, D, E where CR = 'Y'`;
-
+  console.log("Loadig from datasource");
   const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
 
