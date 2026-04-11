@@ -157,7 +157,7 @@ async function loadLastNfcId(nfcIdInput, onLoaded) {
  * so the native browser dropdown only shows matching entries.
  *
  * @param {HTMLSelectElement} selectEl   The <select> to make searchable.
- * @param {string}            searchId   The id of the companion <input>.
+ * @param {string}            searchId   The id of the companion <input> search field.
  * @returns {{ refresh: Function }}      Call refresh() after repopulating the select.
  */
 function makeSelectSearchable(selectEl, searchId) {
@@ -247,8 +247,8 @@ async function populate() {
   const nfcWriteBtn = document.getElementById("nfc-write-button");
   
   let plants = [];
-  const plantSearch   = makeSelectSearchable(selector,           'plant-selector-search');
-  const varietySearch = makeSelectSearchable(nameVarietySelector,'name-variety-search');
+  const plantSearch = makeSelectSearchable(selector, 'plant-selector-search');
+  const varietySearch = makeSelectSearchable(nameVarietySelector, 'name-variety-search');
 
   try {
     plants = await loadActiveNFCPlants();
