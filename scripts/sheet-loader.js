@@ -52,7 +52,7 @@ export async function loadPlantData() {
 /**
  * Fetch raw Google Visualization API response with an optional TQ query.
  */
-async function fetchSheetResponseQuerry(tq = '') {
+async function fetchSheetResponseQr(tq = '') {
   const params = new URLSearchParams({
     tqx: 'out:json',
     sheet: SHEET_NAME,
@@ -83,7 +83,7 @@ export async function loadPlantByLatinName(latinName) {
   // 'limit 1' ensures we stop after the first match.
   const tq = `select * where B = '${latinName.replace(/'/g, "\\'")}' limit 1`;
 
-  const gvizResponse = await fetchSheetResponseQuerry(tq);
+  const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
 
   const headers = cols.map(col =>
@@ -123,7 +123,7 @@ if (plant) {
 export async function loadVarietiesByLatinName(latinName) {
   const tq = `select C where B = '${latinName.replace(/'/g, "\\'")}' `;
 
-  const gvizResponse = await fetchSheetResponse(tq);
+  const gvizResponse = await fetchSheetResponseQr(tq);
   const { rows } = gvizResponse.table;
 
   return rows
@@ -146,7 +146,7 @@ console.log(varieties); // ['variety one', 'variety two', ...] */
 export async function loadPlantWithVarieties(latinName) {
   const tq = `select * where B = '${latinName.replace(/'/g, "\\'")}'`;
 
-  const gvizResponse = await fetchSheetResponse(tq);
+  const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
 
   const headers = cols.map(col =>
@@ -184,3 +184,45 @@ const { plant, varieties } = await loadPlantWithVarieties('Rosa canina');
 console.log(plant);     // { LatinName: 'Rosa canina', Family: '...', ... }
 console.log(varieties); // ['variety one', 'variety two', ...]
 */
+
+/**
+ * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
+ * for all rows where Active_in_NFC = "Y".
+ * Minimal traffic: only 5 columns, only active rows.
+ *
+ * @returns {Object[]} Array of plant objects with the selected fields.
+ */
+export async function loadActivePlants() {
+  // You must use column letters, not header names, in the tq query
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN
+  // Adjust the letters if your columns are in a different order!
+  const tq = `select A, B, C, D, E where F = 'Y'`;
+
+  const gvizResponse = await fetchSheetResponseQr(tq);
+  const { cols, rows } = gvizResponse.table;
+
+  const headers = cols.map(col =>
+    (col.label && col.label.trim()) ? col.label.trim() : col.id
+  );
+
+  return rows
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    .map(row => {
+      const entry = {};
+      headers.forEach((header, index) => {
+        const cell = row.c[index];
+        entry[header] = (cell && cell.v != null) ? cell.v : '';
+      });
+      return entry;
+    });
+}
+
+/* use 
+// 1. Basic — just load and log all active plants
+const plants = await loadActivePlants();
+console.log(plants);
+// [
+//   { Plant_ID: 1, LatinName: 'Rosa canina', Name_Variety: '...', Name_HU: '...', Name_EN: '...' },
+//   { Plant_ID: 2, LatinName: 'Quercus robur', Name_Variety: '...', ... },
+//   ...
+// ]*/
