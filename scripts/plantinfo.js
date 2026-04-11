@@ -1,4 +1,4 @@
-import { loadPlantData, splitPipe, monthsFromValue } from "./csv-utils.js";
+import { loadPlantByLatinName, splitPipe, monthsFromValue } from "./csv-utils.js";
 import { t, getCurrentLang, applyTranslations, setupLanguageButtons } from "./lang.js";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -1038,9 +1038,8 @@ document.querySelector("#back-button").addEventListener("click", () => {
    
   try {
     // ── Single data load ──────────────────────────────────────────────────
-    const plants    = (await loadPlantData()).filter(p => p.Active_in_page === 'Y');
     const lookupNr  = urlPlantId || selectedNr;
-    const plant     = plants.find(p => String(p.Plant_ID) === String(lookupNr));
+    const plant    = await loadPlantDataID(lookupNr);
 
     if (!plant) {
       title.textContent    = t('detail.plantNotFound');
