@@ -269,8 +269,11 @@ console.log(plants);
 export async function loadPlantIdWithVarieties(plantId) {
 
   // Step 1: fetch the single row matching the Plant_ID
-  const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
-  //  const tq1 = `select * where A = ${plantId} limit 1`;
+// If Plant_ID is stored as TEXT in the sheet (e.g. "P001", "42"):
+//const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
+
+// If Plant_ID is stored as a NUMBER in the sheet (e.g. 1, 42):
+const tq1 = `select * where A = ${plantId} limit 1`;
   const gvizResponse1 = await fetchSheetResponseQr(tq1);
   const { cols, rows: rows1 } = gvizResponse1.table;
 
@@ -299,8 +302,11 @@ export async function loadPlantIdWithVarieties(plantId) {
   const { rows: rows2 } = gvizResponse2.table;
 
   const varieties = rows2
-    .filter(row => row && row.c && row.c[0] && row.c[0].v != null)
-    .map(row => row.c[0].v);
+  .filter(row => row && row.c && row.c[1] && row.c[1].v != null)
+  .map(row => ({
+    Plant_ID:     row.c[0]?.v ?? '',
+    Name_Variety: row.c[1]?.v ?? '',
+  }));
 
   return { plant, varieties };
 }
