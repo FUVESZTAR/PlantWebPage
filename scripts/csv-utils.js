@@ -1,4 +1,4 @@
-export { loadPlantData } from './sheet-loader.js';
+export { loadPlantData, loadActiveNFCPlants, loadActivePagePlants, loadPlantIdWithVarieties } from './sheet-loader.js';
 
 export function splitPipe(value) {
   console.log("turn data sheet to csv");
