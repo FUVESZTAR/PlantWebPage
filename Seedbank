@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-i18n-title="page.title.list">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant List</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/plantlistpagestyles.css" />
+    <style>
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .filter-label {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .filter-value {
+        font-size: 1rem;
+        color: #444;
+      }
+      .plant-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 0.95rem;
+      }
+      .plant-list-table th {
+        background: #4a7c4e;
+        color: white;
+        text-align: left;
+        padding: 8px 10px;
+        white-space: nowrap;
+      }
+      .plant-list-table td {
+        padding: 7px 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .plant-list-table tr:hover td {
+        background: #f0f8f0;
+        cursor: pointer;
+      }
+      .plant-list-table tr:nth-child(even) td {
+        background: #f9f9f9;
+      }
+      .plant-list-table tr:nth-child(even):hover td {
+        background: #f0f8f0;
+      }
+      .back-button {
+        margin-bottom: 0;
+      }
+      .dropdown-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .dropdown-filter-bar select {
+        flex: 1 1 160px;
+        min-width: 120px;
+        padding: 6px 8px;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="hu" type="button">HU</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+
+    <main class="landing-wrapper">
+      <section class="card landing-card" style="width: min(900px, 96vw);">
+        <div class="filter-bar">
+          <button id="back-button" class="back-button" type="button" data-i18n="list.btn.back">← Back</button>
+          <h1 style="margin:0; font-size:1.4rem;" data-i18n="list.title">Plant List</h1>
+        </div>
+        <p id="filter-summary" class="subtitle"></p>
+        <div class="dropdown-filter-bar">
+          <select id="dd-family"></select>
+          <select id="dd-genus"></select>
+          <select id="dd-latin"></select>
+          <select id="dd-nameHu"></select>
+          <select id="dd-nameEn"></select>
+          <select id="dd-variety"></select>
+        </div>
+        <div style="overflow-x: auto;">
+        <table class="plant-list-table">
+          <thead>
+            <tr>
+              <th data-i18n="list.table.plantId">Plant ID</th>
+              <th data-i18n="list.table.latinName">Latin Name</th>
+              <th data-i18n="list.table.variety">Variety</th>
+              <th data-i18n="list.table.nameEN">Name (EN)</th>
+              <th data-i18n="list.table.nameHU">Name (HU)</th>
+            </tr>
+          </thead>
+          <tbody id="plant-list-body">
+            <tr><td colspan="5" data-i18n="list.loading">Loading…</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="error-message" id="error-message" aria-live="polite"></p>
+      </section>
+    </main>
+    <script src="scripts/plantlist.js" type="module"></script>
+  </body>
+</html>
