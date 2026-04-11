@@ -1,4 +1,4 @@
-import { loadPlantData } from "./csv-utils.js";
+//import { loadPlantData } from "./csv-utils.js";
 
 // ── Google Apps Script Web App configuration ─────────────────────────────────
 // Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
@@ -11,6 +11,64 @@ import { loadPlantData } from "./csv-utils.js";
 // Keep the SECRET_KEY long and random; treat the Web App URL as semi-private.
 const SHEET_WRITER_URL    = 'https://script.google.com/macros/s/AKfycbysWB68AM6TKlobnA3MLR_18LpJjGVkHolPf3G_WNziV3r93_fztJIenTVSoll-Kmtp/exec';
 const SHEET_WRITER_SECRET = '159753g9d5rt4Ht4eg7e5z4d6szo89fsef';
+
+const READ_SHEET_ID = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
+const READ_SHEET_NAME = 'plant_list';
+
+/**
+ * Fetch raw Google Visualization API response with an optional TQ query.
+ */
+async function fetchSheetResponseQR(tq = '') {
+  const params = new URLSearchParams({
+    tqx: 'out:json',
+    sheet: READ_SHEET_NAME,
+    ...(tq && { tq }),
+  });
+  const url = `https://docs.google.com/spreadsheets/d/${READ_SHEET_ID}/gviz/tq?${params}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
+  }
+  const text = await response.text();
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
+  if (!match) {
+    throw new Error('Unexpected Google Sheets API response format');
+  }
+  return JSON.parse(match[1]);
+}
+/**
+ * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
+ * for all rows where Active_in_NFC = "Y".
+ * Minimal traffic: only 5 columns, only active rows.
+ *
+ * @returns {Object[]} Array of plant objects with the selected fields.
+ */
+export async function loadActivePlants() {
+  // You must use column letters, not header names, in the tq query
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN
+  // Adjust the letters if your columns are in a different order!
+  const tq = `select A, B, C, D, E where F = 'Y'`;
+
+  const gvizResponse = await fetchSheetResponseQR(tq);
+  const { cols, rows } = gvizResponse.table;
+
+  const headers = cols.map(col =>
+    (col.label && col.label.trim()) ? col.label.trim() : col.id
+  );
+
+  return rows
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    .map(row => {
+      const entry = {};
+      headers.forEach((header, index) => {
+        const cell = row.c[index];
+        entry[header] = (cell && cell.v != null) ? cell.v : '';
+      });
+      return entry;
+    });
+} 
+
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Use the page-level i18n helper if available, otherwise return the key. */
