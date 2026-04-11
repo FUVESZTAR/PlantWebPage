@@ -295,12 +295,12 @@ async function populate() {
             const altInt = Math.round(alt + 1000);
             const accInt = Math.round(acc + 1000);
 
-            const buffer = new ArrayBuffer(10);
+            const buffer = new ArrayBuffer(12);
             const view = new DataView(buffer);
             view.setUint32(0, latInt); 
             view.setUint32(4, lonInt); 
             view.setUint16(8, altInt);
-            view.setUint16(8, accInt); 
+            view.setUint16(10, accInt); 
 
             const bytes = new Uint8Array(buffer);
             let binary = '';
@@ -318,7 +318,7 @@ async function populate() {
                     lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
                     lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
                     alt: view.getUint16(8) - 1000,
-                    acc: view.getUint16(8) - 1000
+                    acc: view.getUint16(10) - 1000
                 };
             } catch (e) { return null; }
         }
