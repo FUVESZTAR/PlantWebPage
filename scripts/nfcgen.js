@@ -185,7 +185,7 @@ async function populate() {
   let plants = [];
 
   try {
-    plants = await loadPlantData();
+    plants = await loadActiveNFCPlants();
     // Keep only plants active on the page and in NFC
     //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
