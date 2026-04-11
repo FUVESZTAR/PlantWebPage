@@ -43,13 +43,14 @@ async function fetchSheetResponseQr(tq = '') {
 
 
 // Helper to generate column letters from a range (supports A–Z and AA–ZZ)
+// 64 = char code of '@' so charCode - 64 maps 'A'→1, 'B'→2, …, 'Z'→26
 function colRange(start, end) {
   const toNum = s => s.length === 1
-    ? s.charCodeAt(0) - 64
-    : (s.charCodeAt(0) - 64) * 26 + (s.charCodeAt(1) - 64);
+    ? s.charCodeAt(0) - 64                                            // single-letter: A=1 … Z=26
+    : (s.charCodeAt(0) - 64) * 26 + (s.charCodeAt(1) - 64);          // two-letter:   AA=27 … ZZ=702
   const fromNum = n => n <= 26
-    ? String.fromCharCode(64 + n)
-    : String.fromCharCode(64 + Math.floor((n - 1) / 26)) + String.fromCharCode(64 + ((n - 1) % 26) + 1);
+    ? String.fromCharCode(64 + n)                                     // 1–26 → A–Z
+    : String.fromCharCode(64 + Math.floor((n - 1) / 26)) + String.fromCharCode(64 + ((n - 1) % 26) + 1); // 27+ → AA…
   const cols = [];
   const startN = toNum(start);
   const endN = toNum(end);
