@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant List</title>
+    <title>Seedbank</title>
     <link rel="icon" href="favicon.ico" />
     <link rel="stylesheet" href="css/plantlistpagestyles.css" />
     <style>
@@ -79,12 +79,12 @@
       <section class="card landing-card" style="width: min(900px, 96vw);">
         <div class="filter-bar">
           <button id="back-button" class="back-button" type="button" data-i18n="list.btn.back">← Back</button>
-          <h1 style="margin:0; font-size:1.4rem;" data-i18n="list.title">Plant List</h1>
+          <h1 style="margin:0; font-size:1.4rem;" data-i18n="seedbank.title">Seedbank</h1>
         </div>
         <p id="filter-summary" class="subtitle"></p>
         <div class="dropdown-filter-bar">
-          <select id="dd-family"></select>
-          <select id="dd-genus"></select>
+          <select id="dd-seedbank"></select>
+          <select id="dd-year"></select>
           <select id="dd-latin"></select>
           <select id="dd-nameHu"></select>
           <select id="dd-nameEn"></select>
@@ -99,6 +99,9 @@
               <th data-i18n="list.table.variety">Variety</th>
               <th data-i18n="list.table.nameEN">Name (EN)</th>
               <th data-i18n="list.table.nameHU">Name (HU)</th>
+              <th data-i18n="seedbank.table.seedav">Seed availability</th>
+              <th data-i18n="seedbank.table.seedbank">Seedbank</th>
+              <th data-i18n="seedbank.table.year">Year</th>
             </tr>
           </thead>
           <tbody id="plant-list-body">
@@ -109,6 +112,6 @@
         <p class="error-message" id="error-message" aria-live="polite"></p>
       </section>
     </main>
-    <script src="scripts/plantlist.js" type="module"></script>
+    <script src="scripts/getseedbank.js" type="module"></script>
   </body>
 </html>
