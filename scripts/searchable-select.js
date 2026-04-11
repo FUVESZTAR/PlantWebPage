@@ -16,14 +16,14 @@ export function makeSelectSearchable(selectEl, searchId) {
 
   function snapshot() {
     allOptions = Array.from(selectEl.options).map(o => ({
-      value:    o.value,
-      text:     o.textContent,
+      value: o.value,
+      text: o.textContent,
       selected: o.selected,
     }));
   }
 
   function applyFilter() {
-    const query        = searchInput.value.trim().toLowerCase();
+    const query = searchInput.value.trim().toLowerCase();
     const currentValue = selectEl.value;
 
     // Rebuild options: always keep the first (placeholder) option
@@ -31,7 +31,7 @@ export function makeSelectSearchable(selectEl, searchId) {
     allOptions.forEach(o => {
       if (o.value === '' || !query || o.text.toLowerCase().includes(query)) {
         const opt = document.createElement('option');
-        opt.value       = o.value;
+        opt.value = o.value;
         opt.textContent = o.text;
         selectEl.appendChild(opt);
       }
