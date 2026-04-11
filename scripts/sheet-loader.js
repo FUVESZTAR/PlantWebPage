@@ -42,11 +42,19 @@ async function fetchSheetResponseQr(tq = '') {
 }
 
 
-// Helper to generate column letters from a range
+// Helper to generate column letters from a range (supports A–Z and AA–ZZ)
 function colRange(start, end) {
+  const toNum = s => s.length === 1
+    ? s.charCodeAt(0) - 64
+    : (s.charCodeAt(0) - 64) * 26 + (s.charCodeAt(1) - 64);
+  const fromNum = n => n <= 26
+    ? String.fromCharCode(64 + n)
+    : String.fromCharCode(64 + Math.floor((n - 1) / 26)) + String.fromCharCode(64 + ((n - 1) % 26) + 1);
   const cols = [];
-  for (let i = start.charCodeAt(0); i <= end.charCodeAt(0); i++) {
-    cols.push(String.fromCharCode(i));
+  const startN = toNum(start);
+  const endN = toNum(end);
+  for (let i = startN; i <= endN; i++) {
+    cols.push(fromNum(i));
   }
   return cols;
 }
