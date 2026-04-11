@@ -270,6 +270,7 @@ export async function loadPlantIdWithVarieties(plantId) {
 
   // Step 1: fetch the single row matching the Plant_ID
   const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
+  //  const tq1 = `select * where A = ${plantId} limit 1`;
   const gvizResponse1 = await fetchSheetResponseQr(tq1);
   const { cols, rows: rows1 } = gvizResponse1.table;
 
