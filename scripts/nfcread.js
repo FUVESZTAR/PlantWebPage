@@ -220,7 +220,7 @@ async function populate() {
                     lat: (view.getUint32(0) / 1000000 - 90).toFixed(6),
                     lon: (view.getUint32(4) / 1000000 - 180).toFixed(6),
                     alt: view.getUint16(8) - 1000,
-                    acc: 0
+                    acc: view.getUint16(10) - 1000
                 };
             } catch (e) { return null; }
         } // end unpackBase64
