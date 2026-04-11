@@ -1,7 +1,7 @@
 const SHEET_ID = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
 const SHEET_NAME = 'plant_list';
-
-/**
+//- fetch
+/** old
  * Fetch raw Google Visualization API response for the plant data sheet.
  * Returns the parsed JSON object (the argument passed to setResponse).
  */
@@ -19,7 +19,47 @@ async function fetchSheetResponse() {
   }
   return JSON.parse(match[1]);
 }
+ /** new 
+ * Fetch raw Google Visualization API response with an optional TQ query.
+ */
+async function fetchSheetResponseQr(tq = '') {
+  const params = new URLSearchParams({
+    tqx: 'out:json',
+    sheet: SHEET_NAME,
+    ...(tq && { tq }),
+  });
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
+  }
+  const text = await response.text();
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
+  if (!match) {
+    throw new Error('Unexpected Google Sheets API response format');
+  }
+  return JSON.parse(match[1]);
+}
 
+
+// Helper to generate column letters from a range
+function colRange(start, end) {
+  const cols = [];
+  for (let i = start.charCodeAt(0); i <= end.charCodeAt(0); i++) {
+    cols.push(String.fromCharCode(i));
+  }
+  return cols;
+}
+/*
+// Build your column selection
+const selectedCols = [
+  ...colRange('A', 'CT'),   // A through X
+  'CV', 'CW', 'CX'          // plus individual extras
+].join(', ');
+
+//const tq = `select ${selectedCols} where A = ${plantId} limit 1`;
+// → "select A, B, C, D, ..., X, AC, AF where A = 1 limit 1"
+*/
 
 
 /**
@@ -49,27 +89,7 @@ export async function loadPlantData() {
     });
 }
 
-/**
- * Fetch raw Google Visualization API response with an optional TQ query.
- */
-async function fetchSheetResponseQr(tq = '') {
-  const params = new URLSearchParams({
-    tqx: 'out:json',
-    sheet: SHEET_NAME,
-    ...(tq && { tq }),
-  });
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
-  }
-  const text = await response.text();
-  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
-  if (!match) {
-    throw new Error('Unexpected Google Sheets API response format');
-  }
-  return JSON.parse(match[1]);
-}
+// new
 
 /**
  * Load a single plant row whose "LatinName" (column B) matches the given input.
@@ -272,8 +292,18 @@ export async function loadPlantIdWithVarieties(plantId) {
 // If Plant_ID is stored as TEXT in the sheet (e.g. "P001", "42"):
 //const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
 
+// Build your column selection
+const selectedCols = [
+  ...colRange('A', 'CT'),   // A through X
+  'CV', 'CW', 'CX'          // plus individual extras
+].join(', ');
+
+//const tq = `select ${selectedCols} where A = ${plantId} limit 1`;
+// → "select A, B, C, D, ..., X, AC, AF where A = 1 limit 1"
+  
 // If Plant_ID is stored as a NUMBER in the sheet (e.g. 1, 42):
-const tq1 = `select * where A = ${plantId} limit 1`;
+const tq1 = `select ${selectedCols} where A = ${plantId} limit 1`;
+  //const tq1 = `select * where A = ${plantId} limit 1`;
   const gvizResponse1 = await fetchSheetResponseQr(tq1);
   const { cols, rows: rows1 } = gvizResponse1.table;
 
