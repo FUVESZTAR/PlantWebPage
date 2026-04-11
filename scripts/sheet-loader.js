@@ -1,5 +1,6 @@
 const SHEET_ID = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
 const SHEET_NAME = 'plant_list';
+const SHEET_NAME2 = 'seed_bank';
 //- fetch
 /** old
  * Fetch raw Google Visualization API response for the plant data sheet.
@@ -41,6 +42,27 @@ async function fetchSheetResponseQr(tq = '') {
   return JSON.parse(match[1]);
 }
 
+ /** new 
+ * Fetch raw Google Visualization API response with an optional TQ query.
+ */
+async function fetchSheetResponseSB(tq = '') {
+  const params = new URLSearchParams({
+    tqx: 'out:json',
+    sheet: SHEET_NAME2,
+    ...(tq && { tq }),
+  });
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
+  }
+  const text = await response.text();
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
+  if (!match) {
+    throw new Error('Unexpected Google Sheets API response format');
+  }
+  return JSON.parse(match[1]);
+}
 
 // Helper to generate column letters from a range (supports A–Z and AA–ZZ)
 // 64 = char code of '@' so charCode - 64 maps 'A'→1, 'B'→2, …, 'Z'→26
@@ -354,3 +376,30 @@ const { plant, varieties } = await loadPlantWithVarieties(42);
 console.log(plant.LatinName);  // 'Rosa canina'
 console.log(varieties);         // ['variety one', 'variety two', ...]
 */
+
+/**
+ * Load all plant rows from the Google Sheet.
+ * Returns an array of plain objects where each key is a column header from the sheet
+ * and values are native types (numbers stay numbers, strings stay strings, empty cells become "").
+ */
+export async function loadPlantDataSB() {
+  const gvizResponse = await fetchSheetResponseSB();
+  const { cols, rows } = gvizResponse.table;
+  console.log("loadPlantData");
+  // Use column label (the sheet header row) as the property key, falling back to column id
+  const headers = cols.map(col => (col.label && col.label.trim()) ? col.label.trim() : col.id);
+
+  return rows
+    // Filter out completely empty rows (Google Sheets sometimes appends null-filled rows).
+    // Rows containing 0 or false are intentionally preserved as non-empty data.
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    .map(row => {
+      const entry = {};
+      headers.forEach((header, index) => {
+        const cell = row.c[index];
+        // Preserve native type: use .v (raw value). Empty cells become empty string.
+        entry[header] = (cell && cell.v != null) ? cell.v : '';
+      });
+      return entry;
+    });
+}
