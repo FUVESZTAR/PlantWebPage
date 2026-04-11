@@ -1,4 +1,4 @@
-//import { loadPlantData } from "./csv-utils.js";
+//import { loadActiveNFCPlants } from "./csv-utils.js";
 
 // ── Google Apps Script Web App configuration ─────────────────────────────────
 // Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
@@ -36,20 +36,20 @@ async function fetchSheetResponseQR(tq = '') {
   }
   return JSON.parse(match[1]);
 }
-/**
+/** For NFC Generator page
  * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
  * for all rows where Active_in_NFC = "Y".
  * Minimal traffic: only 5 columns, only active rows.
  *
  * @returns {Object[]} Array of plant objects with the selected fields.
  */
-export async function loadActivePlants() {
+export async function loadActiveNFCPlants() {
   // You must use column letters, not header names, in the tq query
-  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN , CR = Active_in_NFC
   // Adjust the letters if your columns are in a different order!
-  const tq = `select A, B, C, D, E where F = 'Y'`;
+  const tq = `select A, B, C, D, E where CR = 'Y'`;
 
-  const gvizResponse = await fetchSheetResponseQR(tq);
+  const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
 
   const headers = cols.map(col =>
@@ -66,7 +66,15 @@ export async function loadActivePlants() {
       });
       return entry;
     });
-} 
+}
+
+/**  For Plant List , PlantPage
+ * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
+ * for all rows where Active_in_NFC = "Y".
+ * Minimal traffic: only 5 columns, only active rows.
+ *
+ * @returns {Object[]} Array of plant objects with the selected fields.
+ */
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Use the page-level i18n helper if available, otherwise return the key. */
@@ -179,7 +187,7 @@ async function populate() {
   try {
     plants = await loadPlantData();
     // Keep only plants active on the page and in NFC
-    plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
+    //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
     selector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
@@ -232,7 +240,7 @@ async function populate() {
       latinNameInput.value = plant.LatinName || "";
       datumInput.value = dateString;
       nfcTypInput.value = "n";
-      egyebInput.value = plant.egyeb || "";
+      egyebInput.value = "";
     }
     
     // Populate varieties dropdown based on plant name
@@ -323,7 +331,7 @@ async function populate() {
       latinNameInput.value = varietyPlant.LatinName || "";
       datumInput.value = dateString;
       nfcTypInput.value = "n";
-      egyebInput.value = varietyPlant.egyeb || "";
+      egyebInput.value = "";
       
       updatePreviews();
     }
