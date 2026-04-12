@@ -1,4 +1,4 @@
-import { loadPlantDataSB, loadPlantIdPlSB2, splitPipe } from "./sheet-loader.js";
+import { loadPlantDataSB, loadPlantIdPlSB2, splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
 
