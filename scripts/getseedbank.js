@@ -26,7 +26,7 @@ function buildDropdown(selectEl, allValues, placeholder) {
 function renderRows(plantsSB) {
   const tbody = document.getElementById("plant-list-body");
   if (!plantsSB.length) {
-    tbody.innerHTML = `<tr><td colspan="5">${t('list.empty')}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8">${t('list.empty')}</td></tr>`;
     return;
   }
   tbody.innerHTML = "";
@@ -37,8 +37,8 @@ function renderRows(plantsSB) {
       <td>${plant.Plant_ID || ""}</td>
       <td>${plant.LatinName || ""}</td>
       <td>${varieties.length ? varieties.join(", ") : ""}</td>
-      <td>${plant.Name_HU || ""}</td>
       <td>${plant.Name_EN || ""}</td>
+      <td>${plant.Name_HU || ""}</td>
       <td>${plant.Seed_availability || ""}</td>
       <td>${plant.Seedbank || ""}</td>
       <td>${plant.Year || ""}</td>
@@ -65,7 +65,7 @@ async function populate() {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
     document.getElementById("plant-list-body").innerHTML =
-      `<tr><td colspan="5">${t('list.error.loadData')}</td></tr>`;
+      `<tr><td colspan="8">${t('list.error.loadData')}</td></tr>`;
     return;
   }
   // plant list
@@ -75,7 +75,7 @@ async function populate() {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
     document.getElementById("plant-list-body").innerHTML =
-      `<tr><td colspan="5">${t('list.error.loadData')}</td></tr>`;
+      `<tr><td colspan="8">${t('list.error.loadData')}</td></tr>`;
     return;
   }
 

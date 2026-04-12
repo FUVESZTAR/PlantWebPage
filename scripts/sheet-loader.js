@@ -382,17 +382,67 @@ console.log(varieties);         // ['variety one', 'variety two', ...]
  * Returns an array of plain objects where each key is a column header from the sheet
  * and values are native types (numbers stay numbers, strings stay strings, empty cells become "").
  */
+// Normalise common column-header variants to the canonical property names used in
+// getseedbank.js so that minor naming differences in the Google Sheet are tolerated.
+// Maps normalised (lowercased) column-header variants to the canonical property names used
+// throughout getseedbank.js.  All keys must be lowercase because normaliseSBHeader() applies
+// .toLowerCase() before the lookup.  The canonical values keep their original casing.
+const SB_HEADER_ALIASES = {
+  // Plant_ID variants
+  'plant_id':            'Plant_ID',
+  'plant id':            'Plant_ID',
+  'plantid':             'Plant_ID',
+  // LatinName variants
+  'latinname':           'LatinName',
+  'latin_name':          'LatinName',
+  'latin name':          'LatinName',
+  // Name_Variety variants
+  'name_variety':        'Name_Variety',
+  'namevariety':         'Name_Variety',
+  'name variety':        'Name_Variety',
+  // Name_HU variants
+  'name_hu':             'Name_HU',
+  'namehu':              'Name_HU',
+  'name hu':             'Name_HU',
+  // Name_EN variants
+  'name_en':             'Name_EN',
+  'nameen':              'Name_EN',
+  'name en':             'Name_EN',
+  // Seedbank variants (including Hungarian)
+  'seedbank':            'Seedbank',
+  'seed_bank':           'Seedbank',
+  'seed bank':           'Seedbank',
+  'magbank':             'Seedbank',
+  // Year variants (including Hungarian)
+  'year':                'Year',
+  'év':                  'Year',
+  // Seed_availability variants (including Hungarian)
+  'seed_availability':   'Seed_availability',
+  'seedavailability':    'Seed_availability',
+  'seed availability':   'Seed_availability',
+  'seed_av':             'Seed_availability',
+  'mag_elérhetőség':     'Seed_availability',
+  'mag elérhetőség':     'Seed_availability',
+};
+
+function normaliseSBHeader(raw) {
+  const key = raw.toLowerCase().replace(/\s+/g, ' ').trim();
+  return SB_HEADER_ALIASES[key] || raw;
+}
+
 export async function loadPlantDataSB() {
   const gvizResponse = await fetchSheetResponseSB();
   const { cols, rows } = gvizResponse.table;
-  console.log("loadPlantData");
-  // Use column label (the sheet header row) as the property key, falling back to column id
-  const headers = cols.map(col => (col.label && col.label.trim()) ? col.label.trim() : col.id);
+  // Use column label (the sheet header row) as the property key, falling back to column id,
+  // then normalise to canonical names so minor naming differences are tolerated.
+  const headers = cols.map(col =>
+    normaliseSBHeader((col.label && col.label.trim()) ? col.label.trim() : col.id)
+  );
 
   return rows
-    // Filter out completely empty rows (Google Sheets sometimes appends null-filled rows).
-    // Rows containing 0 or false are intentionally preserved as non-empty data.
-    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    // Filter out rows where every cell is either null or an empty string – these are either
+    // Google Sheets padding rows or formula-placeholder rows with no real data yet.
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null && cell.v !== ''))
     .map(row => {
       const entry = {};
       headers.forEach((header, index) => {
