@@ -3,8 +3,26 @@ import { splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
 
+// ── Debug helpers ────────────────────────────────────────────────────────────
+const debugLines = [];
+function dbg(msg, level = 'info') {
+  const cls = level === 'ok' ? 'dbg-ok' : level === 'warn' ? 'dbg-warn' : level === 'err' ? 'dbg-err' : '';
+  debugLines.push(cls ? `<span class="${cls}">${escHtml(msg)}</span>` : escHtml(msg));
+  const panel = document.getElementById('debug-panel');
+  if (panel) panel.innerHTML = debugLines.join('\n');
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 document.getElementById("back-button").addEventListener("click", () => {
   window.location.href = "Homepage.html";
+});
+
+document.getElementById("debug-toggle").addEventListener("click", () => {
+  const panel = document.getElementById("debug-panel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
 });
 
 function buildDropdown(selectEl, allValues, placeholder) {
@@ -59,9 +77,17 @@ async function populate() {
   let plantsGF = [];
   let plantsSB = [];
   // seed bank
+  dbg('── seed_bank fetch ──────────────────────────');
   try {
     plantsSB = await loadPlantDataSB();
+    dbg(`seed_bank rows loaded: ${plantsSB.length}`, plantsSB.length > 0 ? 'ok' : 'warn');
+    if (plantsSB.length > 0) {
+      const headers = Object.keys(plantsSB[0]);
+      dbg(`seed_bank columns (${headers.length}): ${headers.join(', ')}`);
+      dbg('seed_bank row[0]: ' + JSON.stringify(plantsSB[0]));
+    }
   } catch (err) {
+    dbg(`seed_bank ERROR: ${err.message}`, 'err');
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
     document.getElementById("plant-list-body").innerHTML =
@@ -69,9 +95,16 @@ async function populate() {
     return;
   }
   // plant list
+  dbg('── plant_list fetch ─────────────────────────');
     try {
     plantsGF = await loadPlantIdPlSB2();
+    dbg(`plant_list rows loaded: ${plantsGF.length}`, plantsGF.length > 0 ? 'ok' : 'warn');
+    if (plantsGF.length > 0) {
+      const headers = Object.keys(plantsGF[0]);
+      dbg(`plant_list columns: ${headers.join(', ')}`);
+    }
   } catch (err) {
+    dbg(`plant_list ERROR: ${err.message}`, 'err');
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
     document.getElementById("plant-list-body").innerHTML =
@@ -98,6 +131,13 @@ async function populate() {
   });
 
   plantsSB.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
+
+  dbg('── enrichment result ────────────────────────');
+  dbg(`enriched rows: ${plantsSB.length}`, plantsSB.length > 0 ? 'ok' : 'warn');
+  if (plantsSB.length > 0) {
+    dbg('enriched row[0]: ' + JSON.stringify(plantsSB[0]));
+  }
+  dbg('─────────────────────────────────────────────');
 
   const lang = getCurrentLang();
   const nameField = lang === 'hu' ? 'Name_HU' : 'Name_EN';
