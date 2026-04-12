@@ -1,4 +1,6 @@
 //import { loadActiveNFCPlants } from "./csv-utils.js";
+import { t, getCurrentLang, setupLanguageButtons } from './lang.js';
+import { TRANSLATIONS } from './i18n.js';
 
 // ── Google Apps Script Web App configuration ─────────────────────────────────
 // Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
@@ -79,7 +81,7 @@ export async function loadActiveNFCPlants() {
 
 /** Use the page-level i18n helper if available, otherwise return the key. */
 function msg(key) {
-  return (typeof window.t === 'function') ? window.t(key) : key;
+  return t('nfcgen.' + key);
 }
 
 /** Placeholder text in either language – used to detect "no real data yet" */
@@ -87,8 +89,8 @@ const NFC_PLACEHOLDER_KEYS = ['ph_nfc_preview', 'ph_link_preview'];
 function isPlaceholder(text) {
   return !text || NFC_PLACEHOLDER_KEYS.some(k => {
     return ['en','hu'].some(lang => {
-      const translations = window.TRANS && window.TRANS[lang];
-      return translations && translations[k] === text;
+      const translations = TRANSLATIONS[lang];
+      return translations && translations['nfcgen.' + k] === text;
     });
   }) || text === 'NFC data will appear here...' || text === 'NFC data will appear here…';
 }
@@ -228,9 +230,7 @@ async function populate() {
   const nfcSize = document.getElementById("nfc-size");
 
   // Use language-aware name property
-  const currentLang = (typeof window.getCurrentNfcLang === 'function')
-    ? window.getCurrentNfcLang()
-    : (localStorage.getItem('fuvesztar_lang') || 'hu');
+  const currentLang = getCurrentLang();
   const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
   const linkPreview = document.getElementById("link-preview");
   const linkSize = document.getElementById("link-size");
@@ -857,6 +857,7 @@ if (document.readyState === "loading") {
 } else {
   populate();
 }
+setupLanguageButtons();
 if (gpsCardToggle) {
 gpsCardToggle.addEventListener('click', () => {
   gpsCardToggle.classList.toggle('on');
