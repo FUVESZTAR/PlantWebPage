@@ -1,4 +1,7 @@
 
+import { t, getCurrentLang, setupLanguageButtons } from './lang.js';
+import { TRANSLATIONS } from './i18n.js';
+
 // ── Google Apps Script Web App configuration ─────────────────────────────────
 // Deploy scripts/sheetwriter.js as a Google Apps Script Web App and paste the
 // resulting URL below.  Also set the same SECRET_KEY in Script Properties.
@@ -14,7 +17,7 @@ const SHEET_WRITER_SECRET = '159753g9d5rt4Ht4eg7e5z4d6szo89fsef';
 
 /** Use the page-level i18n helper if available, otherwise return the key. */
 function msg(key) {
-  return (typeof window.t === 'function') ? window.t(key) : key;
+  return t('nfcread.' + key);
 }
 
 /** Placeholder text in either language – used to detect "no real data yet" */
@@ -22,8 +25,8 @@ const NFC_PLACEHOLDER_KEYS = ['ph_nfc_preview', 'ph_link_preview'];
 function isPlaceholder(text) {
   return !text || NFC_PLACEHOLDER_KEYS.some(k => {
     return ['en','hu'].some(lang => {
-      const translations = window.TRANS && window.TRANS[lang];
-      return translations && translations[k] === text;
+      const translations = TRANSLATIONS[lang];
+      return translations && translations['nfcread.' + k] === text;
     });
   }) || text === 'NFC data will appear here...' || text === 'NFC data will appear here…';
 }
@@ -180,9 +183,7 @@ async function readNfc(onRead) {
 async function populate() {
 
   // Use language-aware name property
-  const currentLang = (typeof window.getCurrentNfcLang === 'function')
-    ? window.getCurrentNfcLang()
-    : (localStorage.getItem('fuvesztar_lang') || 'hu');
+  const currentLang = getCurrentLang();
   const nameProp = currentLang === 'en' ? 'Name_EN' : 'Name_HU';
 
   let plants = [];
@@ -482,4 +483,5 @@ if (document.readyState === "loading") {
 } else {
   populate();
 }
+setupLanguageButtons();
 
