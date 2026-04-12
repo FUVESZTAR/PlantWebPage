@@ -79,14 +79,28 @@ async function populate() {
     return;
   }
 
+  // Build a lookup map from Plant_ID → plant_list fields using plantsGF
+  const plantListMap = new Map(plantsGF.map(p => [String(p.Plant_ID), p]));
+
+  // Enrich each seed_bank record with LatinName, Name_Variety, Name_HU, Name_EN, Genus, Family
+  // from plant_list, falling back to any values already present in the seed_bank row.
+  plantsSB = plantsSB.map(sb => {
+    const pl = plantListMap.get(String(sb.Plant_ID)) || {};
+    return {
+      ...sb,
+      LatinName:    sb.LatinName    || pl.LatinName    || '',
+      Name_Variety: sb.Name_Variety || pl.Name_Variety || '',
+      Name_HU:      sb.Name_HU      || pl.Name_HU      || '',
+      Name_EN:      sb.Name_EN      || pl.Name_EN      || '',
+      Genus:        sb.Genus        || pl.Genus        || '',
+      Family:       sb.Family       || pl.Family       || '',
+    };
+  });
+
   plantsSB.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
   const lang = getCurrentLang();
   const nameField = lang === 'hu' ? 'Name_HU' : 'Name_EN';
-
-  // Build a lookup map from Plant_ID → { Family, Genus } using plantsGF
-  // Set of Plant_IDs present in the seedbank
-  const sbPlantIds = new Set(plantsSB.map(p => p.Plant_ID));
 
   const ddFamily  = document.getElementById("dd-family");
   const ddGenus   = document.getElementById("dd-genus");
@@ -121,30 +135,23 @@ async function populate() {
 
   // Family dropdown always shows all families present in the seedbank (top of hierarchy)
   buildDropdown(ddFamily,
-    unique(plantsGF.filter(p => sbPlantIds.has(p.Plant_ID)).map(p => p.Family)),
+    unique(plantsSB.map(p => p.Family)),
     t('list.filter.allFamilies'));
   searchFamily.refresh();
 
   // Rebuild genus, seedbank, year, latin, name and variety dropdowns so each level only
   // shows values that exist in the rows matching all higher-level filters.
   function rebuildDependentDropdowns() {
-    // Filter plantsGF by family → genus
-    const gfAfterFamily = ddFamily.value
-      ? plantsGF.filter(p => p.Family === ddFamily.value)
-      : plantsGF;
+    const afterFamily = ddFamily.value
+      ? plantsSB.filter(p => p.Family === ddFamily.value)
+      : plantsSB;
 
-    buildDropdown(ddGenus, unique(gfAfterFamily.filter(p => sbPlantIds.has(p.Plant_ID)).map(p => p.Genus)), t('list.filter.allGenera'));
+    buildDropdown(ddGenus, unique(afterFamily.map(p => p.Genus)), t('list.filter.allGenera'));
     searchGenus.refresh();
 
-    // Determine which Plant_IDs pass the family+genus filter
-    const gfAfterGenus = ddGenus.value
-      ? gfAfterFamily.filter(p => p.Genus === ddGenus.value)
-      : gfAfterFamily;
-    const allowedIds = new Set(gfAfterGenus.map(p => p.Plant_ID));
-
-    const afterGenus = (ddFamily.value || ddGenus.value)
-      ? plantsSB.filter(p => allowedIds.has(p.Plant_ID))
-      : plantsSB;
+    const afterGenus = ddGenus.value
+      ? afterFamily.filter(p => p.Genus === ddGenus.value)
+      : afterFamily;
 
     const afterSeedbank = ddSeedbank.value
       ? afterGenus.filter(p => p.Seedbank === ddSeedbank.value)
@@ -184,16 +191,12 @@ async function populate() {
 
   // Lightweight rebuild used when only the name filter changes (only variety depends on it)
   function rebuildVarietyDropdown() {
-    const gfAfterFamily = ddFamily.value ? plantsGF.filter(p => p.Family === ddFamily.value) : plantsGF;
-    const gfAfterGenus  = ddGenus.value  ? gfAfterFamily.filter(p => p.Genus === ddGenus.value) : gfAfterFamily;
-    const allowedIds = new Set(gfAfterGenus.map(p => p.Plant_ID));
-    const afterGenus = (ddFamily.value || ddGenus.value)
-      ? plantsSB.filter(p => allowedIds.has(p.Plant_ID))
-      : plantsSB;
-    const afterSeedbank = ddSeedbank.value ? afterGenus.filter(p => p.Seedbank === ddSeedbank.value) : afterGenus;
-    const afterYear  = ddYear.value  ? afterSeedbank.filter(p => String(p.Year || '') === ddYear.value) : afterSeedbank;
-    const afterLatin  = ddLatin.value  ? afterYear.filter(p => p.LatinName === ddLatin.value) : afterYear;
-    const afterName   = ddName.value   ? afterLatin.filter(p => p[nameField] === ddName.value) : afterLatin;
+    const afterFamily   = ddFamily.value   ? plantsSB.filter(p => p.Family === ddFamily.value)               : plantsSB;
+    const afterGenus    = ddGenus.value    ? afterFamily.filter(p => p.Genus === ddGenus.value)               : afterFamily;
+    const afterSeedbank = ddSeedbank.value ? afterGenus.filter(p => p.Seedbank === ddSeedbank.value)          : afterGenus;
+    const afterYear     = ddYear.value     ? afterSeedbank.filter(p => String(p.Year || '') === ddYear.value) : afterSeedbank;
+    const afterLatin    = ddLatin.value    ? afterYear.filter(p => p.LatinName === ddLatin.value)             : afterYear;
+    const afterName     = ddName.value     ? afterLatin.filter(p => p[nameField] === ddName.value)            : afterLatin;
     buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
     searchVariety.refresh();
   }
@@ -230,15 +233,13 @@ async function populate() {
   if (varietyParam) { ddVariety.value = varietyParam; }
 
   function applyDropdownFilters() {
-    const gfAfterFamily = ddFamily.value ? plantsGF.filter(p => p.Family === ddFamily.value) : plantsGF;
-    const gfAfterGenus  = ddGenus.value  ? gfAfterFamily.filter(p => p.Genus === ddGenus.value) : gfAfterFamily;
-    const allowedIds = new Set(gfAfterGenus.map(p => p.Plant_ID));
     const result = plantsSB.filter((p) => {
-      if ((ddFamily.value || ddGenus.value) && !allowedIds.has(p.Plant_ID)) return false;
-      if (ddSeedbank.value && (p.Seedbank || "") !== ddSeedbank.value) return false;
-      if (ddYear.value     && String(p.Year || "") !== ddYear.value)   return false;
-      if (ddLatin.value    && (p.LatinName   || "") !== ddLatin.value)  return false;
-      if (ddName.value     && (p[nameField]  || "") !== ddName.value)   return false;
+      if (ddFamily.value   && (p.Family      || "") !== ddFamily.value)   return false;
+      if (ddGenus.value    && (p.Genus       || "") !== ddGenus.value)    return false;
+      if (ddSeedbank.value && (p.Seedbank    || "") !== ddSeedbank.value) return false;
+      if (ddYear.value     && String(p.Year  || "") !== ddYear.value)     return false;
+      if (ddLatin.value    && (p.LatinName   || "") !== ddLatin.value)    return false;
+      if (ddName.value     && (p[nameField]  || "") !== ddName.value)     return false;
       if (ddVariety.value  && !splitPipe(p.Name_Variety).includes(ddVariety.value)) return false;
       return true;
     });
