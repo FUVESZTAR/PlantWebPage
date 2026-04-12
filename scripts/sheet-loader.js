@@ -384,30 +384,45 @@ console.log(varieties);         // ['variety one', 'variety two', ...]
  */
 // Normalise common column-header variants to the canonical property names used in
 // getseedbank.js so that minor naming differences in the Google Sheet are tolerated.
+// Maps normalised (lowercased) column-header variants to the canonical property names used
+// throughout getseedbank.js.  All keys must be lowercase because normaliseSBHeader() applies
+// .toLowerCase() before the lookup.  The canonical values keep their original casing.
 const SB_HEADER_ALIASES = {
+  // Plant_ID variants
   'plant_id':            'Plant_ID',
   'plant id':            'Plant_ID',
   'plantid':             'Plant_ID',
+  // LatinName variants
   'latinname':           'LatinName',
   'latin_name':          'LatinName',
   'latin name':          'LatinName',
+  // Name_Variety variants
   'name_variety':        'Name_Variety',
   'namevariety':         'Name_Variety',
   'name variety':        'Name_Variety',
+  // Name_HU variants
   'name_hu':             'Name_HU',
   'namehu':              'Name_HU',
   'name hu':             'Name_HU',
+  // Name_EN variants
   'name_en':             'Name_EN',
   'nameen':              'Name_EN',
   'name en':             'Name_EN',
+  // Seedbank variants (including Hungarian)
   'seedbank':            'Seedbank',
   'seed_bank':           'Seedbank',
   'seed bank':           'Seedbank',
+  'magbank':             'Seedbank',
+  // Year variants (including Hungarian)
   'year':                'Year',
+  'év':                  'Year',
+  // Seed_availability variants (including Hungarian)
   'seed_availability':   'Seed_availability',
   'seedavailability':    'Seed_availability',
   'seed availability':   'Seed_availability',
   'seed_av':             'Seed_availability',
+  'mag_elérhetőség':     'Seed_availability',
+  'mag elérhetőség':     'Seed_availability',
 };
 
 function normaliseSBHeader(raw) {
