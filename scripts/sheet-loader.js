@@ -405,13 +405,13 @@ export async function loadPlantDataSB() {
 }
 
 
-/**  For Seedbank page — load Plant_ID, LatinName, Genus, Family for all rows.
- * Columns: A=Plant_ID, B=LatinName, F=Genus, G=Family
+/**  For Seedbank page — load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN, Genus, Family for all rows.
+ * Columns: A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN, F=Genus, G=Family
  *
- * @returns {Object[]} Array of plant objects with Plant_ID, LatinName, Genus, Family.
+ * @returns {Object[]} Array of plant objects with the selected fields.
  */
 export async function loadPlantIdPlSB2() {
-  const selectedCols = ['A', 'B', 'F', 'G'].join(', ');
+  const selectedCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].join(', ');
   const tq = `select ${selectedCols}`;
 
   const gvizResponse = await fetchSheetResponseQr(tq);
