@@ -49,6 +49,7 @@ async function fetchSheetResponseSB(tq = '') {
   const params = new URLSearchParams({
     tqx: 'out:json',
     sheet: SHEET_NAME2,
+    headers: '1',
     ...(tq && { tq }),
   });
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params}`;
@@ -444,7 +445,8 @@ function normaliseSBHeader(raw) {
 }
 
 export async function loadPlantDataSB() {
-  const gvizResponse = await fetchSheetResponseSB();
+  const tq = 'select A, B, C, D, E, F, G, H, I, J';
+  const gvizResponse = await fetchSheetResponseSB(tq);
   const { cols, rows } = gvizResponse.table;
   // Use column label (the sheet header row) as the property key, falling back to column id,
   // then normalise to canonical names so minor naming differences are tolerated.
