@@ -1,4 +1,4 @@
-import { loadPlantDataSB, loadPlantIdPlSB2 } from "./sheet-loader.js";
+import { loadPlantDataSB } from "./sheet-loader.js";
 import { splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
@@ -74,7 +74,6 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   const params = new URLSearchParams(window.location.search);
-  let plantsGF = [];
   let plantsSB = [];
   // seed bank
   dbg('── seed_bank fetch ──────────────────────────');
@@ -94,50 +93,13 @@ async function populate() {
       `<tr><td colspan="8">${t('list.error.loadData')}</td></tr>`;
     return;
   }
-  // plant list
-  dbg('── plant_list fetch ─────────────────────────');
-    try {
-    plantsGF = await loadPlantIdPlSB2();
-    dbg(`plant_list rows loaded: ${plantsGF.length}`, plantsGF.length > 0 ? 'ok' : 'warn');
-    if (plantsGF.length > 0) {
-      const headers = Object.keys(plantsGF[0]);
-      dbg(`plant_list columns: ${headers.join(', ')}`);
-    }
-  } catch (err) {
-    dbg(`plant_list ERROR: ${err.message}`, 'err');
-    console.error(err);
-    errorMsg.textContent = t('list.error.loadFailed');
-    document.getElementById("plant-list-body").innerHTML =
-      `<tr><td colspan="8">${t('list.error.loadData')}</td></tr>`;
-    return;
-  }
-
-  // Build a lookup map from Plant_ID → plant_list fields using plantsGF
-  const plantListMap = new Map(plantsGF.map(p => [String(p.Plant_ID), p]));
-
-  // Enrich each seed_bank record with LatinName, Name_Variety, Name_HU, Name_EN, Genus, Family
-  // from plant_list, falling back to any values already present in the seed_bank row.
-  plantsSB = plantsSB.map(sb => {
-    const pl = plantListMap.get(String(sb.Plant_ID)) || {};
-    return {
-      ...sb,
-      LatinName:    sb.LatinName    || pl.LatinName    || '',
-      Name_Variety: sb.Name_Variety || pl.Name_Variety || '',
-      Name_HU:      sb.Name_HU      || pl.Name_HU      || '',
-      Name_EN:      sb.Name_EN      || pl.Name_EN      || '',
-      Genus:        sb.Genus        || pl.Genus        || '',
-      Family:       sb.Family       || pl.Family       || '',
-    };
-  });
 
   plantsSB.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
-  dbg('── enrichment result ────────────────────────');
-  dbg(`enriched rows: ${plantsSB.length}`, plantsSB.length > 0 ? 'ok' : 'warn');
+  dbg(`loaded rows: ${plantsSB.length}`, plantsSB.length > 0 ? 'ok' : 'warn');
   if (plantsSB.length > 0) {
-    dbg('enriched row[0]: ' + JSON.stringify(plantsSB[0]));
+    dbg('row[0]: ' + JSON.stringify(plantsSB[0]));
   }
-  dbg('─────────────────────────────────────────────');
 
   const lang = getCurrentLang();
   const nameField = lang === 'hu' ? 'Name_HU' : 'Name_EN';

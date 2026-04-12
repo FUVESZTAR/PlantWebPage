@@ -430,6 +430,12 @@ const SB_HEADER_ALIASES = {
   'seed_av':             'Seed_availability',
   'mag_elérhetőség':     'Seed_availability',
   'mag elérhetőség':     'Seed_availability',
+  // Genus variants
+  'genus':               'Genus',
+  'nemzetség':           'Genus',
+  // Family variants
+  'family':              'Family',
+  'család':              'Family',
 };
 
 function normaliseSBHeader(raw) {
