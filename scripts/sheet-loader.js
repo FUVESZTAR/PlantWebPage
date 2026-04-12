@@ -405,49 +405,21 @@ export async function loadPlantDataSB() {
 }
 
 
-/**  For Plant View ("P") page , Plantinfo.js
- * Load full plant data and all its varieties by Plant_ID (column A).
+/**  For Seedbank page — load Plant_ID, LatinName, Genus, Family for all rows.
+ * Columns: A=Plant_ID, B=LatinName, F=Genus, G=Family
  *
- * @param {number|string} plantId - The Plant_ID to look up.
- * @returns {{ plant: Object|null, varieties: string[] }}
+ * @returns {Object[]} Array of plant objects with Plant_ID, LatinName, Genus, Family.
  */
-export async function loadPlantIdPlSB2(plantId) {
+export async function loadPlantIdPlSB2() {
+  const selectedCols = ['A', 'B', 'F', 'G'].join(', ');
+  const tq = `select ${selectedCols}`;
 
-  // Step 1: fetch the single row matching the Plant_ID
-// If Plant_ID is stored as TEXT in the sheet (e.g. "P001", "42"):
-//const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
-
-// Build your column selection
-const selectedCols = [
-  'A', 'B', 'F' , 'G'           // plus individual extras
-].join(', ');
-
-//const tq = `select ${selectedCols} where A = ${plantId} limit 1`;
-// → "select A, B, C, D, ..., X, AC, AF where A = 1 limit 1"
-  
-// If Plant_ID is stored as a NUMBER in the sheet (e.g. 1, 42):
-const tq1 = `select ${selectedCols} where A = ${plantId} limit 1`;
-  //const tq1 = `select * where A = ${plantId} limit 1`;
-  const gvizResponse1 = await fetchSheetResponseQr(tq1);
-  const { cols, rows: rows1 } = gvizResponse1.table;
+  const gvizResponse = await fetchSheetResponseQr(tq);
+  const { cols, rows } = gvizResponse.table;
 
   const headers = cols.map(col =>
     (col.label && col.label.trim()) ? col.label.trim() : col.id
   );
-
-  const validRows1 = rows1.filter(
-    row => row && row.c && row.c.some(cell => cell && cell.v != null)
-  );
-
-  if (validRows1.length === 0) return { plant: null, varieties: [] };
-
-  // Build the plant object from the first (and only) row
-  const plant = {};
-  headers.forEach((header, index) => {
-    const cell = validRows1[0].c[index];
-    plant[header] = (cell && cell.v != null) ? cell.v : '';
-  });
-
 
   return rows
     .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
