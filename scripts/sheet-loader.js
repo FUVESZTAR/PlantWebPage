@@ -61,7 +61,14 @@ async function fetchSheetResponseSB(tq = '') {
   if (!match) {
     throw new Error('Unexpected Google Sheets API response format');
   }
-  return JSON.parse(match[1]);
+  const parsed = JSON.parse(match[1]);
+  if (parsed.status === 'error') {
+    const msg = parsed.errors && parsed.errors[0]
+      ? `${parsed.errors[0].reason}: ${parsed.errors[0].message}`
+      : 'unknown gviz error';
+    throw new Error(`Google Visualization API error (sheet="${SHEET_NAME2}"): ${msg}`);
+  }
+  return parsed;
 }
 
 // Helper to generate column letters from a range (supports A–Z and AA–ZZ)
