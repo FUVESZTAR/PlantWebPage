@@ -1,4 +1,4 @@
-import { loadPlantDataSB, splitPipe } from "./sheet-loader.js";
+import { loadPlantDataSB, loadPlantIdPlSB2, splitPipe } from "./sheet-loader.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
 
@@ -22,14 +22,14 @@ function buildDropdown(selectEl, allValues, placeholder) {
   selectEl.value = allValues.includes(current) ? current : "";
 }
 
-function renderRows(plants) {
+function renderRows(plantsSB) {
   const tbody = document.getElementById("plant-list-body");
-  if (!plants.length) {
+  if (!plantsSB.length) {
     tbody.innerHTML = `<tr><td colspan="5">${t('list.empty')}</td></tr>`;
     return;
   }
   tbody.innerHTML = "";
-  plants.forEach((plant) => {
+  plantsSB.forEach((plant) => {
     const tr = document.createElement("tr");
     const varieties = splitPipe(plant.Name_Variety);
     tr.innerHTML = `
@@ -55,9 +55,21 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   const params = new URLSearchParams(window.location.search);
-  let plants = [];
+  let plantsGF = [];
+  let plantsSB = [];
+  // seed bank
   try {
-    plants = await loadPlantDataSB();
+    plantsSB = await loadPlantDataSB();
+  } catch (err) {
+    console.error(err);
+    errorMsg.textContent = t('list.error.loadFailed');
+    document.getElementById("plant-list-body").innerHTML =
+      `<tr><td colspan="5">${t('list.error.loadData')}</td></tr>`;
+    return;
+  }
+  // plant list
+    try {
+    plantsGF = await loadPlantIdPlSB2();
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
@@ -66,7 +78,7 @@ async function populate() {
     return;
   }
 
-  plants.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
+  plantsSB.sort((a, b) => (a.LatinName || "").localeCompare(b.LatinName || ""));
 
   const lang = getCurrentLang();
   const nameField = lang === 'hu' ? 'Name_HU' : 'Name_EN';
@@ -99,15 +111,15 @@ async function populate() {
   }
 
   // Seedbank dropdown always shows all seedbanks (top of hierarchy)
-  buildDropdown(ddSeedbank, unique(plants.map(p => p.Seedbank)), t('seedbank.filter.allSeedbanks'));
+  buildDropdown(ddSeedbank, unique(plantsSB.map(p => p.Seedbank)), t('seedbank.filter.allSeedbanks'));
   searchSeedbank.refresh();
 
   // Rebuild year, latin, name and variety dropdowns so each level only
   // shows values that exist in the rows matching all higher-level filters.
   function rebuildDependentDropdowns() {
     const afterSeedbank = ddSeedbank.value
-      ? plants.filter(p => p.Seedbank === ddSeedbank.value)
-      : plants;
+      ? plantsSB.filter(p => p.Seedbank === ddSeedbank.value)
+      : plantsSB;
 
     buildDropdown(ddYear, unique(afterSeedbank.map(p => String(p.Year || ''))), t('seedbank.filter.allYears'));
     searchYear.refresh();
@@ -140,7 +152,7 @@ async function populate() {
 
   // Lightweight rebuild used when only the name filter changes (only variety depends on it)
   function rebuildVarietyDropdown() {
-    const afterSeedbank = ddSeedbank.value ? plants.filter(p => p.Seedbank === ddSeedbank.value) : plants;
+    const afterSeedbank = ddSeedbank.value ? plantsSB.filter(p => p.Seedbank === ddSeedbank.value) : plantsSB;
     const afterYear  = ddYear.value  ? afterSeedbank.filter(p => String(p.Year || '') === ddYear.value) : afterSeedbank;
     const afterLatin  = ddLatin.value  ? afterYear.filter(p => p.LatinName === ddLatin.value) : afterYear;
     const afterName   = ddName.value   ? afterLatin.filter(p => p[nameField] === ddName.value) : afterLatin;
@@ -174,7 +186,7 @@ async function populate() {
   if (varietyParam) { ddVariety.value = varietyParam; }
 
   function applyDropdownFilters() {
-    const result = plants.filter((p) => {
+    const result = plantsSB.filter((p) => {
       if (ddSeedbank.value && (p.Seedbank || "") !== ddSeedbank.value) return false;
       if (ddYear.value     && String(p.Year || "") !== ddYear.value)   return false;
       if (ddLatin.value    && (p.LatinName   || "") !== ddLatin.value)  return false;
