@@ -25,6 +25,10 @@ document.getElementById('debug-toggle').addEventListener('click', () => {
   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 });
 
+// ── Constants ─────────────────────────────────────────────────────────────────
+// Used as colspan for loading/error rows before the real column count is known.
+const FALLBACK_COLSPAN = 50;
+
 // ── State ────────────────────────────────────────────────────────────────────
 let allRows    = [];   // all rows loaded from seed_bank
 let columns    = [];   // ordered list of column names
@@ -229,7 +233,7 @@ function applyUrlParams() {
   const legacyParams = {
     family:  'Family',
     genus:   'Genus',
-    seedbank:'Seedbank',
+    seedbank: 'Seedbank',
     year:    'Year',
     latin:   'LatinName',
     nameHu:  'Name_HU',
@@ -261,14 +265,14 @@ async function populate() {
     console.error(err);
     if (errorMsg) errorMsg.textContent = t('list.error.loadFailed');
     document.getElementById('plant-list-body').innerHTML =
-      `<tr><td colspan="20">${t('list.error.loadData')}</td></tr>`;
+      `<tr><td colspan="${FALLBACK_COLSPAN}">${t('list.error.loadData')}</td></tr>`;
     return;
   }
 
   if (!rows.length) {
     dbg('No rows returned from seed_bank', 'warn');
     document.getElementById('plant-list-body').innerHTML =
-      `<tr><td colspan="20">${t('list.empty')}</td></tr>`;
+      `<tr><td colspan="${FALLBACK_COLSPAN}">${t('list.empty')}</td></tr>`;
     return;
   }
 
