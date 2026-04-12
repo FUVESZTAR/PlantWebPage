@@ -87,6 +87,14 @@ export const TRANSLATIONS = {
     "list.error.loadData": "Error loading data",
     "list.empty": "No plants found",
 
+    // ── Seedbank Page ─────────────────────────────────────────────────────────
+    "seedbank.title": "Seedbank",
+    "seedbank.table.seedav": "Seed availability",
+    "seedbank.table.seedbank": "Seedbank",
+    "seedbank.table.year": "Year",
+    "seedbank.filter.allSeedbanks": "All seedbanks",
+    "seedbank.filter.allYears": "All years",
+
     // ── NFC List Page ─────────────────────────────────────────────────────────
     "nfc.title": "NFC List",
     "nfc.btn.back": "\u2190 Back",
@@ -305,6 +313,14 @@ export const TRANSLATIONS = {
     "list.error.loadFailed": "Nem siker\u00fclt bet\u00f6lteni a n\u00f6v\u00e9ny adatokat",
     "list.error.loadData": "Hiba az adatok bet\u00f6lt\u00e9sekor",
     "list.empty": "Nem tal\u00e1lhat\u00f3 n\u00f6v\u00e9ny",
+
+    // ── Seedbank Page ─────────────────────────────────────────────────────────
+    "seedbank.title": "Magbank",
+    "seedbank.table.seedav": "Mag el\u00e9rhet\u0151s\u00e9g",
+    "seedbank.table.seedbank": "Magbank",
+    "seedbank.table.year": "\u00c9v",
+    "seedbank.filter.allSeedbanks": "\u00d6sszes magbank",
+    "seedbank.filter.allYears": "\u00d6sszes \u00e9v",
 
     // ── NFC List Page ─────────────────────────────────────────────────────────
     "nfc.title": "NFC Lista",
