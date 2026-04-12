@@ -1,5 +1,6 @@
-import { loadPlantDataSB, splitPipe } from "./csv-utils.js";
+import { loadPlantDataSB, splitPipe } from "./sheet-loader.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
+import { makeSelectSearchable } from "./searchable-select.js";
 
 document.getElementById("back-button").addEventListener("click", () => {
   window.location.href = "Homepage.html";
@@ -56,7 +57,7 @@ async function populate() {
   const params = new URLSearchParams(window.location.search);
   let plants = [];
   try {
-    plants = await loadPlantData();
+    plants = await loadPlantDataSB();
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
@@ -77,27 +78,74 @@ async function populate() {
   const ddSeedbank  = document.getElementById("dd-seedbank");
   const ddYear  = document.getElementById("dd-year");
 
-  // Show only the name dropdown for the active language
-  ddNameHu.style.display = lang === 'hu' ? '' : 'none';
-  ddNameEn.style.display = lang === 'en' ? '' : 'none';
+  // Show only the name dropdown (and its search input wrapper) for the active language
+  const ddNameHuCol = ddNameHu.closest('.filter-col') || ddNameHu;
+  const ddNameEnCol = ddNameEn.closest('.filter-col') || ddNameEn;
+  ddNameHuCol.style.display = lang === 'hu' ? '' : 'none';
+  ddNameEnCol.style.display = lang === 'en' ? '' : 'none';
   const ddName = lang === 'hu' ? ddNameHu : ddNameEn;
+
+  // Set up live-search on each filter dropdown
+  const searchSeedbank = makeSelectSearchable(ddSeedbank, 'dd-seedbank-search');
+  const searchYear     = makeSelectSearchable(ddYear,     'dd-year-search');
+  const searchLatin    = makeSelectSearchable(ddLatin,    'dd-latin-search');
+  const searchNameHu   = makeSelectSearchable(ddNameHu,   'dd-nameHu-search');
+  const searchNameEn   = makeSelectSearchable(ddNameEn,   'dd-nameEn-search');
+  const searchVariety  = makeSelectSearchable(ddVariety,  'dd-variety-search');
+  const searchName     = lang === 'hu' ? searchNameHu : searchNameEn;
 
   function unique(arr) {
     return [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b));
   }
 
-  // Family dropdown always shows all families (top of hierarchy)
-  buildDropdown(ddFamily, unique(plants.map(p => p.Family)), t('list.filter.allFamilies'));
+  // Seedbank dropdown always shows all seedbanks (top of hierarchy)
+  buildDropdown(ddSeedbank, unique(plants.map(p => p.Seedbank)), t('seedbank.filter.allSeedbanks'));
+  searchSeedbank.refresh();
 
+  // Rebuild year, latin, name and variety dropdowns so each level only
+  // shows values that exist in the rows matching all higher-level filters.
+  function rebuildDependentDropdowns() {
+    const afterSeedbank = ddSeedbank.value
+      ? plants.filter(p => p.Seedbank === ddSeedbank.value)
+      : plants;
 
+    buildDropdown(ddYear, unique(afterSeedbank.map(p => String(p.Year || ''))), t('seedbank.filter.allYears'));
+    searchYear.refresh();
+
+    const afterYear = ddYear.value
+      ? afterSeedbank.filter(p => String(p.Year || '') === ddYear.value)
+      : afterSeedbank;
+
+    buildDropdown(ddLatin, unique(afterYear.map(p => p.LatinName)), t('list.filter.allLatinNames'));
+    searchLatin.refresh();
+
+    const afterLatin = ddLatin.value
+      ? afterYear.filter(p => p.LatinName === ddLatin.value)
+      : afterYear;
+
+    buildDropdown(ddName, unique(afterLatin.map(p => p[nameField])),
+      lang === 'hu' ? t('list.filter.allNameHu') : t('list.filter.allNameEn'));
+    searchName.refresh();
+
+    const afterName = ddName.value
+      ? afterLatin.filter(p => p[nameField] === ddName.value)
+      : afterLatin;
+
+    buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
+    searchVariety.refresh();
+  }
+
+  // Initialise all dependent dropdowns
+  rebuildDependentDropdowns();
 
   // Lightweight rebuild used when only the name filter changes (only variety depends on it)
   function rebuildVarietyDropdown() {
-    const afterSeedbank= ddSeedbank.value ? plants.filter(p => p.Seedbank === ddFamily.value) : plants;
-    const afterYear = ddYear.value  ? plants.filter(p => p.Year === ddGenus.value) : afterFamily;
-    const afterLatin  = ddLatin.value  ? plants.filter(p => p.LatinName === ddLatin.value) : afterGenus;
-    const afterName   = ddName.value   ? plants.filter(p => p[nameField] === ddName.value) : afterLatin;
+    const afterSeedbank = ddSeedbank.value ? plants.filter(p => p.Seedbank === ddSeedbank.value) : plants;
+    const afterYear  = ddYear.value  ? afterSeedbank.filter(p => String(p.Year || '') === ddYear.value) : afterSeedbank;
+    const afterLatin  = ddLatin.value  ? afterYear.filter(p => p.LatinName === ddLatin.value) : afterYear;
+    const afterName   = ddName.value   ? afterLatin.filter(p => p[nameField] === ddName.value) : afterLatin;
     buildDropdown(ddVariety, unique(afterName.flatMap(p => splitPipe(p.Name_Variety))), t('list.filter.allVarieties'));
+    searchVariety.refresh();
   }
 
   // Apply URL params in hierarchical order so each level is valid before the next.
@@ -118,13 +166,24 @@ async function populate() {
     else if (filterType === "latin") latinParam = filterValue;
   }
 
-  if (yearParam)  { ddYear.value = yearParam;  rebuildDependentDropdowns(); }
-  if (seedbankParam)   { ddSeedbank.value  = seedbanksParam;   rebuildDependentDropdowns(); }
+  if (seedbankParam)  { ddSeedbank.value = seedbankParam;  rebuildDependentDropdowns(); }
+  if (yearParam)   { ddYear.value  = yearParam;   rebuildDependentDropdowns(); }
   if (latinParam)   { ddLatin.value  = latinParam;   rebuildDependentDropdowns(); }
   if (lang === 'hu' && nameHuParam) { ddNameHu.value = nameHuParam; rebuildDependentDropdowns(); }
   if (lang === 'en' && nameEnParam) { ddNameEn.value = nameEnParam; rebuildDependentDropdowns(); }
   if (varietyParam) { ddVariety.value = varietyParam; }
 
+  function applyDropdownFilters() {
+    const result = plants.filter((p) => {
+      if (ddSeedbank.value && (p.Seedbank || "") !== ddSeedbank.value) return false;
+      if (ddYear.value     && String(p.Year || "") !== ddYear.value)   return false;
+      if (ddLatin.value    && (p.LatinName   || "") !== ddLatin.value)  return false;
+      if (ddName.value     && (p[nameField]  || "") !== ddName.value)   return false;
+      if (ddVariety.value  && !splitPipe(p.Name_Variety).includes(ddVariety.value)) return false;
+      return true;
+    });
+    renderRows(result);
+  }
 
   ddSeedbank.addEventListener("change",  () => { rebuildDependentDropdowns(); applyDropdownFilters(); });
   ddYear.addEventListener("change",   () => { rebuildDependentDropdowns(); applyDropdownFilters(); });

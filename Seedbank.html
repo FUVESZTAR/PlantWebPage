@@ -57,15 +57,32 @@
         gap: 10px;
         margin-bottom: 12px;
       }
-      .dropdown-filter-bar select {
+      .dropdown-filter-bar .filter-col {
         flex: 1 1 160px;
         min-width: 120px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .dropdown-filter-bar select {
         padding: 6px 8px;
         border: 1px solid #aaa;
         border-radius: 4px;
         font-size: 0.9rem;
         background: #fff;
+        width: 100%;
       }
+      .select-search-input {
+        padding: 5px 8px 5px 26px;
+        font-size: 0.85rem;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%23637263' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 7px center no-repeat;
+        outline: none;
+        width: 100%;
+        transition: border-color 0.15s;
+      }
+      .select-search-input:focus { border-color: #4a7c4e; }
     </style>
   </head>
   <body>
@@ -83,12 +100,30 @@
         </div>
         <p id="filter-summary" class="subtitle"></p>
         <div class="dropdown-filter-bar">
-          <select id="dd-seedbank"></select>
-          <select id="dd-year"></select>
-          <select id="dd-latin"></select>
-          <select id="dd-nameHu"></select>
-          <select id="dd-nameEn"></select>
-          <select id="dd-variety"></select>
+          <div class="filter-col">
+            <input type="text" id="dd-seedbank-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-seedbank"></select>
+          </div>
+          <div class="filter-col">
+            <input type="text" id="dd-year-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-year"></select>
+          </div>
+          <div class="filter-col">
+            <input type="text" id="dd-latin-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-latin"></select>
+          </div>
+          <div class="filter-col">
+            <input type="text" id="dd-nameHu-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-nameHu"></select>
+          </div>
+          <div class="filter-col">
+            <input type="text" id="dd-nameEn-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-nameEn"></select>
+          </div>
+          <div class="filter-col">
+            <input type="text" id="dd-variety-search" class="select-search-input" data-i18n-placeholder="list.filter.search" placeholder="Search…" autocomplete="off" />
+            <select id="dd-variety"></select>
+          </div>
         </div>
         <div style="overflow-x: auto;">
         <table class="plant-list-table">
