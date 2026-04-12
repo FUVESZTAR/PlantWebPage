@@ -1,5 +1,6 @@
 import { setupLanguageButtons, t } from './lang.js';
 import { loadPlantData } from './csv-utils.js';
+import { makeSelectSearchable } from './searchable-select.js';
 
 const NFC_SHEET_ID   = '1nxRfS0k4zoX7SFlLefuUlPlgDpBZCNkRzxirR1CDGtE';
 const NFC_SHEET_NAME = 'nfc_list';
@@ -188,6 +189,20 @@ async function populate() {
   buildDropdown(ddGenus,   unique(enriched.map(r => r.genus)),   t('nfc.filter.allGenera'));
   buildDropdown(ddLatin,   unique(enriched.map(r => r.latin)),   t('nfc.filter.allLatinNames'));
   buildDropdown(ddVariety, unique(enriched.map(r => r.variety)), t('nfc.filter.allVarieties'));
+
+  const searchNfcId   = makeSelectSearchable(ddNfcId,   'dd-nfc-id-search');
+  const searchPlantId = makeSelectSearchable(ddPlantId, 'dd-plant-id-search');
+  const searchFamily  = makeSelectSearchable(ddFamily,  'dd-family-search');
+  const searchGenus   = makeSelectSearchable(ddGenus,   'dd-genus-search');
+  const searchLatin   = makeSelectSearchable(ddLatin,   'dd-latin-search');
+  const searchVariety = makeSelectSearchable(ddVariety, 'dd-variety-search');
+
+  searchNfcId.refresh();
+  searchPlantId.refresh();
+  searchFamily.refresh();
+  searchGenus.refresh();
+  searchLatin.refresh();
+  searchVariety.refresh();
 
   function applyFilters() {
     const nfcId2   = ddNfcId.value;

@@ -1,5 +1,6 @@
 import { loadPlantData } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
+import { makeSelectSearchable } from "./searchable-select.js";
 
 const nfcGenBtn = document.getElementById("nfc-gen-button");
 nfcGenBtn.addEventListener('click', () => {
@@ -40,6 +41,9 @@ async function populate() {
   nfcGenBtn.disabled = false;
   varietySelector.disabled = true;
 
+  const plantSearch   = makeSelectSearchable(selector, 'plant-selector-search');
+  const varietySearch = makeSelectSearchable(varietySelector, 'plant-selector-variety-search');
+
   let plants = []; // Declare plants outside try block so it's accessible in event handlers
 
   try {
@@ -62,6 +66,7 @@ async function populate() {
       opt.textContent = name;
       selector.appendChild(opt);
     });
+    plantSearch.refresh();
 
   } catch (err) {
     console.error(err);
@@ -105,6 +110,7 @@ async function populate() {
     varietySelector.disabled = false;
     openBtn.disabled = false;
     nfcGenBtn.disabled = false;
+    varietySearch.refresh();
   }
 
   selector.addEventListener("change", populateVarietiesForSelection);
