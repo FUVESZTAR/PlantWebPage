@@ -1,4 +1,4 @@
-import { loadPlantData, splitPipe } from "./csv-utils.js";
+import { loadActivePagePlants, splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
 
@@ -54,8 +54,7 @@ async function populate() {
   const params = new URLSearchParams(window.location.search);
   let plants = [];
   try {
-    plants = await loadPlantData();
-    plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
+    plants = await loadActivePagePlants();
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');
