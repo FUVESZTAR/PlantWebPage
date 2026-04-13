@@ -767,6 +767,11 @@ function calculateSize(text) {
 
     try {
       const ndef = new NDEFReader();
+      await ndef.scan();
+      ndef.addEventListener("reading", (event) => {
+        serialNumText.value = event.serialNumber;
+        console.log("Tag UID:", event.serialNumber);
+      });
       await ndef.write({
         records: [
           { recordType: "text", data: nfcData },
@@ -774,17 +779,6 @@ function calculateSize(text) {
         ]
       });
       showError(errorMsg, msg('err_nfc_ok'), "success");
-      try {
-          const ndef2 = new NDEFReader();
-          await ndef2.scan();
-          ndef2.onreading = (event) => {
-            serialNumText.value = event.serialNumber;
-            console.log("Tag UID:", event.serialNumber);
-          };
-        } catch (error) {
-        showError(errorMsg, msg('err_nfc_read') + error);
-         console.error(error);
-        } 
     } catch (error) {
       showError(errorMsg, msg('err_nfc_write') + error);
       console.error(error);
