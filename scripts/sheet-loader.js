@@ -39,7 +39,14 @@ async function fetchSheetResponseQr(tq = '') {
   if (!match) {
     throw new Error('Unexpected Google Sheets API response format');
   }
-  return JSON.parse(match[1]);
+  const parsed = JSON.parse(match[1]);
+  if (parsed.status === 'error') {
+    const msg = parsed.errors && parsed.errors[0]
+      ? `${parsed.errors[0].reason}: ${parsed.errors[0].message}`
+      : 'unknown gviz error';
+    throw new Error(`Google Visualization API error (sheet="${SHEET_NAME}"): ${msg}`);
+  }
+  return parsed;
 }
 
  /** new 
@@ -328,21 +335,8 @@ console.log(plants);
 export async function loadPlantIdWithVarieties(plantId) {
 
   // Step 1: fetch the single row matching the Plant_ID
-// If Plant_ID is stored as TEXT in the sheet (e.g. "P001", "42"):
-//const tq1 = `select * where A = '${plantId.replace(/'/g, "\\'")}' limit 1`;
-
-// Build your column selection
-const selectedCols = [
-  ...colRange('A', 'CT'),   // A through X
-  'CV', 'CW', 'CX'          // plus individual extras
-].join(', ');
-
-//const tq = `select ${selectedCols} where A = ${plantId} limit 1`;
-// → "select A, B, C, D, ..., X, AC, AF where A = 1 limit 1"
-  
-// If Plant_ID is stored as a NUMBER in the sheet (e.g. 1, 42):
-const tq1 = `select ${selectedCols} where A = ${plantId} limit 1`;
-  //const tq1 = `select * where A = ${plantId} limit 1`;
+  // If Plant_ID is stored as a NUMBER in the sheet (e.g. 1, 42):
+  const tq1 = `select * where A = ${plantId} limit 1`;
   const gvizResponse1 = await fetchSheetResponseQr(tq1);
   const { cols, rows: rows1 } = gvizResponse1.table;
 
