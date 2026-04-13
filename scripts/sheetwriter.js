@@ -85,14 +85,14 @@ function doPost(e) {
   var nfcData = String(data.nfcData || '').trim();
   var link    = String(data.link    || '').trim();
   var other   = String(data.other   || '').trim();
-  var hwID   = String(data.hwID   || '').trim();
+  var serialNum   = String(data.serialNum   || '').trim();
   
 
   if (nfcData.length === 0 || nfcData.length > MAX_DATA ||
       nfcId.length > MAX_ID || link.length > MAX_DATA|| 
       plantId.length > MAX_DATA|| nfcTyp.length > MAX_DATA|| 
       datum.length > MAX_DATA|| nfcCreated.length > MAX_DATA ||
-      nfcPos.length > MAX_DATA || other.length > MAX_DATA|| hwID.length > MAX_DATA) {
+      nfcPos.length > MAX_DATA || other.length > MAX_DATA|| serialNum.length > MAX_DATA) {
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Input validation failed.' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -104,7 +104,7 @@ function doPost(e) {
   if (htmlTag.test(nfcId) || htmlTag.test(nfcData) || htmlTag.test(link) ||
       htmlTag.test(plantId) || htmlTag.test(nfcTyp) || htmlTag.test(datum) ||
       htmlTag.test(nfcCreated) || htmlTag.test(nfcPos) || htmlTag.test(other) ||
-      htmlTag.test(hwID) ||jsProto.test(link)) {
+      htmlTag.test(serialNum) ||jsProto.test(link)) {
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Invalid characters in input.' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -114,7 +114,7 @@ function doPost(e) {
   try {
     var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
-    sheet.appendRow([nfcId, plantId, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other,hwID]);
+    sheet.appendRow([nfcId, plantId, nfcTyp, datum, nfcCreated, nfcPos, nfcData, link, other,serialNum]);
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'success' }))
       .setMimeType(ContentService.MimeType.JSON);
