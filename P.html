@@ -900,75 +900,62 @@ function monthsFromValue(value) {
   return Array.from(months);
 }
 
+const _SHEET_ID   = '1QHJzWztssucMlnozk2tV9ym6gLedgDj4Zh3DzCTFWCY';
+const _SHEET_NAME = 'plant_list';
+
+async function fetchSheetResponseQr(tq = '') {
+  const params = new URLSearchParams({ tqx: 'out:json', sheet: _SHEET_NAME, ...(tq && { tq }) });
+  const url = `https://docs.google.com/spreadsheets/d/${_SHEET_ID}/gviz/tq?${params}`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
+  const text = await response.text();
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
+  if (!match) throw new Error('Unexpected Google Sheets API response format');
+  const parsed = JSON.parse(match[1]);
+  if (parsed.status === 'error') {
+    const msg = parsed.errors?.[0] ? `${parsed.errors[0].reason}: ${parsed.errors[0].message}` : 'unknown gviz error';
+    throw new Error(`Google Visualization API error (sheet="${_SHEET_NAME}"): ${msg}`);
+  }
+  return parsed;
+}
+
 async function loadPlantIdWithVarieties(plantId) {
   try {
-    const response = await fetch('data/plants.csv');
-    if (!response.ok) throw new Error(`CSV fetch failed: ${response.status}`);
-    const text = await response.text();
-    const rows = parseCSV(text);
-    if (!rows.length) return { plant: null, varieties: [] };
+    // Ensure plantId is a safe integer before embedding in the query
+    const safeId = parseInt(plantId, 10);
+    if (!Number.isInteger(safeId)) return { plant: null, varieties: [] };
 
-    const headers = rows[0];
-    const dataRows = rows.slice(1);
+    // Step 1: fetch the single row matching the Plant_ID
+    const gvizResponse1 = await fetchSheetResponseQr(`select * where A = ${safeId} limit 1`);
+    const { cols, rows: rows1 } = gvizResponse1.table;
+    const headers = cols.map(col => (col.label && col.label.trim()) ? col.label.trim() : col.id);
+    const validRows1 = rows1.filter(row => row && row.c && row.c.some(cell => cell && cell.v != null));
 
-    function rowToObj(row) {
-      const obj = {};
-      headers.forEach((h, i) => { obj[h] = row[i] ?? ''; });
-      return obj;
-    }
+    if (validRows1.length === 0) return { plant: null, varieties: [] };
 
-    // Find the target plant
-    const targetRow = dataRows.find(row => {
-      const obj = rowToObj(row);
-      return String(obj.Plant_ID).trim() === String(plantId).trim();
+    const plant = {};
+    headers.forEach((header, index) => {
+      const cell = validRows1[0].c[index];
+      plant[header] = (cell && cell.v != null) ? cell.v : '';
     });
 
-    if (!targetRow) return { plant: null, varieties: [] };
-    const plant = rowToObj(targetRow);
+    // Step 2: fetch all varieties sharing the same LatinName
+    const latinName = plant['LatinName'];
+    if (!latinName) return { plant, varieties: [] };
 
-    // Find varieties: same LatinName, different Plant_ID
-    const varieties = dataRows
-      .map(rowToObj)
-      .filter(p =>
-        p.LatinName && plant.LatinName &&
-        p.LatinName.trim() === plant.LatinName.trim() &&
-        String(p.Plant_ID).trim() !== String(plant.Plant_ID).trim()
-      );
+    const escapedLatin = latinName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const gvizResponse2 = await fetchSheetResponseQr(`select A, C where B = '${escapedLatin}'`);
+    const { rows: rows2 } = gvizResponse2.table;
+
+    const varieties = rows2
+      .filter(row => row && row.c && row.c[1] && row.c[1].v != null)
+      .map(row => ({ Plant_ID: row.c[0]?.v ?? '', Name_Variety: row.c[1]?.v ?? '' }));
 
     return { plant, varieties };
   } catch (err) {
     console.error('loadPlantIdWithVarieties error:', err);
     return { plant: null, varieties: [] };
   }
-}
-
-function parseCSV(text) {
-  const rows = [];
-  const lines = text.split(/\r?\n/);
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    rows.push(parseCSVLine(line));
-  }
-  return rows;
-}
-
-function parseCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
-      else { inQuotes = !inQuotes; }
-    } else if (ch === ',' && !inQuotes) {
-      result.push(current); current = '';
-    } else {
-      current += ch;
-    }
-  }
-  result.push(current);
-  return result;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
