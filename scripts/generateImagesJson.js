@@ -10,20 +10,22 @@ const files = fs.readdirSync(imageDir)
 const grouped = {};
 
 files.forEach(file => {
+  const nameWithoutExt = file.replace(/\.[^.]+$/, '');
+  const parts = nameWithoutExt.split("_");
 
-  const parts = file.split("_");
+  // If the first part is a numeric Plant_ID, use it as the key so all
+  // images for the same plant (e.g. 1_malus_domestica_species.jpg,
+  // 1_malus_domestica_species_2.jpg) are grouped together.
+  // Otherwise fall back to the full name-without-extension as key.
+  const key = (parts.length >= 1 && /^\d+$/.test(parts[0]))
+    ? parts[0]
+    : nameWithoutExt;
 
-  if (parts.length >= 3) {
-
-    const plantId = parts.slice(0,3).join("_"); // Nr_Latin_species
-
-    if (!grouped[plantId]) {
-      grouped[plantId] = [];
-    }
-
-    grouped[plantId].push(file);
+  if (!grouped[key]) {
+    grouped[key] = [];
   }
 
+  grouped[key].push(file);
 });
 
 fs.writeFileSync(outputFile, JSON.stringify(grouped, null, 2));
