@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en" data-i18n-title="page.title.detail">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plant Sheet</title>
+<link rel="icon" href="favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── CSS Variables ──────────────────────────────────────────────────────── */
+:root {
+  --bg:           #eef5ee;
+  --surface:      #f7faf7;
+  --surface-2:    #e4f0e4;
+  --border:       #bdd8bd;
+  --border-light: #d0e8d0;
+  --text-primary: #162416;
+  --text-secondary:#3d5c3d;
+  --text-muted:   #7a9e7a;
+  --accent:       #2e7d32;
+  --accent-light: #c8e6c9;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(20,60,20,.08);
+  --shadow-md: 0 4px 16px rgba(20,60,20,.12);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Cabinet Grotesk', system-ui, sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+/* ── Reset & Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: linear-gradient(160deg, #dceedd 0%, #eef5ee 40%, #e4f0e4 100%);
+  color: var(--text-primary);
+  padding: 20px 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Container ──────────────────────────────────────────────────────────── */
+.container {
+  background: var(--surface);
+  max-width: min(1440px, 98vw);
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.header-content {
+  padding: 24px 32px 20px;
+  border-bottom: 2px solid var(--border);
+  background: linear-gradient(135deg, #f0f8f0 0%, var(--surface-2) 100%);
+  border-top: 4px solid var(--accent);
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.lang-switcher { display: flex; gap: 4px; flex-shrink: 0; }
+
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .18s;
+}
+.lang-btn:hover, .lang-btn.active {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+
+.back-button button {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .18s;
+}
+.back-button button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.identity-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.identity-breadcrumb strong { color: var(--text-secondary); }
+#identity-family a, #identity-genus a, #identity-latinName a {
+  color: inherit; text-decoration: none;
+}
+#identity-family a:hover, #identity-genus a:hover, #identity-latinName a:hover {
+  text-decoration: underline; color: var(--accent);
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 300;
+  letter-spacing: -.01em;
+  color: var(--text-primary);
+  line-height: 1.15;
+}
+.plant-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ── Main two-col grid ──────────────────────────────────────────────────── */
+.main-content {
+  padding: 24px 32px;
+  display: grid;
+  grid-template-columns: 1fr clamp(260px, 28vw, 400px);
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 860px) { .main-content { grid-template-columns: 1fr; } }
+
+/* ── Section label ──────────────────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 14px;
+  font-weight: 500;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* ── Names row ──────────────────────────────────────────────────────────── */
+.names-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.names-row > label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Data status message ────────────────────────────────────────────────── */
+.data_message {
+  font-size: 12px;
+  color: #c62828;
+  font-weight: 600;
+  padding: 6px 10px;
+  background: #fdf0f0;
+  border-radius: var(--radius);
+  border: 1px solid #f0c0c0;
+  min-height: 1.2em;
+  text-align: center;
+  display: none;
+  margin-bottom: 12px;
+}
+
+/* ── Size icons block ───────────────────────────────────────────────────── */
+.size-section {
+  background: linear-gradient(135deg, #e8f5e9 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.size-section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.block2 { padding: 0; }
+
+/* ── Size icons block — new layout ─────────────────────────────────────── */
+/*
+  3-column layout:
+    col 1: measurements (height/width for above & below ground)
+    col 2: tree stacked above root (connected, no gap)
+    col 3: human + house, bottom-aligned
+  All columns bottom-align so the tree trunk base, human feet,
+  and house bottom all sit on the same invisible ground line.
+*/
+
+.grid-size-icons {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0 12px;
+  align-items: end;          /* ← ground line: everything bottom-aligns */
+  width: 100%;
+}
+
+/* col 1: measurements stacked */
+.size-measurements-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  padding-bottom: 0;
+}
+
+.size-meas-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.size-meas-group svg.plant-info-icons {
+  width: 1.6em;
+  height: 1.6em;
+  fill: black;
+  flex-shrink: 0;
+}
+.size-meas-group input[type="text"] {
+  width: 52px;
+  padding: 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.size-meas-group .plant-info-values {
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+
+/* A thin horizontal "ground line" between above and below measurements */
+.size-ground-line {
+  height: 1px;
+  background: var(--border);
+  margin: 3px 0;
+  width: 100%;
+}
+
+/* col 2: plant+root stacked, no gap between them */
+.size-plant-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+/* The above-ground SVG sits directly on top of root */
+#size-tree-icon-2,
+#size-plant-icon-1,
+#size-bush-icon-1 {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Root icon sits flush below tree — no gap */
+#size-root-icon-1 {
+  display: block;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+/* col 3: human + house, bottom-aligned */
+.size-ref-col {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+/* keep old class names working (for JS that references them) */
+.cell-size-icons_r1 { display: none; }  /* replaced by new structure */
+.cell-size-icons_r2 { display: none; }
+.cell-size-icons_r3 { display: none; }
+.grid-size-info-icons { display: none; }
+.cell-size-info-icons { display: none; }
+
+.plant-info-icons { width: 3em; height: 3em; fill: black; }
+.plant-info-values { font-size: 10px; font-family: var(--font-mono); }
+
+.size-measurement input[type="text"] {
+  width: 50px;
+  padding: 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+
+/* ── Edibility legend chips ─────────────────────────────────────────────── */
+.legend-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: .02em;
+}
+#box-g { background: #c8e6c9; color: #1b5e20; border: 1px solid #a5d6a7; }
+#box-y { background: #fff9c4; color: #6d5000; border: 1px solid #f9e44a; }
+#box-r { background: #ffcdd2; color: #7f1111; border: 1px solid #ef9a9a; }
+#box-b { background: #263226; color: #e8f5e9; border: 1px solid #1a221a; }
+
+/* ── Part-icons rows ────────────────────────────────────────────────────── */
+.icons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.icons-row-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #e8f5e9 0%, var(--surface-2) 100%);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  min-height: 52px;
+  margin-bottom: 10px;
+}
+
+/* ── Inline field inputs ────────────────────────────────────────────────── */
+.field-row { margin-bottom: 12px; }
+.field-row label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.field-row input[type="text"],
+input[type="text"].full-width {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+/* ── Image carousel ─────────────────────────────────────────────────────── */
+.image-panel {
+  position: sticky;
+  top: 16px;
+}
+
+.plant-image-carousel {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-md);
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* The visible image area — height is viewport-responsive */
+.carousel-viewport {
+  position: relative;
+  width: 100%;
+  height: clamp(200px, 30vh, 380px);
+  overflow: hidden;
+  background: #e4f0e4;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: opacity .25s ease;
+}
+
+/* Nav arrows */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(46,125,50,.82);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background .18s, opacity .18s;
+  opacity: 0;
+}
+.plant-image-carousel:hover .carousel-btn { opacity: 1; }
+.carousel-btn:hover { background: var(--accent); }
+.carousel-btn.prev { left: 8px; }
+.carousel-btn.next { right: 8px; }
+.carousel-btn:disabled { opacity: .25 !important; cursor: default; }
+
+/* No-image placeholder */
+.carousel-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+
+/* Caption bar */
+.carousel-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px 6px;
+  background: linear-gradient(135deg, #e8f5e9, var(--surface-2));
+  border-top: 1px solid var(--border-light);
+  gap: 8px;
+  min-height: 34px;
+}
+
+.carousel-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.carousel-counter {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Dot indicators */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  flex-wrap: wrap;
+}
+.carousel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background .18s, transform .18s;
+}
+.carousel-dot.active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+/* Hide dots when only 1 image */
+.carousel-dots:empty,
+.carousel-dots.single { display: none; }
+
+/* ── Section divider ────────────────────────────────────────────────────── */
+.section-divider { height: 1px; background: var(--border-light); margin: 0 32px; }
+
+/* ── Sections wrapper ───────────────────────────────────────────────────── */
+.sections-wrapper { padding: 24px 32px 36px; }
+
+.section-block { margin-bottom: 32px; }
+.section-block h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  font-weight: 500;
+}
+
+/* ── CALENDAR ───────────────────────────────────────────────────────────── */
+.CALENDER1 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.cal-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cal-inner { min-width: 680px; }
+
+/* Month header */
+.CALENDER1-months {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  background: var(--accent);
+}
+.CALENDER1-month {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-align: center;
+  color: #fff;
+  padding: 7px 2px;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(255,255,255,.12);
+}
+.CALENDER1-month:last-child { border-right: none; }
+
+/* Track rows */
+.CALENDER1-tracks { display: flex; flex-direction: column; }
+
+.cal-track-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-top: 1px solid var(--border-light);
+}
+
+/* Each month = 4 week cells */
+.cal-month-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  padding: 4px 3px;
+  border-right: 1px solid var(--border-light);
+}
+.cal-month-group:last-child { border-right: none; }
+.cal-month-group:nth-child(odd)  { background: var(--surface); }
+.cal-month-group:nth-child(even) { background: #eaf4ea; }
+
+.cal-cell {
+  height: 14px;
+  border-radius: 2px;
+  background: #d0e8d0;
+}
+.cal-cell.active {
+  background: var(--track-color, #2e7d32);
+}
+
+/* Legend */
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(135deg, #e8f5e9 0%, var(--surface-2) 100%);
+}
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.cal-swatch {
+  width: 18px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Planning table ─────────────────────────────────────────────────────── */
+.planning-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.planning-table th, .planning-table td {
+  border: 1px solid var(--border-light);
+  text-align: center;
+  padding: 7px 4px;
+}
+.planning-table thead tr { background: var(--accent); color: #fff; }
+.planning-table thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  font-weight: 500;
+}
+.planning-table th:first-child, .planning-table td:first-child {
+  text-align: left;
+  padding-left: 12px;
+  width: 190px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.planning-table tbody tr:nth-child(even) td { background: var(--surface-2); }
+.planning-table tbody tr:nth-child(odd)  td { background: var(--surface); }
+
+/* ── Field cards ────────────────────────────────────────────────────────── */
+#fields1 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+.field-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .18s;
+}
+.field-card:hover { box-shadow: var(--shadow-md); }
+.field-card__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+.field-card__value { font-size: 14px; color: var(--text-primary); word-break: break-word; line-height: 1.4; }
+.field-card__value--empty { color: var(--text-muted); font-style: italic; }
+
+/* ── Varieties ──────────────────────────────────────────────────────────── */
+.varieties ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.varieties ul li {
+  padding: 6px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 13px;
+}
+.varieties ul li a { color: var(--accent); text-decoration: none; }
+.varieties ul li a:hover { text-decoration: underline; }
+
+/* ── NFC ────────────────────────────────────────────────────────────────── */
+#nfc-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  word-break: break-all;
+  background: var(--surface-2);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-light);
+}
+
+/* ── SVG harvest icons (all sizes kept from original) ───────────────────── */
+[class*="-harvest-icon"] { width: auto; height: 70px; overflow: visible; }
+.leaf-harvest-icon     { width: auto; height: 60px; fill: currentColor; }
+.root-harvest-icon     { width: auto; height: 70px; fill: currentColor; }
+.stem-harvest-icon     { width: auto; height: 60px; fill: currentColor; }
+.fruit-harvest-icon    { width: auto; height: 70px; fill: currentColor; }
+.flower-harvest-icon   { width: auto; height: 60px; fill: currentColor; }
+.seed-harvest-icon     { width: 60px; height: 60px; fill: currentColor; }
+.bark-harvest-icon     { width: auto; height: 60px; fill: currentColor; }
+.shoot-harvest-icon    { width: auto; height: 60px; fill: currentColor; }
+.wood-harvest-icon     { width: auto; height: 60px; fill: currentColor; }
+.pollen-harvest-icon   { width: auto; height: 60px; fill: currentColor; }
+.seedpod-harvest-icon  { width: auto; height: 60px; fill: currentColor; }
+.nectar-harvest-icon   { width: auto; height: 60px; fill: currentColor; }
+.apicalbud-harvest-icon{ width: auto; height: 60px; fill: currentColor; }
+.sap-harvest-icon      { width: auto; height: 60px; fill: currentColor; }
+.none-harvest-icon     { width: auto; height: 60px; fill: currentColor; color: var(--text-muted); }
+
+.green  { color: #2d7a3c; }
+.yellow { color: #c8a000; }
+.red    { color: #c0392b; }
+.black  { color: #1a1a1a; }
+
+/* ── Flower/temp icons ──────────────────────────────────────────────────── */
+.flower-color-icon { width: 60px; height: 60px; color: black; }
+.temp-icons        { width: 60px; height: 60px; color: black; }
+
+/* ── Debug ──────────────────────────────────────────────────────────────── */
+#debug-section {
+  margin-top: 24px;
+  padding: 16px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-top: 3px solid #555;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body { padding: 8px; }
+  .header-content { padding: 14px 16px; }
+  .main-content   { padding: 16px; gap: 16px; }
+  .sections-wrapper { padding: 0 16px 24px; }
+  .section-divider { margin: 0 16px; }
+  #fields1 { grid-template-columns: 1fr; }
+  .planning-table th:first-child,
+  .planning-table td:first-child { width: 110px; }
+  .image-panel { position: static; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Inline SVG symbols (identical to original) ───────────────────────── -->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+  <symbol id="icon-width" viewBox="0 0 16 16"><path d="m15.46 7-4-2.74-.71 1 3.09 2.11H2.16l3.09-2.1-.71-1L.54 7a1.25 1.25 0 0 0 0 2l4 2.74.71-1-3.09-2.12h11.68l-3.09 2.11.71 1 4-2.74a1.25 1.25 0 0 0 0-1.99z"/></symbol>
+  <symbol id="icon-height" viewBox="0 0 16 16"><path d="m9 15.46 2.74-4-1-.71-2.1 3.09V2.16l2.1 3.09 1-.71L9 .54a1.25 1.25 0 0 0-2 0l-2.74 4 1 .71 2.12-3.09v11.68l-2.11-3.09-1 .71 2.74 4a1.25 1.25 0 0 0 1.99 0z"/></symbol>
+  <symbol id="icon-human-size" viewBox="0 0 4 22">
+    <path d="M3.9 1.999A1.9 1.9 0 1 1 2 0.1a1.9 1.9 0 0 1 1.9 1.899zM3.544 5h-3.088a1.855 1.855 0 0 0-1.8 1.405l-1.662 6.652a.667.667 0 0 0 .14.573.873.873 0 0 0 .665.33.718.718 0 0 0 .653-.445L0 8.1V12l-.922 9.219a.71.71 0 0 0 .707.781h.074a.69.69 0 0 0 .678-.563L2 13.583l1.463 7.854a.69.69 0 0 0 .678.563h.074a.71.71 0 0 0 .707-.781L4 12V8.1l1.548 5.415a.718.718 0 0 0 .653.444.873.873 0 0 0 .665-.329.667.667 0 0 0 .14-.573l-1.662-6.652A1.855 1.855 0 0 0 3.544 5z"/>
+  </symbol>
+  <symbol id="icon-house-size" viewBox="0 0 32 32"><path d="M0 16h4l12-13.696 12 13.696h4l-13.984-16h-4zM4 32h8v-9.984q0-.832.576-1.408t1.44-.608h4q.8 0 1.408.608t.576 1.408v9.984h8v-13.408l-12-13.248-12 13.248v13.408zM26.016 6.112l4 4.576v-8.672h-4v4.096z"/></symbol>
+  <symbol id="icon-tree-size" viewBox="0 0 652.742188 810">
+    <path fill-rule="nonzero" d="M 326.371094 683.539062 C 304.863688 683.539062 283.65625 679.929688 263.484375 673.253906 L 263.484375 810 L 389.253906 810 L 389.253906 673.253906 C 369.085938 679.925781 347.875 683.539062 326.371094 683.539062 Z"/>
+    <path fill-rule="nonzero" d="M 585.476563 313.933594 C 591.1875 298.535156 594.476563 281.949219 594.476563 264.546875 C 594.476563 197.753906 548.371094 141.839844 486.253906 126.5625 C 469.121094 54.035156 404.136719 0 326.371094 0 C 248.601563 0 183.617188 54.035156 166.484375 126.5625 C 104.390625 141.839844 58.265625 197.753906 58.265625 264.546875 C 58.265625 281.949219 61.527344 298.511719 67.238281 313.933594 C 26.527344 343.84375 0 391.949219 0 446.382812 C 0 537.199219 73.589844 610.8125 164.433594 610.8125 C 187.449219 610.8125 209.351563 606.066406 229.222656 597.515625 C 249.367188 614.621094 274.066406 626.4375 301.207031 631.035156 L 301.207031 551.984375 L 187.25 437.976562 C 177.410156 428.164062 177.410156 412.242188 187.25 402.429688 C 197.0625 392.59375 212.984375 392.59375 222.796875 402.429688 L 301.207031 480.816406 L 301.207031 394.472656 L 223.046875 316.308594 C 215.753906 308.992188 215.753906 297.175781 223.046875 289.886719 C 230.335938 282.59375 242.179688 282.59375 249.445313 289.886719 L 301.210938 341.621094 L 301.210938 246.824219 C 301.210938 232.933594 312.480469 221.683594 326.371094 221.683594 C 340.265625 221.683594 351.535156 232.929688 351.535156 246.824219 L 351.535156 341.621094 L 403.300781 289.886719 C 410.566406 282.59375 422.40625 282.59375 429.699219 289.886719 C 436.992188 297.175781 436.992188 308.992188 429.699219 316.308594 L 351.535156 394.472656 L 351.535156 480.816406 L 429.945313 402.429688 C 439.757813 392.59375 455.679688 392.59375 465.492188 402.429688 C 475.328125 412.242188 475.328125 428.164062 465.492188 437.976562 L 351.535156 551.984375 L 351.535156 631.035156 C 378.675781 626.4375 403.371094 614.621094 423.519531 597.542969 C 443.394531 606.070312 465.269531 610.816406 488.285156 610.816406 C 579.125 610.816406 652.742188 537.203125 652.742188 446.382812 C 652.734375 391.949219 626.210938 343.84375 585.476563 313.933594 Z"/>
+  </symbol>
+  <symbol id="icon-bush-size" viewBox="0 0 675 645.000003">
+    <path fill="#000000" d="M 600.261719 318.671875 C 606.058594 303.042969 609.394531 286.203125 609.394531 268.539062 C 609.394531 200.738281 562.597656 143.980469 499.542969 128.472656 C 482.152344 54.851562 416.183594 0 337.242188 0 C 258.304688 0 192.335938 54.851562 174.945312 128.472656 C 111.914062 143.980469 65.09375 200.738281 65.09375 268.539062 C 65.09375 286.203125 68.40625 303.015625 74.199219 318.671875 C 32.875 349.035156 5.949219 397.867188 5.949219 453.117188 C 5.949219 545.308594 80.648438 620.035156 172.863281 620.035156 C 196.226562 620.035156 218.457031 615.214844 238.632812 606.535156 C 259.082031 623.898438 284.148438 635.890625 311.699219 640.558594 L 311.699219 560.3125 L 196.023438 444.585938 C 186.039062 434.625 186.039062 418.464844 196.023438 408.503906 C 205.988281 398.515625 222.148438 398.515625 232.109375 408.503906 L 311.703125 488.074219 L 311.703125 400.425781 L 232.359375 321.082031 C 224.957031 313.65625 224.957031 301.660156 232.359375 294.261719 C 239.761719 286.859375 251.78125 286.859375 259.160156 294.261719 L 311.703125 346.777344 L 311.703125 250.550781 C 311.703125 236.449219 323.144531 225.03125 337.246094 225.03125 C 351.347656 225.03125 362.789062 236.445312 362.789062 250.550781 L 362.789062 346.777344 L 415.335938 294.261719 C 422.710938 286.859375 434.730469 286.859375 442.132812 294.261719 C 449.535156 301.660156 449.535156 313.65625 442.132812 321.082031 L 362.792969 400.425781 L 362.792969 488.074219 L 442.386719 408.503906 C 452.347656 398.515625 468.507812 398.515625 478.46875 408.503906 C 488.457031 418.464844 488.457031 434.625 478.46875 444.585938 L 362.792969 560.3125 L 362.792969 640.558594 C 390.34375 635.894531 415.414062 623.898438 435.863281 606.558594 C 456.039062 615.21875 478.246094 620.035156 501.605469 620.035156 C 593.820312 620.035156 668.542969 545.308594 668.542969 453.121094 C 668.539062 397.863281 641.613281 349.035156 600.261719 318.671875 Z" fill-opacity="1" fill-rule="nonzero"/>
+  </symbol>
+  <symbol id="icon-root-size" viewBox="0 0 717.679688 643.28125">
+    <g transform="translate(-62.320312 -5.71875)">
+      <path fill="#0f1111" d="M 127.117188 306.8125 C 115.882812 314.832031 104.039062 321.878906 92.050781 328.703125 C 87.671875 329.019531 82.394531 327.996094 82.519531 335.066406 C 78.160156 338.355469 73.800781 341.636719 69.4375 344.921875 C 66.140625 344.460938 62.148438 344.636719 62.363281 339.738281 C 62.546875 335.542969 64.292969 332.726562 69.300781 332.421875 C 75.738281 332.027344 82.125 331.183594 82.5625 322.210938 C 82.65625 320.257812 85.457031 318.40625 87.085938 316.566406 C 88.695312 314.75 90.96875 313.324219 90.410156 310.355469 C 92.242188 309.195312 94.074219 308.03125 95.902344 306.867188 C 99.664062 306.652344 103.292969 306.242188 104.152344 301.539062 C 105.945312 299.648438 108.042969 298.214844 110.484375 297.300781 C 120.449219 296.328125 131.433594 288.003906 133.78125 279.648438 C 137.824219 275.664062 141.859375 271.671875 145.898438 267.683594 C 154.316406 266.234375 156.164062 259.421875 158.136719 252.707031 C 158.625 251.097656 159.515625 249.769531 160.933594 248.828125 C 164.53125 248.550781 165.121094 246.171875 164.875 243.207031 C 165.785156 240.707031 167.242188 238.570312 169.09375 236.683594 C 170.820312 236.492188 173.074219 237.289062 174.0625 235.445312 C 176.976562 230.011719 180.492188 224.765625 180.914062 218.3125 C 185.710938 210.324219 191.167969 202.820312 197.597656 196.058594 C 199.097656 195.96875 200.191406 195.429688 199.863281 193.683594 Z"/>
+    </g>
+  </symbol>
+  <symbol id="icon-plant-size" viewBox="0 0 615 809.363282">
+    <g transform="translate(-11 -0.316406)">
+      <path d="M 569.21875 781.773438 L 345.945312 781.773438 L 345.945312 715.671875 C 368.886719 673.386719 396.78125 641.210938 421.859375 614.261719 C 501.96875 613.566406 550.074219 599.386719 581.777344 567.167969 C 612.421875 536.019531 626.167969 488.855469 625.035156 418.730469 C 624.910156 411.113281 618.683594 405 611.082031 405 C 483.421875 405 403.867188 437.125 401.941406 594.699219 C 383.871094 614.082031 364.375 636.171875 345.941406 662.6875 L 345.941406 474.773438 C 345.941406 456.660156 365.199219 423.460938 394.140625 391.015625 C 522.550781 390.375 583.167969 368.925781 583.167969 195.679688 C 583.167969 187.976562 576.917969 181.726562 569.214844 181.726562 C 437.816406 181.726562 375.21875 200.6875 373.90625 371.648438 C 366.914062 379.476562 356.183594 392.21875 345.941406 407.09375 L 345.941406 251.609375 C 346.082031 233.132812 347.363281 217.324219 350.101562 202.839844 C 340.542969 204.738281 330.394531 201.179688 323.503906 194.59375 C 329.058594 167.28125 339.175781 143.65625 355.917969 118.230469 C 360.164062 111.800781 368.800781 110 375.246094 114.253906 C 381.679688 118.496094 383.453125 127.160156 379.222656 133.597656 C 362.9375 158.296875 353.785156 180.484375 349.347656 207.636719 C 393.640625 199.183594 435.683594 172.109375 458.511719 136.332031 C 481.636719 100.105469 485.890625 56.410156 470.847656 9.972656 C 468.769531 3.550781 462.40625 -0.496094 455.695312 0.453125 C 382.296875 10.445312 330.664062 40.992188 310.277344 86.472656 C 294.871094 120.839844 299.53125 161.308594 322.597656 198.402344 C 322.628906 198.203125 322.699219 198.035156 322.722656 197.84375 C 319.710938 213.945312 318.1875 231.363281 318.035156 251.398438 L 318.035156 349.75 C 306.996094 334.007812 295.664062 321.464844 289.875 315.378906 C 289.917969 315.421875 289.945312 315.449219 289.988281 315.492188 C 289.304688 252.347656 277.859375 213.988281 251.863281 188.394531 C 227.34375 164.265625 189.542969 153.089844 136.390625 153.8125 C 128.785156 153.9375 122.671875 160.148438 122.671875 167.769531 C 122.671875 266.597656 148.128906 332.8125 270.035156 335.015625 C 269.382812 334.320312 268.746094 333.648438 268.136719 333.015625 C 283.632812 349.03125 318.039062 390.535156 318.039062 418.953125 L 318.039062 596.234375 C 305.367188 580.367188 293.394531 569.0625 283.609375 559.878906 C 280.863281 557.285156 278.390625 554.941406 276.074219 552.664062 C 274.246094 359.421875 182.464844 321.269531 24.988281 321.269531 C 17.273438 321.269531 11.035156 327.523438 11.035156 335.226562 C 11.035156 490.695312 93.617188 570.332031 256.21875 572.273438 C 258.769531 574.785156 261.492188 577.394531 264.519531 580.226562 C 279.128906 593.929688 298.972656 612.6875 318.035156 646.039062 L 318.035156 781.773438 L 94.761719 781.773438 C 87.046875 781.773438 80.808594 788.027344 80.808594 795.730469 C 80.808594 803.445312 87.046875 809.683594 94.761719 809.683594 L 569.21875 809.683594 C 576.921875 809.683594 583.175781 803.445312 583.175781 795.730469 C 583.171875 788.023438 576.921875 781.773438 569.21875 781.773438 Z" fill-opacity="1" fill-rule="nonzero"/>
+    </g>
+  </symbol>
+</svg>
+
+<div id="icon-container" style="display:none;">
+  <svg id="icon-none"><use href="icons/use_none.svg"></use></svg>
+  <svg id="icon-root"><use href="icons/use_root.svg"></use></svg>
+  <svg id="icon-seed"><use href="icons/use_seed.svg"></use></svg>
+  <svg id="icon-flower"><use href="icons/use_flower.svg"></use></svg>
+  <svg id="icon-stem"><use href="icons/use_stem.svg"></use></svg>
+  <svg id="icon-fruit"><use href="icons/use_fruit.svg"></use></svg>
+  <svg id="icon-leaf"><use href="icons/use_leaf.svg"></use></svg>
+  <svg id="icon-bark"><use href="icons/use_bark.svg"></use></svg>
+  <svg id="icon-apicalbud"><use href="icons/use_apicalbud.svg"></use></svg>
+  <svg id="icon-nectar"><use href="icons/use_nectar.svg"></use></svg>
+  <svg id="icon-wood"><use href="icons/use_wood.svg"></use></svg>
+  <svg id="icon-seedpod"><use href="icons/use_seedpod.svg"></use></svg>
+  <svg id="icon-sap"><use href="icons/use_sap.svg"></use></svg>
+  <svg id="icon-pollen"><use href="icons/use_pollen.svg"></use></svg>
+  <svg id="icon-shoot"><use href="icons/use_shoot.svg"></use></svg>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!--  PAGE STRUCTURE                                                         -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <div class="header-content">
+    <div class="header-top">
+      <div class="back-button">
+        <button id="back-button" type="button" data-i18n="detail.btn.back">← Back</button>
+      </div>
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="hu" type="button">HU</button>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+
+    <div class="identity-breadcrumb">
+      <strong id="identity-family">/ FAMILY</strong>
+      <strong id="identity-genus">/ GENUS</strong>
+      <strong id="identity-latinName">/ LATIN NAME</strong>
+      <strong id="identity-variety">/ VARIETY</strong>
+    </div>
+
+    <h1 id="primary-title">Plant Name</h1>
+    <p class="plant-subtitle" id="secondary-title">Variety</p>
+
+          <div class="names-row">
+        <label data-i18n="detail.label.names">Names:</label>
+        <div id="name_sz"></div>
+      </div>
+
+      <div id="data_status" class="data_message" data-i18n="detail.label.datastatus"></div>
+    
+  </div>
+
+  <!-- ── Main two-column area ───────────────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- LEFT: info panel -->
+    <div class="block2">
+
+
+
+      <!-- Size icons -->
+      <div class="size-section">
+        <div class="size-section-title">Plant dimensions</div>
+
+        <div class="grid-size-icons">
+
+          <!-- COL 1: measurements -->
+          <div class="size-measurements-col">
+            <!-- above-ground: height -->
+            <div class="size-meas-group">
+              <svg class="plant-info-icons"><use href="#icon-height"></use></svg>
+              <input type="text" id="plant_height_max_mm" readonly>
+              <span class="plant-info-values">mm</span>
+            </div>
+            <!-- above-ground: width -->
+            <div class="size-meas-group">
+              <svg class="plant-info-icons"><use href="#icon-width"></use></svg>
+              <input type="text" id="plant_width_max_mm" readonly>
+              <span class="plant-info-values">mm</span>
+            </div>
+            <!-- ground line separator -->
+            <div class="size-ground-line"></div>
+            <!-- below-ground: depth -->
+            <div class="size-meas-group">
+              <svg class="plant-info-icons"><use href="#icon-height"></use></svg>
+              <input type="text" id="plant_root_depth_average_mm" readonly>
+              <span class="plant-info-values">mm</span>
+            </div>
+            <!-- below-ground: width -->
+            <div class="size-meas-group">
+              <svg class="plant-info-icons"><use href="#icon-width"></use></svg>
+              <input type="text" id="plant_root_width_average_mm" readonly>
+              <span class="plant-info-values">mm</span>
+            </div>
+          </div>
+
+          <!-- COL 2: plant icon (above ground) stacked directly on root (below ground) -->
+          <div class="size-plant-col">
+            <!-- above-ground plant icons (only one shown at a time by JS) -->
+            <svg id="size-tree-icon-2"  width="148px" height="184px"><use href="#icon-tree-size"></use></svg>
+            <svg id="size-plant-icon-1" width="100px" height="100px"><use href="#icon-plant-size"></use></svg>
+            <svg id="size-bush-icon-1"  width="100px" height="100px"><use href="#icon-bush-size"></use></svg>
+            <!-- root — sits flush below, centred, connected -->
+            <svg id="size-root-icon-1"  width="100px" height="80px"><use href="#icon-root-size"></use></svg>
+          </div>
+
+          <!-- COL 3: human + house reference, bottom-aligned -->
+          <div class="size-ref-col">
+            <svg id="size-human-icon-1" width="31px"  height="66px"><use href="#icon-human-size"></use></svg>
+            <svg id="size-house-icon-1" width="150px" height="150px"><use href="#icon-house-size"></use></svg>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Edibility -->
+      <div>
+        <span class="section-label" data-i18n="detail.label.edibilityTitle">Edibility:</span>
+        <div class="legend-chips">
+          <span id="box-g" class="chip" data-i18n="detail.legend.edibleRaw">Green = Edible Raw</span>
+          <span id="box-y" class="chip" data-i18n="detail.legend.ediblePrepared">Yellow = Edible Prepared</span>
+          <span id="box-r" class="chip" data-i18n="detail.legend.toxic">Red = Toxic</span>
+          <span id="box-b" class="chip" data-i18n="detail.legend.inedible">Black = Inedible</span>
+        </div>
+      </div>
+
+      <!-- Harvest part icons -->
+      <div class="section" id="icon-row2">
+        <div class="icons-row-wrap" id="part-icons-row-harv"></div>
+      </div>
+
+      <!-- Preparation -->
+      <div class="row">
+        <label data-i18n="detail.label.preparationToEdibility">Preparation to Edibility:</label><br>
+        <input type="text" id="preparation_all" class="full-width" readonly>
+      </div>
+
+      <!-- Medicinal -->
+      <div style="margin-top:14px;">
+        <span class="section-label" data-i18n="detail.label.medicinalTitle">Medicinal:</span>
+        <div class="section" id="icon-row3">
+          <div class="icons-row-wrap" id="part-icons-row-med"></div>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <label data-i18n="detail.label.medicinalUse">Medicinal use:</label><br>
+          <input type="text" id="medicinal_use" class="full-width" readonly>
+        </div>
+      </div>
+
+    </div><!-- /left block -->
+
+    <!-- RIGHT: image carousel -->
+    <div class="block2 image-panel">
+      <div class="plant-image-carousel" id="plant-carousel">
+
+        <!-- Viewport: shows one image at a time -->
+        <div class="carousel-viewport">
+          <img id="plantImg" src="" alt="Plant picture" class="carousel-img">
+          <div class="carousel-placeholder" id="carousel-placeholder" style="display:none;">No image available</div>
+          <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-btn next" id="carousel-next" aria-label="Next image">&#8250;</button>
+        </div>
+
+        <!-- Caption: filename + counter -->
+        <div class="carousel-caption">
+          <span class="carousel-name" id="carousel-name">–</span>
+          <span class="carousel-counter" id="carousel-counter"></span>
+        </div>
+
+        <!-- Dot indicators -->
+        <div class="carousel-dots" id="carousel-dots"></div>
+
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <div class="section-divider"></div>
+
+  <!-- ── Sections ───────────────────────────────────────────────────────── -->
+  <div class="sections-wrapper">
+
+    <!-- Calendar -->
+    <div class="section-block">
+      <h3 data-i18n="detail.section.calendar">Calendar</h3>
+      <div id="CALENDER1" class="CALENDER1"></div>
+    </div>
+
+    <!-- Planning table -->
+    <div class="section-block">
+      <h3 data-i18n="detail.section.planning">Planning</h3>
+      <div style="overflow-x:auto;">
+        <table class="planning-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>01</th><th>02</th><th>03</th><th>04</th>
+              <th>05</th><th>06</th><th>07</th><th>08</th>
+              <th>09</th><th>10</th><th>11</th><th>12</th>
+            </tr>
+          </thead>
+          <tbody id="planning-table-body">
+            <tr data-row-id="planting-cover">
+              <td data-i18n="planning.plantingCover">Planting in Cover</td>
+              <td colspan="12"></td>
+            </tr>
+            <tr data-row-id="planting-ground">
+              <td data-i18n="planning.plantingGround">Planting in Ground</td>
+              <td colspan="12"></td>
+            </tr>
+            <tr data-row-id="harvesting-cover">
+              <td data-i18n="planning.harvestingCover">Harvesting in Cover</td>
+              <td colspan="12"></td>
+            </tr>
+            <tr data-row-id="harvesting-ground">
+              <td data-i18n="planning.harvestingGround">Harvesting in Ground</td>
+              <td colspan="12"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Varieties -->
+    <div class="section-block varieties">
+      <h3 data-i18n="detail.section.varieties">List of Varieties</h3>
+      <ul id="varieties-list"><li>Loading varieties…</li></ul>
+    </div>
+
+    <!-- Dynamic field cards -->
+    <div class="section-block">
+      <h3>Details</h3>
+      <div id="fields1"></div>
+    </div>
+
+    <!-- NFC -->
+    <div class="section-block">
+      <h3 data-i18n="detail.section.nfcLink">NFC Link:</h3>
+      <p id="nfc-link">plant://0</p>
+    </div>
+
+  </div><!-- /sections-wrapper -->
+</div><!-- /container -->
+
+<!-- ── Debug console ──────────────────────────────────────────────────────── -->
+<div id="debug-section" style="margin-top:20px;padding:16px;background:#1e1e1e;color:#d4d4d4;font-family:monospace;font-size:13px;border-top:3px solid #555;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <strong style="color:#9cdcfe;font-size:15px;">🛠 Debug Console</strong>
+    <button onclick="document.getElementById('debug-log').replaceChildren()"
+      style="padding:2px 10px;font-size:12px;cursor:pointer;border-radius:4px;border:1px solid #555;background:#2d2d2d;color:#d4d4d4;">Clear</button>
+  </div>
+  <div id="debug-log" style="max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;"></div>
+</div>
+
+<script>
+/* ── Debug capture ──────────────────────────────────────────────────────── */
+(function () {
+  const log = document.getElementById('debug-log');
+  if (!log) return;
+  function appendEntry(level, args) {
+    const line = document.createElement('div');
+    line.style.borderBottom = '1px solid #333';
+    line.style.padding = '2px 0';
+    const colors   = { log: '#d4d4d4', warn: '#dcdcaa', error: '#f48771' };
+    const prefixes = { log: '[LOG]', warn: '[WARN]', error: '[ERROR]' };
+    line.style.color = colors[level] || '#d4d4d4';
+    const text = args.map(a => {
+      if (a instanceof Error) return a.stack || String(a);
+      if (typeof a === 'object' && a !== null) { try { return JSON.stringify(a,null,2); } catch { return String(a); } }
+      return String(a);
+    }).join(' ');
+    line.textContent = `${prefixes[level]} ${text}`;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+  const _l = console.log.bind(console);
+  const _w = console.warn.bind(console);
+  const _e = console.error.bind(console);
+  console.log   = (...a) => { _l(...a);  appendEntry('log',   a); };
+  console.warn  = (...a) => { _w(...a);  appendEntry('warn',  a); };
+  console.error = (...a) => { _e(...a);  appendEntry('error', a); };
+})();
+</script>
+
+
+</body>
+</html>
