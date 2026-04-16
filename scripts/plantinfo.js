@@ -781,6 +781,7 @@ async function applySizeIcons(plant, FM) {
   const plantSvg  = document.getElementById('size-plant-icon-1');
   const houseSvg  = document.getElementById('size-house-icon-1');
   const rootSvg   = document.getElementById('size-root-icon-1');
+  const root2Svg   = document.getElementById('size-root-icon-2');
 
   if (!humanSvg) { console.warn('Human icon missing'); return; }
 
@@ -874,6 +875,9 @@ async function applySizeIcons(plant, FM) {
     rootSvg.style.height = `${rootFinalH}px`;
     rootSvg.style.display = 'block';
     console.log(`root: ${rootFinalW.toFixed(1)}×${rootFinalH.toFixed(1)}px (matched to plant width)`);
+    root2Svg.style.width  = `${rootFinalW}px`;
+    root2Svg.style.height = `${rootFinalH}px`;
+    root2Svg.style.display = 'block';
   }
 
   // Human stays at its fixed pixel reference size // width = 7.21 ; height = 21.9
