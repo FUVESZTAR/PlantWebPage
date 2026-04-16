@@ -785,7 +785,7 @@ async function applySizeIcons(plant, FM) {
   if (!humanSvg) { console.warn('Human icon missing'); return; }
 
   // Scale: human icon is 66px tall = 1800mm real world
-  const HUMAN_PX_H  = 21.9;  // width = 7.21 ; height = 21.9
+  const HUMAN_PX_H  = 2190;  // width = 7.21 ; height = 21.9
   const HUMAN_MM_H  = 1800;
   const pxPerMm     = HUMAN_PX_H / HUMAN_MM_H;
 
@@ -877,7 +877,7 @@ async function applySizeIcons(plant, FM) {
   }
 
   // Human stays at its fixed pixel reference size // width = 7.21 ; height = 21.9
-  humanSvg.style.width  = `${HUMAN_PX_H * (7.21 / 21.9)}px`;
+  humanSvg.style.width  = `${HUMAN_PX_H * (721 / 2190)}px`;
   humanSvg.style.height = `${HUMAN_PX_H}px`;
 }
 
