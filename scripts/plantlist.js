@@ -1,4 +1,4 @@
-import { loadActivePagePlants, splitPipe } from "./csv-utils.js";
+import { loadActivePagePlants, loadAllPagePlants, splitPipe } from "./csv-utils.js";
 import { t, getCurrentLang, setupLanguageButtons } from "./lang.js";
 import { makeSelectSearchable } from "./searchable-select.js";
 
@@ -19,7 +19,11 @@ function buildDropdown(selectEl, allValues, placeholder) {
     opt.textContent = v;
     selectEl.appendChild(opt);
   });
-  selectEl.value = allValues.includes(current) ? current : "";
+  // Use case-insensitive match so URL params like "ribes" correctly select "Ribes"
+  const match = current
+    ? allValues.find(v => v.toLowerCase() === current.toLowerCase())
+    : undefined;
+  selectEl.value = match !== undefined ? match : "";
 }
 
 function renderRows(plants) {
@@ -52,9 +56,13 @@ async function populate() {
   const errorMsg = document.getElementById("error-message");
 
   const params = new URLSearchParams(window.location.search);
+  // When arriving from P.html via filterType/filterValue, load all plants so that
+  // every member of the genus/family/latin name is shown regardless of Active_in_page.
+  const hasFilterParam = params.has("filterType") || params.has("family") ||
+                         params.has("genus") || params.has("latin");
   let plants = [];
   try {
-    plants = await loadActivePagePlants();
+    plants = hasFilterParam ? await loadAllPagePlants() : await loadActivePagePlants();
   } catch (err) {
     console.error(err);
     errorMsg.textContent = t('list.error.loadFailed');

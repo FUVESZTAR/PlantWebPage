@@ -284,17 +284,47 @@ export async function loadActiveNFCPlants() {
 }
 
 /**  For Plant List , PlantPage
- * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
- * for all rows where Active_in_NFC = "Y".
- * Minimal traffic: only 5 columns, only active rows.
+ * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN, Genus, Family
+ * for all rows where Active_in_page = "Y".
+ * Minimal traffic: only 7 columns, only active rows.
  *
  * @returns {Object[]} Array of plant objects with the selected fields.
  */
 export async function loadActivePagePlants() {
   // You must use column letters, not header names, in the tq query
-  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN, F = Genus	 , G =  Family, CQ = Active_in_page
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN, F=Genus, G=Family, CQ=Active_in_page
   // Adjust the letters if your columns are in a different order!
   const tq = `select A, B, C, D, E, F, G where CQ = 'Y'`;
+
+  const gvizResponse = await fetchSheetResponseQr(tq);
+  const { cols, rows } = gvizResponse.table;
+
+  const headers = cols.map(col =>
+    (col.label && col.label.trim()) ? col.label.trim() : col.id
+  );
+
+  return rows
+    .filter(row => row && row.c && row.c.some(cell => cell && cell.v != null))
+    .map(row => {
+      const entry = {};
+      headers.forEach((header, index) => {
+        const cell = row.c[index];
+        entry[header] = (cell && cell.v != null) ? cell.v : '';
+      });
+      return entry;
+    });
+}
+
+/**  For Plant List when navigating from a plant page (all plants, no Active_in_page filter).
+ * Loads Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN, Genus, Family for every row.
+ * Used when the user arrives via filterType/filterValue (e.g. clicking a genus link on P.html)
+ * so that all members of a genus/family/latin name are shown regardless of their active flag.
+ *
+ * @returns {Object[]} Array of plant objects with the selected fields.
+ */
+export async function loadAllPagePlants() {
+  // A=Plant_ID, B=LatinName, C=Name_Variety, D=Name_HU, E=Name_EN, F=Genus, G=Family
+  const tq = `select A, B, C, D, E, F, G`;
 
   const gvizResponse = await fetchSheetResponseQr(tq);
   const { cols, rows } = gvizResponse.table;
