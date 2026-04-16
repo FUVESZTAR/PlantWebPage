@@ -1,6 +1,8 @@
 /* ══════════════════════════════════════════════════════════════════════════
    csv-utils.js  (inlined)
 ══════════════════════════════════════════════════════════════════════════ */
+import { loadPlantIdWithVarieties} from "./csv-utils.js";
+
 function splitPipe(value) {
   if (!value) return [];
   return String(value).split('|').map(s => s.trim()).filter(Boolean);
