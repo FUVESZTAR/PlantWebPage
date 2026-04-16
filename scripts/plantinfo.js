@@ -998,7 +998,7 @@ async function loadPlantImage(plant) {
 
   const searchLatin   = (plant.LatinName   || '').trim().replace(/\s+/g, '_');
   const searchVariety = (plant.Name_Variety || '').trim().replace(/\s+/g, '_');
-  const imgText  = `${plant.Plant_ID}_${searchLatin}_${searchVariety}`;
+  const imgText  = `${searchLatin}_${searchVariety}`;
   const searchId = normalizeName(imgText);
   console.log('search image norm text: ' + searchId);
 
