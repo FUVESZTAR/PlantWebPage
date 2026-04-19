@@ -1,11 +1,14 @@
 {
-  "malus_domestica": [
+  "malus_domestica_species": [
     "malus_domestica_species.jpg",
     "malus_domestica_species_fruit.jpg",
-    "malus_domestica_species_leaf.jpg",
-    "malus_domestica_redlove_odysso.jpg"
+    "malus_domestica_species_leaf.jpg"
   ],
-  "ziziphus_jujuba": [
+  "malus_domestica_redlove_odysso": [
+    "malus_domestica_redlove_odysso.jpg"
+  ]
+  
+  "ziziphus_jujuba": 
     "ziziphus_jujuba.jpg"
   ],
   "prunus_communis": [
