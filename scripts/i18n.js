@@ -25,6 +25,8 @@ export const TRANSLATIONS = {
     "home.card.shadowmap.desc": "Visualise sun and shadow patterns across your garden throughout the year.",
     "home.card.sourdough.title": "Sourdough",
     "home.card.sourdough.desc": "Manage your sourdough starter schedule and baking timelines.",
+    "home.card.qigong.title": "Qi Gong",
+    "home.card.qigong.desc": "Qi Gong routine guide with guided sessions.",
 
     // ── Page titles ──────────────────────────────────────────────────────────
     "page.title.plantpage": "Plant Page",
@@ -409,7 +411,9 @@ export const TRANSLATIONS = {
     "home.card.shadowmap.desc": "A nap és árnyék mintázatainak vizualizálása a kertben az év folyamán.",
     "home.card.sourdough.title": "Kovász",
     "home.card.sourdough.desc": "Kovászos starter menetrend és sütési idővonalak kezelése.",
-
+    "home.card.qigong.title": "Csikung",
+    "home.card.qigong.desc": "Csikund gyakorlatok vezetett módon.",
+    
     // ── Page titles ──────────────────────────────────────────────────────────
     "page.title.plantpage": "N\u00f6v\u00e9ny Oldal",
     "page.title.list": "N\u00f6v\u00e9nylista",
