@@ -305,16 +305,29 @@ h1 {
   display: block;
   flex-shrink: 0;
   margin-top: 0;
-  flex-direction: column;
+}
+#size-root-icon-3 {
+  display: block;
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
-/* col 3: human + house, bottom-aligned */
+/* col 3: human + house, bottom-aligned 
 .size-ref-col {
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
   gap: 8px;
-}
+}*/
+
+  /* col 3: human + house, bottom-aligned */
+.size-ref-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+}*/
 
 /* keep old class names working (for JS that references them) */
 .cell-size-icons_r1 { display: none; }  /* replaced by new structure */
@@ -917,12 +930,18 @@ input[type="text"].full-width {
             <svg id="size-root-icon-1"  width="659.039px" height="635.414px"><use href="#icon-root-size"></use></svg> 
           </div>
 
-          <!-- COL 3: human + house reference, bottom-aligned -->
+          <!-- COL 3: human  reference, bottom-aligned , size-ref-col-->
           <div class="size-ref-col">
             <svg id="size-human-icon-1" width="7.21px"  height="21.90px"><use href="#icon-human-size"></use></svg>
-            <svg id="size-house-icon-1" width="150px" height="150px"><use href="#icon-house-size"></use></svg>
             <!-- root — sits flush below, centred, connected -->
             <svg id="size-root-icon-2"  width="659.039px" height="635.414px"><use href="#icon-root-placeholder"></use></svg> 
+          </div>
+
+          <!-- COL 4: house reference, bottom-aligned -->
+          <div class="size-ref-col">
+            <svg id="size-house-icon-1" width="150px" height="150px"><use href="#icon-house-size"></use></svg>
+            <!-- root — sits flush below, centred, connected -->
+            <svg id="size-root-icon-3"  width="659.039px" height="635.414px"><use href="#icon-root-placeholder"></use></svg> 
           </div>
 
         </div>
