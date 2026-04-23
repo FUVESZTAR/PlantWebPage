@@ -229,7 +229,7 @@ h1 {
 
 .grid-size-icons {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: 0 12px;
   align-items: end;          /* ← ground line: everything bottom-aligns */
   width: 100%;
@@ -321,13 +321,13 @@ h1 {
 }*/
 
   /* col 3: human + house, bottom-aligned */
-.size-ref-col {
+.size-human-col,
+.size-house-col {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 0;
-}*/
+}
 
 /* keep old class names working (for JS that references them) */
 .cell-size-icons_r1 { display: none; }  /* replaced by new structure */
@@ -931,14 +931,14 @@ input[type="text"].full-width {
           </div>
 
           <!-- COL 3: human  reference, bottom-aligned , size-ref-col-->
-          <div class="size-ref-col">
+          <div class="size-human-col">
             <svg id="size-human-icon-1" width="7.21px"  height="21.90px"><use href="#icon-human-size"></use></svg>
             <!-- root — sits flush below, centred, connected -->
             <svg id="size-root-icon-2"  width="659.039px" height="635.414px"><use href="#icon-root-placeholder"></use></svg> 
           </div>
 
           <!-- COL 4: house reference, bottom-aligned -->
-          <div class="size-ref-col">
+          <div class="size-house-col">
             <svg id="size-house-icon-1" width="150px" height="150px"><use href="#icon-house-size"></use></svg>
             <!-- root — sits flush below, centred, connected -->
             <svg id="size-root-icon-3"  width="659.039px" height="635.414px"><use href="#icon-root-placeholder"></use></svg> 
