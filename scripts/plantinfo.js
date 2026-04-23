@@ -885,7 +885,7 @@ async function applySizeIcons(plant, FM) {
   }
 
   // Human stays at its fixed pixel reference size // width = 7.21 ; height = 21.9
-  humanSvg.style.width  = `${HUMAN_PX_H * (8 / 22)}px`;
+  humanSvg.style.width  = `${HUMAN_PX_H * (3.9 / 22)}px`;
   humanSvg.style.height = `${HUMAN_PX_H}px`;
 }
 
