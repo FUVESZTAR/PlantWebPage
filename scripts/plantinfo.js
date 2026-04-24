@@ -861,25 +861,27 @@ async function applySizeIcons(plant, FM) {
   // ── We keep the root's aspect ratio for height but override width.
   if (rootSvg) {
     const rootTargetH = rootHmm * pxPerMm;
+     const rootTargetW = rootWmm * pxPerMm;
     const vbR = rootSvg.viewBox?.baseVal;
     let rootFinalH = rootTargetH;
     let rootFinalW = aboveGroundPxW; // match the above-ground plant width
-
+    let placeHFinalW = 2; // match the above-ground plant width
+/*
     if (vbR && vbR.width > 0 && vbR.height > 0) {
       // Compute natural height from the root's own aspect at the matched width
       const rootNaturalH = aboveGroundPxW / (vbR.width / vbR.height);
       // Use whichever is smaller: scaled-by-data height or natural height
       rootFinalH = Math.min(rootTargetH, rootNaturalH, 120); // cap at 120px
-    }
+    }*/
 
     rootSvg.style.width  = `${rootFinalW}px`;
     rootSvg.style.height = `${rootFinalH}px`;
     rootSvg.style.display = 'block';
-    console.log(`root: ${rootFinalW.toFixed(1)}×${rootFinalH.toFixed(1)}px (matched to plant width)`);
-    root2Svg.style.width  = `${rootFinalW}px`;
+    console.log(`root: ${rootFinalW.toFixed(1)}×${rootFinalH.toFixed(1)}px`);
+    root2Svg.style.width  = `${placeHFinalW}px`;
     root2Svg.style.height = `${rootFinalH}px`;
     root2Svg.style.display = 'block';
-    root3Svg.style.width  = `${rootFinalW}px`;
+    root3Svg.style.width  = `${placeHFinalW}px`;
     root3Svg.style.height = `${rootFinalH}px`;
     root3Svg.style.display = 'block';
   }
