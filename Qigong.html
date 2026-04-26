@@ -379,7 +379,7 @@ const DRIVE_IMAGES = {
 function poseImg(name) {
   const id = DRIVE_IMAGES[name];
   if (id) {
-    return `<div class="pose-image-wrap"><img src="https://drive.google.com/uc?export=view&id=${id}" alt="Visual guide for ${name}" loading="lazy"/></div>`;
+    return `<div class="pose-image-wrap"><img src="https://lh3.googleusercontent.com/d/${id}" alt="Visual guide for ${name}" loading="lazy"/></div>`;
   }
   return `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">${name}</div><div class="pose-placeholder-hint">Add a Drive file ID for "${name}" in DRIVE_IMAGES above</div></div>`;
 }
