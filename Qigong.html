@@ -334,270 +334,105 @@
 <footer><p>Qi Gong Routine Guide · A mindful movement companion · <em>Practice with awareness</em></p></footer>
 
 <script>
-// IMAGE-BASED ILLUSTRATION SYSTEM
-// Images are loaded from Google Drive using direct links.
-// To get the FILE_ID for any image in your Drive:
-//   1. Open the file in Google Drive and click "Share" → set to "Anyone with the link"
-//   2. The share URL looks like: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-//   3. Copy the FILE_ID part and paste it into the src URL below:
-//      https://drive.google.com/uc?export=view&id=FILE_ID
-// Folder: https://drive.google.com/drive/folders/1ebuCn1mwZTnSbewktJJIk7FnKPtcSB2M
+// ════════════════════════════════════════════════════════════
+// GOOGLE DRIVE IMAGES  —  add or update file IDs here ONLY
+// ════════════════════════════════════════════════════════════
+// How to get a file ID from Google Drive:
+//   1. Right-click the image → Share → "Anyone with the link"
+//   2. The share URL looks like:
+//        https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+//   3. Copy FILE_ID and paste it as the value below.
+//      Use null for images not yet uploaded (shows a placeholder).
+// Drive folder: https://drive.google.com/drive/folders/1ebuCn1mwZTnSbewktJJIk7FnKPtcSB2M
+const DRIVE_IMAGES = {
+  'Wuji Posture':                              '1pkCoMOynaQC-PsJXAmQQxB6XKmuAEQzk',
+  'Opening and Closing':                       null,
+  'Raising and Lowering':                      null,
+  'Two Hands Hold Up the Heavens':             null,
+  'Drawing the Bow':                           null,
+  'Separate Heaven and Earth':                 null,
+  'Wise Owl Gazes Backwards':                  null,
+  'Two Hands Hold the Feet':                   null,
+  'Bouncing on the Toes':                      null,
+  'Closing':                                   null,
+  'Opening + Raising Flow':                    null,
+  'Warm-Up — Spinal Waves':                    null,
+  'Final Standing Meditation':                 null,
+  'Standing Meditation (Zhan Zhuang)':         null,
+  'Opening Form':                              null,
+  'Raising and Lowering — Full Breath':        null,
+  'Integration Meditation':                    null,
+  'Closing Massage':                           null,
+  'Brocade 1 — Two Hands Hold Up the Heavens':          null,
+  'Brocade 2 — Drawing the Bow to Shoot the Eagle':     null,
+  'Brocade 3 — Separate Heaven and Earth':              null,
+  'Brocade 4 — Wise Owl Gazes Backwards':               null,
+  'Brocade 5 — Sway the Head and Shake the Tail':       null,
+  'Brocade 6 — Two Hands Hold the Feet':                null,
+  'Brocade 7 — Clench Fists and Glare Fiercely':        null,
+  'Brocade 8 — Bouncing on the Toes':                   null,
+};
+
+// Helper — builds <img> from Drive if ID is set, or a placeholder if null
+function poseImg(name) {
+  const id = DRIVE_IMAGES[name];
+  if (id) {
+    return `<div class="pose-image-wrap"><img src="https://drive.google.com/uc?export=view&id=${id}" alt="Visual guide for ${name}" loading="lazy"/></div>`;
+  }
+  return `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">${name}</div><div class="pose-placeholder-hint">Add a Drive file ID for "${name}" in DRIVE_IMAGES above</div></div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+// ILLUSTRATIONS  —  maps each exercise to poseImg() by name
+// To add an image: set the file ID in DRIVE_IMAGES above only.
+// ════════════════════════════════════════════════════════════
 const ILLUSTRATIONS = {
   beginner: [
-    [{
-      caption: 'Wuji Posture',
-      svg: `<div class="pose-image-wrap"><img src="https://drive.google.com/uc?export=view&id=WUJI_POSTURE_FILE_ID" alt="Visual guide for Wuji Posture" loading="lazy"/></div>`
-    }],
-    [{
-      caption: 'Opening and Closing',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Opening and Closing</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Raising and Lowering',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Raising and Lowering</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold Up the Heavens',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold Up the Heavens</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Drawing the Bow',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Drawing the Bow</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Separate Heaven and Earth',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Separate Heaven and Earth</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Wise Owl Gazes Backwards',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Wise Owl Gazes Backwards</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold the Feet',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold the Feet</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Bouncing on the Toes',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Bouncing on the Toes</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Closing',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Closing</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }]
+    [{ caption: 'Wuji Posture',                  svg: poseImg('Wuji Posture') }],
+    [{ caption: 'Opening and Closing',            svg: poseImg('Opening and Closing') }],
+    [{ caption: 'Raising and Lowering',           svg: poseImg('Raising and Lowering') }],
+    [{ caption: 'Two Hands Hold Up the Heavens',  svg: poseImg('Two Hands Hold Up the Heavens') }],
+    [{ caption: 'Drawing the Bow',                svg: poseImg('Drawing the Bow') }],
+    [{ caption: 'Separate Heaven and Earth',      svg: poseImg('Separate Heaven and Earth') }],
+    [{ caption: 'Wise Owl Gazes Backwards',       svg: poseImg('Wise Owl Gazes Backwards') }],
+    [{ caption: 'Two Hands Hold the Feet',        svg: poseImg('Two Hands Hold the Feet') }],
+    [{ caption: 'Bouncing on the Toes',           svg: poseImg('Bouncing on the Toes') }],
+    [{ caption: 'Closing',                        svg: poseImg('Closing') }],
   ],
   advanced: [
-    [{
-      caption: 'Wuji Posture',
-      svg: `<div class="pose-image-wrap"><img src="https://drive.google.com/uc?export=view&id=WUJI_POSTURE_FILE_ID" alt="Visual guide for Wuji Posture" loading="lazy"/></div>`
-    }],
-    [{
-      caption: 'Opening + Raising Flow',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Opening + Raising Flow</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Warm-Up — Spinal Waves',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Warm-Up — Spinal Waves</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold Up the Heavens',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold Up the Heavens</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Drawing the Bow',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Drawing the Bow</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Separate Heaven and Earth',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Separate Heaven and Earth</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Wise Owl Gazes Backwards',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Wise Owl Gazes Backwards</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold the Feet',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold the Feet</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Bouncing on the Toes',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Bouncing on the Toes</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Final Standing Meditation',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Final Standing Meditation</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }]
+    [{ caption: 'Wuji Posture',                  svg: poseImg('Wuji Posture') }],
+    [{ caption: 'Opening + Raising Flow',         svg: poseImg('Opening + Raising Flow') }],
+    [{ caption: 'Warm-Up — Spinal Waves',         svg: poseImg('Warm-Up — Spinal Waves') }],
+    [{ caption: 'Two Hands Hold Up the Heavens',  svg: poseImg('Two Hands Hold Up the Heavens') }],
+    [{ caption: 'Drawing the Bow',                svg: poseImg('Drawing the Bow') }],
+    [{ caption: 'Separate Heaven and Earth',      svg: poseImg('Separate Heaven and Earth') }],
+    [{ caption: 'Wise Owl Gazes Backwards',       svg: poseImg('Wise Owl Gazes Backwards') }],
+    [{ caption: 'Two Hands Hold the Feet',        svg: poseImg('Two Hands Hold the Feet') }],
+    [{ caption: 'Bouncing on the Toes',           svg: poseImg('Bouncing on the Toes') }],
+    [{ caption: 'Final Standing Meditation',      svg: poseImg('Final Standing Meditation') }],
   ],
   professional: [
-    [{
-      caption: 'Standing Meditation (Zhan Zhuang)',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Standing Meditation (Zhan Zhuang)</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Opening Form',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Opening Form</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Raising and Lowering — Full Breath',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Raising and Lowering — Full Breath</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold Up the Heavens',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold Up the Heavens</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Drawing the Bow',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Drawing the Bow</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Separate Heaven and Earth',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Separate Heaven and Earth</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Wise Owl Gazes Backwards',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Wise Owl Gazes Backwards</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Two Hands Hold the Feet',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Two Hands Hold the Feet</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Bouncing on the Toes',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Bouncing on the Toes</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Integration Meditation',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Integration Meditation</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }],
-    [{
-      caption: 'Closing Massage',
-      svg: `<div class="pose-placeholder">
-        <div class="pose-placeholder-icon">🖼️</div>
-        <div class="pose-placeholder-name">Closing Massage</div>
-        <div class="pose-placeholder-hint">Image coming soon — upload your guide picture here</div>
-      </div>`
-    }]
+    [{ caption: 'Standing Meditation (Zhan Zhuang)',    svg: poseImg('Standing Meditation (Zhan Zhuang)') }],
+    [{ caption: 'Opening Form',                          svg: poseImg('Opening Form') }],
+    [{ caption: 'Raising and Lowering — Full Breath',    svg: poseImg('Raising and Lowering — Full Breath') }],
+    [{ caption: 'Two Hands Hold Up the Heavens',         svg: poseImg('Two Hands Hold Up the Heavens') }],
+    [{ caption: 'Drawing the Bow',                       svg: poseImg('Drawing the Bow') }],
+    [{ caption: 'Separate Heaven and Earth',             svg: poseImg('Separate Heaven and Earth') }],
+    [{ caption: 'Wise Owl Gazes Backwards',              svg: poseImg('Wise Owl Gazes Backwards') }],
+    [{ caption: 'Two Hands Hold the Feet',               svg: poseImg('Two Hands Hold the Feet') }],
+    [{ caption: 'Bouncing on the Toes',                  svg: poseImg('Bouncing on the Toes') }],
+    [{ caption: 'Integration Meditation',                svg: poseImg('Integration Meditation') }],
+    [{ caption: 'Closing Massage',                       svg: poseImg('Closing Massage') }],
   ],
   brocades: [
-    [{ caption: 'Brocade 1 — Two Hands Hold Up the Heavens', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 1 — Two Hands Hold Up the Heavens</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 2 — Drawing the Bow to Shoot the Eagle', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 2 — Drawing the Bow to Shoot the Eagle</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 3 — Separate Heaven and Earth', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 3 — Separate Heaven and Earth</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 4 — Wise Owl Gazes Backwards', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 4 — Wise Owl Gazes Backwards</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 5 — Sway the Head and Shake the Tail', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 5 — Sway the Head and Shake the Tail</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 6 — Two Hands Hold the Feet', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 6 — Two Hands Hold the Feet to Strengthen the Kidneys</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 7 — Clench Fists and Glare Fiercely', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 7 — Clench the Fists and Glare Fiercely</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
-    [{ caption: 'Brocade 8 — Bouncing on the Toes', svg: `<div class="pose-placeholder"><div class="pose-placeholder-icon">🖼️</div><div class="pose-placeholder-name">Brocade 8 — Bouncing on the Toes to Eliminate Diseases</div><div class="pose-placeholder-hint">Upload your guide image for this pose</div></div>` }],
+    [{ caption: 'Brocade 1 — Two Hands Hold Up the Heavens',        svg: poseImg('Brocade 1 — Two Hands Hold Up the Heavens') }],
+    [{ caption: 'Brocade 2 — Drawing the Bow to Shoot the Eagle',   svg: poseImg('Brocade 2 — Drawing the Bow to Shoot the Eagle') }],
+    [{ caption: 'Brocade 3 — Separate Heaven and Earth',            svg: poseImg('Brocade 3 — Separate Heaven and Earth') }],
+    [{ caption: 'Brocade 4 — Wise Owl Gazes Backwards',             svg: poseImg('Brocade 4 — Wise Owl Gazes Backwards') }],
+    [{ caption: 'Brocade 5 — Sway the Head and Shake the Tail',     svg: poseImg('Brocade 5 — Sway the Head and Shake the Tail') }],
+    [{ caption: 'Brocade 6 — Two Hands Hold the Feet',              svg: poseImg('Brocade 6 — Two Hands Hold the Feet') }],
+    [{ caption: 'Brocade 7 — Clench Fists and Glare Fiercely',      svg: poseImg('Brocade 7 — Clench Fists and Glare Fiercely') }],
+    [{ caption: 'Brocade 8 — Bouncing on the Toes',                 svg: poseImg('Brocade 8 — Bouncing on the Toes') }],
   ],
 };
 //  ROUTINE DATA
