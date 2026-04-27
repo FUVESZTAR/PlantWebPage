@@ -751,7 +751,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
       <!-- Sourdough starter gram -->
         <div class="input-group">
       <div class="input-label">
-        <span>🌱 <span data-i18n="start_starter_lbl_g">Starter</span>
+        <span>🌱 <span data-i18n="startG_starter_lbl">Starter</span>
           <span class="tip-icon beginner-only" data-tip="Starter in gramm.">?</span></span>
         <span class="unit">g</span>
       </div>
@@ -764,7 +764,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
      <!-- Sourdough starter Percent -->
     <div class="input-group" id="start_starterRowP">
       <div class="input-label">
-        <span>🌱 <span data-i18n="start_starter_lbl_p">Starter</span>
+        <span>🌱 <span data-i18n="startP_starter_lbl">Starter %</span>
           <span class="tip-icon beginner-only" data-tip="Starter as % of flour. 15–25% is common.">?</span></span>
         <span class="unit">%</span>
       </div>
@@ -775,7 +775,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
     </div>
       <!-- Sourdough starter result -->
       <div class="results-grid">
-    <div class="result-item" id="rSTFlourCardG"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
+    <div class="result-item" id="rSTFlourCardG"><div class="r-icon">🌾</div><div class="r-label" data-i18n="starter_flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
     <div class="result-item" id="rSTStarterCardG"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterG">100</div><div class="r-unit">g</div></div> 
     </div></div></div></div><!-- /panel-body -->
   </div><!-- /panelCalc -->
@@ -842,8 +842,8 @@ const T = {
     bt_title:'🍞 Choose Your Bread',bt_sub:'Sets recommended hydration, fat, sugar and leavening automatically',
     calc_title:'Dough Calculator',calc_sub:"Adjust sliders or type values — all in baker's %",
     starter_calc_title:'Starter Use Calculator',starter_calc_sub:"Adjust sliders or type values — all in baker's %",
-    loaves_lbl:'Loaves:',flour_lbl:'Total Flour',hyd_lbl:'Hydration',
-    starter_lbl:'Starter',yeast_lbl:'Yeast',salt_lbl:'Salt',fat_lbl:'Fat',sugar_lbl:'Sugar',temp_lbl:'Kitchen Temp',
+    loaves_lbl:'Loaves:',flour_lbl:'Total Flour',hyd_lbl:'Hydration',starter_flour_lbl:'Flour',
+    starter_lbl:'Starter',yeast_lbl:'Yeast',salt_lbl:'Salt',fat_lbl:'Fat',sugar_lbl:'Sugar',temp_lbl:'Kitchen Temp',startP_starter_lbl:'Starter %',,startG_starter_lbl:'Starter',
     y_inst:'Instant',y_active:'Active Dry',y_fresh:'Fresh',
     reset_btn:'Reset',save_btn:'Save',
     results_title:'Your Recipe',results_sub:'Auto-calculated — all amounts per total batch',
@@ -944,8 +944,8 @@ const huO = {
   bt_title:'🍞 Válaszd ki a kenyérfajtát',bt_sub:'Automatikusan beállítja a hidratációt, zsírt, cukrot és élesztőt',
   calc_title:'Tésztakalkulátor',calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
   starter_calc_title:'Kovász felhasználás kalkulátor',starter_calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
-  loaves_lbl:'Cipók:',flour_lbl:'Teljes liszt',hyd_lbl:'Hidratáció',
-  starter_lbl:'Kovász',yeast_lbl:'Élesztő',salt_lbl:'Só',fat_lbl:'Zsír',sugar_lbl:'Cukor',temp_lbl:'Konyha hőmérséklete',
+  loaves_lbl:'Cipók:',flour_lbl:'Teljes liszt',hyd_lbl:'Hidratáció',starter_flour_lbl:'Liszt',
+  starter_lbl:'Kovász',yeast_lbl:'Élesztő',salt_lbl:'Só',fat_lbl:'Zsír',sugar_lbl:'Cukor',temp_lbl:'Konyha hőmérséklete',startP_starter_lbl:'Kovász %',,startG_starter_lbl:'Kovász',
   y_inst:'Instant',y_active:'Száraz',y_fresh:'Friss',
   reset_btn:'Visszaállítás',save_btn:'Mentés',
   results_title:'A Te Recepted',results_sub:'Automatikus számítás — az egész adagra',
