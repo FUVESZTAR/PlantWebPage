@@ -774,7 +774,6 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
     </div>
     <div class="result-item"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
     <div class="result-item" id="rSTStarterCardG"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterG">100</div><div class="r-unit">g</div></div> 
-    <div class="result-item" id="rSTStarterCardP"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterP">20</div><div class="r-unit">%</div></div>  
     </div></div></div><!-- /panel-body -->
   </div><!-- /panelCalc -->
 
@@ -1299,16 +1298,16 @@ function calc(){
 // ═══════════════════════════════════════════════════
 function calcST(){
   const starterGPct   = getVal('startG_starter') || 100;
-  const starterPPct   = getVal('startP_starter') / 100;
+  const starterPPct   = getVal('startP_starter') || 20;
 
   // ── Other ingredients ──
-  let totalFlour   = Math.round(starterGPct / starterPPct);
- const starterPercent  = starterPPct * 100;
+  let starterPercent  = starterPPct / 100;
+  let totalFlour   = Math.round(starterGPct / starterPercent);
+  let starterPercent2  = starterPPct;
       
   // ── Update DOM: results ──
   setText('rSTFlour', totalFlour);
-  setText('rSTStarterG', starterGPct);
-  setText('rSTStarterP', starterPercent);
+  setText('rSTStarterG', starterPercent2);
 
 }// end calt Starter use
 
