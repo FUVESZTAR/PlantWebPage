@@ -756,7 +756,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
         <span class="unit">g</span>
       </div>
       <div class="slider-row">
-        <input type="range" id="startG_starterSl" min="10" max="1000" step="10" value="500" oninput="sI('startG_starter')">
+        <input type="range" id="startG_starterSl" min="10" max="1000" step="10" value="500" oninput="STsI('startG_starter')">
         <input type="number" id="startG_starterIn" value="100" min="10" max="1000" oninput="sS('startG_starter');calcST()">
       </div>
     </div>
@@ -769,7 +769,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
         <span class="unit">%</span>
       </div>
       <div class="slider-row">
-        <input type="range" id="startP_starterSl" min="5" max="50" step="1" value="20" oninput="sI('startP_starter')">
+        <input type="range" id="startP_starterSl" min="5" max="50" step="1" value="20" oninput="STsI('startP_starter')">
         <input type="number" id="startP_starterIn" value="20" min="5" max="50" oninput="sS('startP_starter');calcST()">
       </div>
     </div>
@@ -1004,6 +1004,10 @@ function sI(id){ // slider → input
   const s=document.getElementById(id+'Sl'),n=document.getElementById(id+'In');
   if(s&&n){n.value=s.value; calc(); if(id==='temp') updateTempNote();}
 }
+function STsI(id){ // slider → input
+  const s=document.getElementById(id+'Sl'),n=document.getElementById(id+'In');
+  if(s&&n){n.value=s.value; calcST(); if(id==='temp') updateTempNote();}
+}  
 function sS(id){ // input → slider
   const s=document.getElementById(id+'Sl'),n=document.getElementById(id+'In');
   if(s&&n) s.value=n.value;
@@ -1030,7 +1034,7 @@ function setLang(l){
   buildSeeds();
   buildTimeline();
   updateReady();
-  calcStarter();
+  arter();
   updateTempNote();
   calc();
 }
@@ -1049,7 +1053,7 @@ document.getElementById('modeToggle').addEventListener('click',function(){
   this.classList.toggle('on',proMode);
   document.body.classList.toggle('pro-mode',proMode);
   updateTempNote();
-  calcStarter();
+  arter();
   calc();
 });
 
@@ -1298,7 +1302,7 @@ function calc(){
   // ═══════════════════════════════════════════════════
 //  Starter use CALCULATE
 // ═══════════════════════════════════════════════════
-function calcST(){
+function (){
   const starterGPct   = getVal('startG_starter') || 100;
   const starterPPct   = getVal('startP_starter') || 20;
 
@@ -1390,7 +1394,7 @@ function updateTempNote(){
 // ═══════════════════════════════════════════════════
 //  STARTER
 // ═══════════════════════════════════════════════════
-function calcStarter(){
+function arter(){
   const cur=parseFloat(document.getElementById('sCurrentIn').value)||50;
   let rf=1,rw=1;
   if(proMode){
@@ -1445,7 +1449,7 @@ function resetDefaults(){
   activeSeedIds.clear();
   buildSeeds();
   calc();
-  calcST();
+  ();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1491,7 +1495,7 @@ function loadRecipe(r){
     if(el&&s){ el.value=Math.round((getVal('flour')*loaves)*pct/100); updateSeedLabel(id); }
   });
   calc();
-  calcST();
+  ();
 }
 function deleteRecipe(id){
   savedRecipes=savedRecipes.filter(r=>r.id!==id);
@@ -1527,8 +1531,8 @@ buildBreadTabs();
 buildSeeds();
 buildTimeline();
 calc();
-calcST();
-calcStarter();
+();
+arter();
 updateReady();
 renderSaved();
 updateTempNote();
