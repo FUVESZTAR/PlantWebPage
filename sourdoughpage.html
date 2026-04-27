@@ -729,6 +729,71 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
   </div>
 </section>
 
+<!-- STARTER USE -->
+<section id="starter2" class="starter-section">
+  <div class="starter-panels">
+
+    <!-- COL 1: STARTER USE CALCULATOR -->
+  <div class="panel open anim" id="panelStartCalc" style="animation-delay:.05s">
+    <div class="panel-header" onclick="togglePanel('panelStartCalc')">
+      <div class="panel-header-left">
+        <span style="font-size:1.1rem">⚙️</span>
+        <div>
+          <div class="panel-title" data-i18n="starter_calc_title">Starter Use Calculator</div>
+          <div class="panel-subtitle" data-i18n="starter_calc_sub">Baker's % sliders</div>
+        </div>
+      </div>
+      <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
+    </div>
+    <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
+
+
+    <div class="input-group">
+      <div class="input-label">
+        <span>🌾 <span data-i18n="start_flour_lbl">Total Flour</span>
+          <span class="tip-icon beginner-only" data-tip="Total flour weight per loaf">?</span></span>
+        <span class="unit">g / loaf</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="start_flourSl" min="100" max="2000" step="10" value="500" oninput="sI('start_flour')">
+        <input type="number" id="start_flourIn" value="500" min="100" max="2000" oninput="sS('start_flour');calcST()">
+      </div>
+    </div>
+
+    <!-- Sourdough starter gramm-->
+    <div class="input-group" id="start_starterRowP">
+      <div class="input-label">
+        <span>🌱 <span data-i18n="start_start_starter_lbl">Starter</span>
+          <span class="tip-icon beginner-only" data-tip="Starter as gramm.">?</span></span>
+        <span class="unit">g</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="startP_starterSl" min="5" max="50" step="1" value="20" oninput="sI('startP_starter')">
+        <input type="number" id="startP_starterIn" value="20" min="5" max="50" oninput="sS('startP_starter');calcST()">
+      </div>
+    </div>
+
+     <!-- Sourdough starter Percent -->
+    <div class="input-group" id="start_starterRowG">
+      <div class="input-label">
+        <span>🌱 <span data-i18n="start_starter_lbl_g">Starter</span>
+          <span class="tip-icon beginner-only" data-tip="Starter as % of flour. 15–25% is common.">?</span></span>
+        <span class="unit">%</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="startG_starterSl" min="5" max="50" step="1" value="20" oninput="sI('startG_starter')">
+        <input type="number" id="startG_starterIn" value="20" min="5" max="50" oninput="sS('startG_starter');calcST()">
+      </div>
+    </div>
+    <div class="result-item"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
+    <div class="result-item" id="rSTStarterCardG"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterG">100</div><div class="r-unit">g</div></div> 
+    <div class="result-item" id="rSTStarterCardP"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterP">100</div><div class="r-unit">%</div></div>  
+    </div></div></div><!-- /panel-body -->
+  </div><!-- /panelCalc -->
+
+  </div>
+</section>
+
 <footer>
   <div class="fl">🌾 Szandi's Sourdough</div>
   <div class="fr" data-i18n="footer_txt">Made with love for bakers everywhere 🍞</div>
@@ -787,6 +852,7 @@ const T = {
     b_rt:'Real-time calc',b_bt:'6 bread types',b_si:'Seeds & add-ins',b_st:'Starter tracker',b_sv:'Save recipes',
     bt_title:'🍞 Choose Your Bread',bt_sub:'Sets recommended hydration, fat, sugar and leavening automatically',
     calc_title:'Dough Calculator',calc_sub:"Adjust sliders or type values — all in baker's %",
+    starter_calc_title:'Starter Use Calculator',starter_calc_sub:"Adjust sliders or type values — all in baker's %",
     loaves_lbl:'Loaves:',flour_lbl:'Total Flour',hyd_lbl:'Hydration',
     starter_lbl:'Starter',yeast_lbl:'Yeast',salt_lbl:'Salt',fat_lbl:'Fat',sugar_lbl:'Sugar',temp_lbl:'Kitchen Temp',
     y_inst:'Instant',y_active:'Active Dry',y_fresh:'Fresh',
@@ -888,6 +954,7 @@ const huO = {
   b_rt:'Valós idejű számítás',b_bt:'6 kenyérfajta',b_si:'Magvak és kiegészítők',b_st:'Kovász követő',b_sv:'Receptek mentése',
   bt_title:'🍞 Válaszd ki a kenyérfajtát',bt_sub:'Automatikusan beállítja a hidratációt, zsírt, cukrot és élesztőt',
   calc_title:'Tésztakalkulátor',calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
+  starter_calc_title:'Kovás felhasználás kalkulátor',starter_calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
   loaves_lbl:'Cipók:',flour_lbl:'Teljes liszt',hyd_lbl:'Hidratáció',
   starter_lbl:'Kovász',yeast_lbl:'Élesztő',salt_lbl:'Só',fat_lbl:'Zsír',sugar_lbl:'Cukor',temp_lbl:'Konyha hőmérséklete',
   y_inst:'Instant',y_active:'Száraz',y_fresh:'Friss',
@@ -1240,6 +1307,25 @@ function calc(){
   }
 }
 
+  // ═══════════════════════════════════════════════════
+//  Starter use CALCULATE
+// ═══════════════════════════════════════════════════
+function calcST(){
+  const flourPct = getVal('start_flour') || 500;
+  const starterGPct   = getVal('startG_starter') || 100;
+  const starterPPct   = getVal('startP_starter') / 100;
+
+  // ── Other ingredients ──
+  let totalFlour   = Math.round(starterGPct / starterPPct);
+
+  // ── Update DOM: results ──
+  setText('rSTFlour', totalFlour);
+  setText('rSTStarterG', starterGPct);
+  setText('rSTStarterP', starterPPct);
+
+}// end calt Starter use
+
+  
 // ═══════════════════════════════════════════════════
 //  PIE CHART
 // ═══════════════════════════════════════════════════
@@ -1371,6 +1457,7 @@ function resetDefaults(){
   activeSeedIds.clear();
   buildSeeds();
   calc();
+  calcST();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1451,6 +1538,7 @@ buildBreadTabs();
 buildSeeds();
 buildTimeline();
 calc();
+calcST();
 calcStarter();
 updateReady();
 renderSaved();
