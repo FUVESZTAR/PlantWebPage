@@ -233,6 +233,34 @@
   .badge-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--accent); margin-bottom: 8px; }
   .badge-sub { color: var(--text2); font-size: 0.92rem; }
   @media (max-width: 600px) { .routine-header { grid-template-columns: 1fr; } .start-btn { width: 100%; } .hero { padding: 48px 20px 36px; } .guided-modal { margin: 0; border-radius: 16px 16px 0 0; align-self: flex-end; } .guided-overlay { align-items: flex-end; padding: 0; } }
+
+  /* ── Voice Settings ─────────────────────────────────────── */
+  .voice-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 50px; cursor: pointer; padding: 6px 14px; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text2); transition: all var(--transition); font-family: 'DM Sans', sans-serif; }
+  .voice-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .voice-btn.muted { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
+  .voice-panel { position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 20px; width: 320px; z-index: 300; animation: slideDown 0.2s cubic-bezier(0.4,0,0.2,1); }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  .voice-panel-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+  .voice-panel-title button { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 1rem; line-height: 1; padding: 0; }
+  .voice-panel-title button:hover { color: var(--text); }
+  .vp-row { margin-bottom: 14px; }
+  .vp-label { font-size: 0.78rem; color: var(--text2); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .vp-label span { color: var(--accent); font-weight: 500; }
+  .vp-select { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6259' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; transition: border-color var(--transition); }
+  .vp-select:focus { outline: none; border-color: var(--accent); }
+  .vp-slider { width: 100%; accent-color: var(--accent); cursor: pointer; height: 4px; }
+  .vp-divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  .vp-mute-row { display: flex; align-items: center; justify-content: space-between; }
+  .vp-mute-label { font-size: 0.85rem; color: var(--text2); }
+  .vp-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .vp-toggle input { opacity: 0; width: 0; height: 0; }
+  .vp-toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: background var(--transition); }
+  .vp-toggle input:checked + .vp-toggle-track { background: var(--accent); }
+  .vp-toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform var(--transition); pointer-events: none; }
+  .vp-toggle input:checked ~ .vp-toggle-thumb { transform: translateX(18px); }
+  .vp-test-btn { width: 100%; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); border-radius: 50px; padding: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all var(--transition); margin-top: 4px; }
+  .vp-test-btn:hover { background: var(--accent); color: #fff; }
+  .header-right { display: flex; align-items: center; gap: 10px; position: relative; }
 </style>
 </head>
 <body>
@@ -240,9 +268,44 @@
 <header>
   <div class="header-inner">
     <div class="logo"><span class="logo-icon">☯</span>Qi Gong Guide</div>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-      <span id="themeIcon">🌙</span><span id="themeLabel">Dark</span>
-    </button>
+    <div class="header-right">
+      <button class="voice-btn" id="voiceSettingsBtn" aria-label="Voice settings">
+        <span id="voiceBtnIcon">🔊</span><span id="voiceBtnLabel">Voice</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <span id="themeIcon">🌙</span><span id="themeLabel">Dark</span>
+      </button>
+      <!-- Voice Settings Panel -->
+      <div class="voice-panel" id="voicePanel" style="display:none;">
+        <div class="voice-panel-title">
+          🎙️ Voice Settings
+          <button id="voicePanelClose" aria-label="Close voice settings">✕</button>
+        </div>
+        <div class="vp-row">
+          <div class="vp-label">Voice</div>
+          <select class="vp-select" id="voiceSelect"><option>Loading voices…</option></select>
+        </div>
+        <div class="vp-row">
+          <div class="vp-label">Speed <span id="rateVal">0.82</span></div>
+          <input type="range" class="vp-slider" id="rateSlider" min="0.5" max="1.4" step="0.05" value="0.82">
+        </div>
+        <div class="vp-row">
+          <div class="vp-label">Pitch <span id="pitchVal">0.95</span></div>
+          <input type="range" class="vp-slider" id="pitchSlider" min="0.5" max="1.5" step="0.05" value="0.95">
+        </div>
+        <hr class="vp-divider">
+        <div class="vp-mute-row">
+          <span class="vp-mute-label">🔕 Mute voice guidance</span>
+          <label class="vp-toggle">
+            <input type="checkbox" id="muteToggle">
+            <div class="vp-toggle-track"></div>
+            <div class="vp-toggle-thumb"></div>
+          </label>
+        </div>
+        <hr class="vp-divider">
+        <button class="vp-test-btn" id="testVoiceBtn">▶ Test Voice</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -820,18 +883,89 @@ function updateSidebar() {
 }
 
 // GUIDED MODE
-// ─── TTS helpers ────────────────────────────────────────────
+// ─── Voice Settings ──────────────────────────────────────────
+const ttsSettings = { voice: null, rate: 0.82, pitch: 0.95, muted: false };
 let ttsUtterance = null;
+
+function populateVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  const sel = document.getElementById('voiceSelect');
+  sel.innerHTML = '';
+  // preferred calm voices first
+  const preferred = ['Daniel','Samantha','Karen','Moira','Martha','Google UK English Female','Google UK English Male','Microsoft Zira','Microsoft David'];
+  const sorted = [...voices].sort((a,b) => {
+    const ai = preferred.indexOf(a.name), bi = preferred.indexOf(b.name);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1; if (bi !== -1) return 1;
+    if (a.lang==='en-GB' && b.lang!=='en-GB') return -1;
+    if (b.lang==='en-GB' && a.lang!=='en-GB') return 1;
+    if (a.lang.startsWith('en') && !b.lang.startsWith('en')) return -1;
+    if (b.lang.startsWith('en') && !a.lang.startsWith('en')) return 1;
+    return a.name.localeCompare(b.name);
+  });
+  sorted.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+    if (preferred.includes(v.name)) o.textContent = '⭐ ' + o.textContent;
+    sel.appendChild(o);
+  });
+  // auto-select best voice
+  const best = sorted.find(v => preferred.includes(v.name)) || sorted.find(v => v.lang==='en-GB') || sorted.find(v => v.lang.startsWith('en')) || sorted[0];
+  if (best) { sel.value = best.name; ttsSettings.voice = best; }
+}
+
+function getBestVoice() {
+  const name = document.getElementById('voiceSelect')?.value;
+  return window.speechSynthesis.getVoices().find(v => v.name === name) || null;
+}
+
 function ttsSpeak(text) {
-  if (!window.speechSynthesis) return;
+  if (!window.speechSynthesis || ttsSettings.muted) return;
   window.speechSynthesis.cancel();
   ttsUtterance = new SpeechSynthesisUtterance(text);
-  ttsUtterance.rate = 0.92; ttsUtterance.pitch = 1; ttsUtterance.lang = 'en-US';
+  ttsUtterance.voice = getBestVoice();
+  ttsUtterance.rate  = parseFloat(document.getElementById('rateSlider')?.value  || ttsSettings.rate);
+  ttsUtterance.pitch = parseFloat(document.getElementById('pitchSlider')?.value || ttsSettings.pitch);
+  ttsUtterance.lang  = ttsUtterance.voice?.lang || 'en-US';
   ttsUtterance.onstart = () => { const b=document.getElementById('ttsBtn'); if(b) b.classList.add('speaking'); };
   ttsUtterance.onend   = () => { const b=document.getElementById('ttsBtn'); if(b) b.classList.remove('speaking'); };
   window.speechSynthesis.speak(ttsUtterance);
 }
 function ttsStop() { if (window.speechSynthesis) window.speechSynthesis.cancel(); }
+
+// ─── Voice panel wiring ──────────────────────────────────────
+window.speechSynthesis.onvoiceschanged = populateVoices;
+populateVoices();
+
+const voiceSettingsBtn = document.getElementById('voiceSettingsBtn');
+const voicePanel       = document.getElementById('voicePanel');
+voiceSettingsBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = voicePanel.style.display !== 'none';
+  voicePanel.style.display = open ? 'none' : 'block';
+  if (!open) populateVoices();
+});
+document.getElementById('voicePanelClose').addEventListener('click', () => voicePanel.style.display='none');
+document.addEventListener('click', e => { if (!voicePanel.contains(e.target) && e.target!==voiceSettingsBtn) voicePanel.style.display='none'; });
+
+document.getElementById('rateSlider').addEventListener('input', function() {
+  document.getElementById('rateVal').textContent = parseFloat(this.value).toFixed(2);
+});
+document.getElementById('pitchSlider').addEventListener('input', function() {
+  document.getElementById('pitchVal').textContent = parseFloat(this.value).toFixed(2);
+});
+document.getElementById('muteToggle').addEventListener('change', function() {
+  ttsSettings.muted = this.checked;
+  const btn = document.getElementById('voiceSettingsBtn');
+  const icon = document.getElementById('voiceBtnIcon');
+  const lbl  = document.getElementById('voiceBtnLabel');
+  if (this.checked) { btn.classList.add('muted'); icon.textContent='🔕'; lbl.textContent='Muted'; ttsStop(); }
+  else              { btn.classList.remove('muted'); icon.textContent='🔊'; lbl.textContent='Voice'; }
+});
+document.getElementById('testVoiceBtn').addEventListener('click', () => {
+  ttsSpeak('Breathe slowly and deeply. Let the movement flow from within.');
+});
 
 // ─── step auto-timer ────────────────────────────────────────
 function getStepDuration(ex) {
