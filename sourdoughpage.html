@@ -1309,11 +1309,10 @@ function calcST(){
   // ── Other ingredients ──
   let starterPercent  = starterPPct / 100;
   let totalFlour   = Math.round(starterGPct / starterPercent);
-  let starterPercent2  = starterPPct;
       
   // ── Update DOM: results ──
   setText('rSTFlour', totalFlour);
-  setText('rSTStarterG', starterPercent2);
+  setText('rSTStarterG', starterGPct);
 
 }// end calt Starter use
 
