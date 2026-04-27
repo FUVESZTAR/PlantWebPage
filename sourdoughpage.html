@@ -747,31 +747,33 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
     </div>
     <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
 
-    <!-- Sourdough starter gramm-->
+      
+      <!-- Sourdough starter gram -->
+        <div class="input-group">
+      <div class="input-label">
+        <span>🌱 <span data-i18n="start_starter_lbl_g">Starter</span>
+          <span class="tip-icon beginner-only" data-tip="Starter in gramm.">?</span></span>
+        <span class="unit">g</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="startG_starterSl" min="10" max="1000" step="10" value="500" oninput="sI('startG_starter')">
+        <input type="number" id="startG_starterIn" value="100" min="10" max="1000" oninput="sS('startG_starter');calcST()">
+      </div>
+    </div>
+      
+     <!-- Sourdough starter Percent -->
     <div class="input-group" id="start_starterRowP">
       <div class="input-label">
-        <span>🌱 <span data-i18n="start_start_starter_lbl">Starter</span>
-          <span class="tip-icon beginner-only" data-tip="Starter as gramm.">?</span></span>
-        <span class="unit">g</span>
+        <span>🌱 <span data-i18n="start_starter_lbl_p">Starter</span>
+          <span class="tip-icon beginner-only" data-tip="Starter as % of flour. 15–25% is common.">?</span></span>
+        <span class="unit">%</span>
       </div>
       <div class="slider-row">
         <input type="range" id="startP_starterSl" min="5" max="50" step="1" value="20" oninput="sI('startP_starter')">
         <input type="number" id="startP_starterIn" value="20" min="5" max="50" oninput="sS('startP_starter');calcST()">
       </div>
     </div>
-
-     <!-- Sourdough starter Percent -->
-    <div class="input-group" id="start_starterRowG">
-      <div class="input-label">
-        <span>🌱 <span data-i18n="start_starter_lbl_g">Starter</span>
-          <span class="tip-icon beginner-only" data-tip="Starter as % of flour. 15–25% is common.">?</span></span>
-        <span class="unit">%</span>
-      </div>
-      <div class="slider-row">
-        <input type="range" id="startG_starterSl" min="5" max="50" step="1" value="20" oninput="sI('startG_starter')">
-        <input type="number" id="startG_starterIn" value="20" min="5" max="50" oninput="sS('startG_starter');calcST()">
-      </div>
-    </div>
+      <!-- Sourdough starter result -->
     <div class="result-item"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
     <div class="result-item" id="rSTStarterCardG"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterG">100</div><div class="r-unit">g</div></div> 
     </div></div></div><!-- /panel-body -->
