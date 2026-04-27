@@ -747,19 +747,6 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
     </div>
     <div class="panel-body"><div class="panel-body-inner"><div class="panel-body-inner-pad">
 
-
-    <div class="input-group">
-      <div class="input-label">
-        <span>🌾 <span data-i18n="start_flour_lbl">Total Flour</span>
-          <span class="tip-icon beginner-only" data-tip="Total flour weight per loaf">?</span></span>
-        <span class="unit">g / loaf</span>
-      </div>
-      <div class="slider-row">
-        <input type="range" id="start_flourSl" min="100" max="2000" step="10" value="500" oninput="sI('start_flour')">
-        <input type="number" id="start_flourIn" value="500" min="100" max="2000" oninput="sS('start_flour');calcST()">
-      </div>
-    </div>
-
     <!-- Sourdough starter gramm-->
     <div class="input-group" id="start_starterRowP">
       <div class="input-label">
@@ -787,7 +774,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
     </div>
     <div class="result-item"><div class="r-icon">🌾</div><div class="r-label" data-i18n="flour_lbl">Flour</div><div class="r-value" id="rSTFlour">500</div><div class="r-unit">g</div></div>
     <div class="result-item" id="rSTStarterCardG"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterG">100</div><div class="r-unit">g</div></div> 
-    <div class="result-item" id="rSTStarterCardP"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterP">100</div><div class="r-unit">%</div></div>  
+    <div class="result-item" id="rSTStarterCardP"><div class="r-icon">🌱</div><div class="r-label" data-i18n="starter_lbl">Starter</div><div class="r-value" id="rSTStarterP">20</div><div class="r-unit">%</div></div>  
     </div></div></div><!-- /panel-body -->
   </div><!-- /panelCalc -->
 
@@ -1311,17 +1298,17 @@ function calc(){
 //  Starter use CALCULATE
 // ═══════════════════════════════════════════════════
 function calcST(){
-  const flourPct = getVal('start_flour') || 500;
   const starterGPct   = getVal('startG_starter') || 100;
   const starterPPct   = getVal('startP_starter') / 100;
 
   // ── Other ingredients ──
   let totalFlour   = Math.round(starterGPct / starterPPct);
-
+ const starterPercent  = starterPPct * 100;
+      
   // ── Update DOM: results ──
   setText('rSTFlour', totalFlour);
   setText('rSTStarterG', starterGPct);
-  setText('rSTStarterP', starterPPct);
+  setText('rSTStarterP', starterPercent);
 
 }// end calt Starter use
 
