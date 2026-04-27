@@ -1021,7 +1021,6 @@ function setText(id,val){
   if(!el) return;
   el.textContent=(val%1===0)?val:parseFloat(val).toFixed(1);
 }
-
 // ═══════════════════════════════════════════════════
 //  LANG
 // ═══════════════════════════════════════════════════
@@ -1034,7 +1033,7 @@ function setLang(l){
   buildSeeds();
   buildTimeline();
   updateReady();
-  arter();
+  calcStarter();
   updateTempNote();
   calc();
 }
@@ -1053,7 +1052,7 @@ document.getElementById('modeToggle').addEventListener('click',function(){
   this.classList.toggle('on',proMode);
   document.body.classList.toggle('pro-mode',proMode);
   updateTempNote();
-  arter();
+  calcStarter();
   calc();
 });
 
@@ -1302,7 +1301,7 @@ function calc(){
   // ═══════════════════════════════════════════════════
 //  Starter use CALCULATE
 // ═══════════════════════════════════════════════════
-function (){
+function calcST(){
   const starterGPct   = getVal('startG_starter') || 100;
   const starterPPct   = getVal('startP_starter') || 20;
 
@@ -1394,7 +1393,7 @@ function updateTempNote(){
 // ═══════════════════════════════════════════════════
 //  STARTER
 // ═══════════════════════════════════════════════════
-function arter(){
+function calcStarter(){
   const cur=parseFloat(document.getElementById('sCurrentIn').value)||50;
   let rf=1,rw=1;
   if(proMode){
@@ -1449,7 +1448,7 @@ function resetDefaults(){
   activeSeedIds.clear();
   buildSeeds();
   calc();
-  ();
+  calcST();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1495,7 +1494,7 @@ function loadRecipe(r){
     if(el&&s){ el.value=Math.round((getVal('flour')*loaves)*pct/100); updateSeedLabel(id); }
   });
   calc();
-  ();
+  calcST();
 }
 function deleteRecipe(id){
   savedRecipes=savedRecipes.filter(r=>r.id!==id);
@@ -1531,8 +1530,8 @@ buildBreadTabs();
 buildSeeds();
 buildTimeline();
 calc();
-();
-arter();
+calcST();
+calcStarter();
 updateReady();
 renderSaved();
 updateTempNote();
