@@ -942,7 +942,7 @@ const huO = {
   b_rt:'Valós idejű számítás',b_bt:'6 kenyérfajta',b_si:'Magvak és kiegészítők',b_st:'Kovász követő',b_sv:'Receptek mentése',
   bt_title:'🍞 Válaszd ki a kenyérfajtát',bt_sub:'Automatikusan beállítja a hidratációt, zsírt, cukrot és élesztőt',
   calc_title:'Tésztakalkulátor',calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
-  starter_calc_title:'Kovás felhasználás kalkulátor',starter_calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
+  starter_calc_title:'Kovász felhasználás kalkulátor',starter_calc_sub:'Állítsd be a csúszkákat — minden érték pékarányszámban',
   loaves_lbl:'Cipók:',flour_lbl:'Teljes liszt',hyd_lbl:'Hidratáció',
   starter_lbl:'Kovász',yeast_lbl:'Élesztő',salt_lbl:'Só',fat_lbl:'Zsír',sugar_lbl:'Cukor',temp_lbl:'Konyha hőmérséklete',
   y_inst:'Instant',y_active:'Száraz',y_fresh:'Friss',
@@ -1491,6 +1491,7 @@ function loadRecipe(r){
     if(el&&s){ el.value=Math.round((getVal('flour')*loaves)*pct/100); updateSeedLabel(id); }
   });
   calc();
+  calcST();
 }
 function deleteRecipe(id){
   savedRecipes=savedRecipes.filter(r=>r.id!==id);
