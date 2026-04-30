@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PlantNFC</string>
+    <string name="nfc_not_supported">NFC is not supported on this device</string>
+    <string name="nfc_disabled">NFC is disabled. Please enable it in Settings</string>
+    <string name="nfc_scanning">Scanning… tap NFC tag to phone</string>
+    <string name="nfc_write_success">Successfully written to NFC tag ✅</string>
+    <string name="nfc_read_success">NFC tag scanned successfully</string>
+    <string name="gps_tracking">GPS tracking active…</string>
+    <string name="gps_locked">GPS data locked</string>
+    <string name="save_success">NFC record saved!</string>
+    <string name="sync_success">Synced with Google Drive</string>
+    <string name="sync_failed">Sync failed. Will retry when online</string>
+</resources>
