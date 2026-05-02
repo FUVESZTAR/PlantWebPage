@@ -502,6 +502,10 @@ button:disabled { opacity:.55; cursor:not-allowed; }
               <option value="" data-i18n="nfcgen.opt_loading">Loading plants…</option>
             </select>
           </div>
+          <input type="text" id="gen-plant-selector-custom"
+                 data-i18n-placeholder="nfcgen.ph_custom_plant"
+                 placeholder="Enter custom plant name"
+                 style="display:none; margin-top:6px;" />
         </div>
         <div class="form-group">
           <label for="gen-name-variety" data-i18n="nfcgen.lbl_variety">Variety</label>
@@ -1152,11 +1156,13 @@ const TRANSLATIONS = {
     "nfcgen.main_card_sub":     "Choose a plant and variety.",
     "nfcgen.lbl_plant":         "Plant Name",
     "nfcgen.opt_loading":       "Loading plants\u2026",
+    "nfcgen.opt_plant":         "Select a plant\u2026",
     "nfcgen.lbl_variety":       "Variety",
     "nfcgen.opt_variety":       "Select a variety\u2026",
     "nfcgen.ph_search_plant":   "Search plants\u2026",
     "nfcgen.ph_search_variety": "Search varieties\u2026",
     "nfcgen.ph_custom_variety": "Enter custom variety",
+    "nfcgen.ph_custom_plant":   "Enter custom plant name",
     "nfcgen.data_card_title":   "Data",
     "nfcgen.data_card_sub":     "Data stored in NFC",
     "nfcgen.plantId":           "Plant ID",
@@ -1539,11 +1545,13 @@ const TRANSLATIONS = {
     "nfcgen.main_card_sub":     "V\u00e1lassz n\u00f6v\u00e9nyt \u00e9s fajt\u00e1t.",
     "nfcgen.lbl_plant":         "N\u00f6v\u00e9ny neve",
     "nfcgen.opt_loading":       "N\u00f6v\u00e9nyek bet\u00f6lt\u00e9se\u2026",
+    "nfcgen.opt_plant":         "V\u00e1lassz n\u00f6v\u00e9nyt\u2026",
     "nfcgen.lbl_variety":       "Fajta",
     "nfcgen.opt_variety":       "V\u00e1lassz fajt\u00e1t\u2026",
     "nfcgen.ph_search_plant":   "Keres\u00e9s n\u00f6v\u00e9nyek k\u00f6z\u00f6tt\u2026",
     "nfcgen.ph_search_variety": "Keres\u00e9s fajt\u00e1k k\u00f6z\u00f6tt\u2026",
     "nfcgen.ph_custom_variety": "Egyedi fajta megad\u00e1sa",
+    "nfcgen.ph_custom_plant":   "Egyedi n\u00f6v\u00e9nyn\u00e9v megad\u00e1sa",
     "nfcgen.data_card_title":   "Adatok",
     "nfcgen.data_card_sub":     "Az NFC-be ker\u00fcl\u0151 adatok",
     "nfcgen.plantId":           "N\u00f6v. ID",
@@ -1903,6 +1911,7 @@ let plantData = [];
 let selectedPlantIndex = null;
 let selectedVarietyData = null;
 let customVarietyMode = false;
+let customPlantMode = false;
 let plantId = 1;
 let nfcIdValue =0;
 let gpsPacket =null;
@@ -2027,6 +2036,7 @@ async function populate() {
   let plantNameInput = "";
   const nameVarietySelector = document.getElementById("gen-name-variety");
   const nameVarietyCustomInput = document.getElementById("gen-name-variety-custom");
+  const plantSelectorCustomInput = document.getElementById("gen-plant-selector-custom");
   const latinNameInput = document.getElementById("gen-latin-name");
   const nfcTypInput = document.getElementById("gen-nfcTyp");
   const egyebInput = document.getElementById("gen-egyeb");
@@ -2060,7 +2070,7 @@ async function populate() {
     //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
-    selector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
+    selector.innerHTML = `<option value="">${msg('opt_plant')}</option><option value="__custom__">-- Add custom --</option>`;
     const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
@@ -2093,10 +2103,37 @@ async function populate() {
       selectedPlantIndex = null;
       selectedVarietyData = null;
       customVarietyMode = false;
+      customPlantMode = false;
       nameVarietyCustomInput.style.display = "none";
+      plantSelectorCustomInput.style.display = "none";
+      plantSelectorCustomInput.value = "";
       return;
     }
-    
+
+    if (nameValue === "__custom__") {
+      // Allow custom plant name input
+      customPlantMode = true;
+      selectedPlantIndex = null;
+      selectedVarietyData = null;
+      plantNameInput = "";
+      plantSelectorCustomInput.style.display = "block";
+      plantSelectorCustomInput.value = "";
+      plantSelectorCustomInput.focus();
+      // Reset variety dropdown (reuse existing helper)
+      populateVarieties("");
+      plantIdInput.value = "";
+      latinNameInput.value = "";
+      datumInput.value = dateString;
+      nfcTypInput.value = "n";
+      egyebInput.value = "";
+      updatePreviews();
+      return;
+    }
+
+    customPlantMode = false;
+    plantSelectorCustomInput.style.display = "none";
+    plantSelectorCustomInput.value = "";
+
     // Find the Species plant for this name, or fall back to the first match
     const speciesPlant = plants.find(p => p[nameProp] === nameValue && (p.Name_Variety || "").trim() === "Species");
     const plant = speciesPlant || plants.find(p => p[nameProp] === nameValue);
@@ -2213,6 +2250,16 @@ async function populate() {
   // Custom variety input change event
   nameVarietyCustomInput.addEventListener("change", updatePreviews);
   nameVarietyCustomInput.addEventListener("input", updatePreviews);
+
+  // Custom plant name input change event
+  plantSelectorCustomInput.addEventListener("change", () => {
+    plantNameInput = plantSelectorCustomInput.value;
+    updatePreviews();
+  });
+  plantSelectorCustomInput.addEventListener("input", () => {
+    plantNameInput = plantSelectorCustomInput.value;
+    updatePreviews();
+  });
 
   // Input change events - update previews
   [plantIdInput, latinNameInput, datumInput, nfcTypInput, egyebInput].forEach(input => {
@@ -2413,7 +2460,7 @@ function calculateSize(text) {
     updatePreviews();
     const nfcData = nfcPreview.textContent;
     
-    if (selectedPlantIndex == null) {
+    if (selectedPlantIndex == null && !(customPlantMode && plantNameInput.trim())) {
       showError(errorMsg, msg('err_no_plant'));
       return;
     }
@@ -2426,7 +2473,7 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link = linkPreview.textContent;
     const combined = nfcData + " " + link;
-    if (selectedPlantIndex == null) {
+    if (selectedPlantIndex == null && !(customPlantMode && plantNameInput.trim())) {
       showError(errorMsg, msg('err_no_plant'));
       return;
     }
@@ -2512,7 +2559,7 @@ function calculateSize(text) {
     const egyeb      = egyebInput.value;
     const serialNum  = serialNumText.value; 
     
-    if (selectedPlantIndex == null) {
+    if (selectedPlantIndex == null && !(customPlantMode && plantNameInput.trim())) {
       showError(errorMsg, msg('err_no_save'));
       return;
     }
@@ -2556,7 +2603,7 @@ function calculateSize(text) {
     const nfcData = nfcPreview.textContent;
     const link    = linkPreview.textContent;
 
-    if (selectedPlantIndex == null) {
+    if (selectedPlantIndex == null && !(customPlantMode && plantNameInput.trim())) {
       showError(errorMsg, msg('err_no_save'));
       return;
     }
@@ -2595,6 +2642,9 @@ function calculateSize(text) {
     plantIdInput.value = "";
     nfcIdInput.value = "";
     plantNameInput = "";
+    customPlantMode = false;
+    plantSelectorCustomInput.value = "";
+    plantSelectorCustomInput.style.display = "none";
     nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option>`;
     nameVarietyCustomInput.value = "";
     nameVarietyCustomInput.style.display = "none";
