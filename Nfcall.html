@@ -1156,6 +1156,7 @@ const TRANSLATIONS = {
     "nfcgen.main_card_sub":     "Choose a plant and variety.",
     "nfcgen.lbl_plant":         "Plant Name",
     "nfcgen.opt_loading":       "Loading plants\u2026",
+    "nfcgen.opt_plant":         "Select a plant\u2026",
     "nfcgen.lbl_variety":       "Variety",
     "nfcgen.opt_variety":       "Select a variety\u2026",
     "nfcgen.ph_search_plant":   "Search plants\u2026",
@@ -1544,6 +1545,7 @@ const TRANSLATIONS = {
     "nfcgen.main_card_sub":     "V\u00e1lassz n\u00f6v\u00e9nyt \u00e9s fajt\u00e1t.",
     "nfcgen.lbl_plant":         "N\u00f6v\u00e9ny neve",
     "nfcgen.opt_loading":       "N\u00f6v\u00e9nyek bet\u00f6lt\u00e9se\u2026",
+    "nfcgen.opt_plant":         "V\u00e1lassz n\u00f6v\u00e9nyt\u2026",
     "nfcgen.lbl_variety":       "Fajta",
     "nfcgen.opt_variety":       "V\u00e1lassz fajt\u00e1t\u2026",
     "nfcgen.ph_search_plant":   "Keres\u00e9s n\u00f6v\u00e9nyek k\u00f6z\u00f6tt\u2026",
@@ -2068,7 +2070,7 @@ async function populate() {
     //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
-    selector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
+    selector.innerHTML = `<option value="">${msg('opt_plant')}</option><option value="__custom__">-- Add custom --</option>`;
     const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
     );
@@ -2117,12 +2119,8 @@ async function populate() {
       plantSelectorCustomInput.style.display = "block";
       plantSelectorCustomInput.value = "";
       plantSelectorCustomInput.focus();
-      // Clear variety dropdown – only custom variety makes sense here
-      nameVarietySelector.innerHTML = `<option value="">${msg('opt_variety')}</option><option value="__custom__">-- Add custom --</option>`;
-      customVarietyMode = false;
-      nameVarietyCustomInput.style.display = "none";
-      nameVarietyCustomInput.value = "";
-      varietySearch.refresh();
+      // Reset variety dropdown (reuse existing helper)
+      populateVarieties("");
       plantIdInput.value = "";
       latinNameInput.value = "";
       datumInput.value = dateString;
