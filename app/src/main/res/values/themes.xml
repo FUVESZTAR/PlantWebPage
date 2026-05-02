@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Base application theme -->
-    <style name="Theme.PlantNFC" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-
-
-</resources>
