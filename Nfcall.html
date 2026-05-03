@@ -2113,7 +2113,7 @@ async function populate() {
   datumInput.value = dateString;
 
   // Plant selector change event
-  selector.addEventListener("change", () => {
+  selector.addEventListener("change", async () => {
     const nameValue = selector.value;
     console.log("Plant selected, value:", nameValue);
     
@@ -2225,7 +2225,7 @@ async function populate() {
   }
 
   // Variety selector change event
-  nameVarietySelector.addEventListener("change", () => {
+  nameVarietySelector.addEventListener("change", async () => {
     const value = nameVarietySelector.value;
     console.log("Variety selected, value:", value);
     
