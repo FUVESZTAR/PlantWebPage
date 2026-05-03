@@ -660,7 +660,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
           <span style="font-size:1.1rem">🥄</span>
           <div>
             <div class="panel-title" data-i18n="feed_title">Feeding Calculator</div>
-            <div class="panel-subtitle" data-i18n="feed_sub">How much flour &amp; water to add</div>
+            <div class="panel-subtitle" data-i18n="feed_sub">How much water &amp; flour to add</div>
           </div>
         </div>
         <div class="panel-chevron"><svg viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg></div>
@@ -674,18 +674,18 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
           </div>
         </div>
         <div class="input-group pro-only">
-          <div class="input-label"><span data-i18n="feed_ratio_lbl">Ratio (starter : flour : water)</span></div>
+          <div class="input-label"><span data-i18n="feed_ratio_lbl">Ratio (starter : water : flour)</span></div>
           <div style="display:flex;gap:8px;align-items:center">
             <span style="font-size:.8rem;color:var(--warm-gray)">1 :</span>
-            <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
-            <span style="font-size:.8rem;color:var(--warm-gray)">:</span>
             <input type="number" id="ratioWater" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
+            <span style="font-size:.8rem;color:var(--warm-gray)">:</span>
+            <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
           </div>
         </div>
-        <div class="beginner-only" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio (equal parts starter, flour, water)</div>
+        <div class="beginner-only" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio (equal parts starter, water, flour)</div>
         <div class="starter-result">
-          <div class="sr-row"><span data-i18n="f_to_add">Flour to add</span><span id="sFlour">50g</span></div>
           <div class="sr-row"><span data-i18n="w_to_add">Water to add</span><span id="sWater">50g</span></div>
+          <div class="sr-row"><span data-i18n="f_to_add">Flour to add</span><span id="sFlour">50g</span></div>
           <div class="sr-row"><span data-i18n="total_after">Total after feeding</span><span id="sTotal">150g</span></div>
         </div>
       </div></div></div>
@@ -855,11 +855,11 @@ const T = {
     seed_effect_lbl:'Effect on Recipe',extra_seeds_lbl:'Seed weight added',
     extra_water_lbl:'Extra water needed',eff_hyd_lbl:'Effective hydration',new_total_lbl:'New total weight',
     saved_title:'💾 Saved Recipes',
-    tl_title:'⏱️ Baking Timeline',tl_sub:'Click a stage to expand tips and temperature guidance',
+    tl_title:'Baking Timeline',tl_sub:'Click a stage to expand tips and temperature guidance',
     sm_title:'🌱 Starter Maintenance',sm_sub:'Keep your starter happy and active',
     feed_title:'Feeding Calculator',feed_sub:'Compute how much flour and water to add',
-    cur_starter_lbl:'Current Starter (g)',feed_ratio_lbl:'Ratio (starter : flour : water)',
-    ratio_note:'Using standard 1:1:1 ratio (equal parts starter, flour, water)',
+    cur_starter_lbl:'Current Starter (g)',feed_ratio_lbl:'Ratio (starter : water : flour)',
+    ratio_note:'Using standard 1:1:1 ratio (equal parts starter, water, flour)',
     f_to_add:'Flour to add',w_to_add:'Water to add',total_after:'Total after feeding',
     ready_title:'Is My Starter Ready?',ready_sub:'Gauge health and readiness',
     hrs_fed_lbl:'Hours since last feed',rise_lbl:'Rise since feeding (%)',readiness_lbl:'Readiness indicator',
@@ -957,11 +957,11 @@ const huO = {
   seed_effect_lbl:'Hatás a receptre',extra_seeds_lbl:'Hozzáadott magvak súlya',
   extra_water_lbl:'Szükséges extra víz',eff_hyd_lbl:'Effektív hidratáció',new_total_lbl:'Új teljes súly',
   saved_title:'💾 Mentett receptek',
-  tl_title:'⏱️ Sütési időrend',tl_sub:'Kattints egy szakaszra a tippek megtekintéséhez',
+  tl_title:'Sütési időrend',tl_sub:'Kattints egy szakaszra a tippek megtekintéséhez',
   sm_title:'🌱 Kovász gondozása',sm_sub:'Tartsd egészségesen és aktívan a kovászodat',
   feed_title:'Etetési kalkulátor',feed_sub:'Számítsd ki, mennyit kell etetned',
-  cur_starter_lbl:'Jelenlegi kovász (g)',feed_ratio_lbl:'Arány (kovász : liszt : víz)',
-  ratio_note:'Szabványos 1:1:1 arány (egyenlő rész kovász, liszt, víz)',
+  cur_starter_lbl:'Jelenlegi kovász (g)',feed_ratio_lbl:'Arány (kovász : víz : liszt)',
+  ratio_note:'Szabványos 1:1:1 arány (egyenlő rész kovász, víz, liszt)',
   f_to_add:'Hozzáadandó liszt',w_to_add:'Hozzáadandó víz',total_after:'Összesen etetés után',
   ready_title:'Kész a kovászom?',ready_sub:'Mérd fel a kovász egészségét',
   hrs_fed_lbl:'Etetés óta eltelt órák',rise_lbl:'Kelés az etetés óta (%)',readiness_lbl:'Készenlét jelző',
