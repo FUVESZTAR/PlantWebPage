@@ -1680,7 +1680,7 @@ function openSettings(){
   // Populate sourdough stage duration inputs
   const stageSection = document.getElementById('set_stageSection');
   if(stageSection){
-    const stages = T.en.tl.sourdough;
+    const stages = (T[lang].tl||T.en.tl).sourdough;
     const saved = appSettings.sourdoughStageMins || [];
     stageSection.innerHTML = stages.map((s,i)=>{
       const val = (saved[i] != null) ? saved[i] : parseDurationMins(s.duration);
@@ -1719,7 +1719,7 @@ function applySettings(){
   appSettings.defTemp         = parseFloat(document.getElementById('set_defTemp').value)||22;
   appSettings.defMode         = document.getElementById('set_defMode').value;
   // Save sourdough stage durations
-  const stages = T.en.tl.sourdough;
+  const stages = (T[lang].tl||T.en.tl).sourdough;
   appSettings.sourdoughStageMins = stages.map((s,i)=>{
     const el = document.getElementById('set_sd_'+i);
     return el ? (parseInt(el.value)||parseDurationMins(s.duration)) : parseDurationMins(s.duration);
