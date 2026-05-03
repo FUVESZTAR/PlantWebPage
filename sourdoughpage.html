@@ -820,6 +820,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
           <div class="sr-row"><span data-i18n="w_to_add">Water to add</span><span id="sWater">50g</span></div>
           <div class="sr-row"><span data-i18n="f_to_add">Flour to add</span><span id="sFlour">50g</span></div>
           <div class="sr-row"><span data-i18n="total_after">Total after feeding</span><span id="sTotal">150g</span></div>
+          <div class="sr-row"><span data-i18n="starter_hydration_lbl">Starter mix hydration</span><span id="sHydration">100%</span></div>
         </div>
       </div></div></div>
     </div><!-- /panelFeeding -->
@@ -939,6 +940,11 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
             <div class="settings-row-sub" data-i18n="set_start_time_sub">Shows clock times for each stage in the timeline</div>
           </div>
           <input type="time" class="settings-input" id="set_bakingStart" value="">
+        </div>
+        <div style="margin-top:14px">
+          <div class="settings-section-title" data-i18n="set_stage_section">⏱️ Timeline Stage Durations (Sourdough)</div>
+          <div class="settings-row-sub" style="margin-bottom:10px" data-i18n="set_stage_sub">Minutes per stage — used for clock-time calculation when a start time is set</div>
+          <div id="set_stageSection"></div>
         </div>
       </div>
 
@@ -1129,6 +1135,10 @@ const T = {
     set_def_fat:'Default fat (%)',
     set_def_sugar:'Default sugar (%)',
     set_def_temp:'Default kitchen temp (°C)',
+    set_stage_section:'⏱️ Timeline Stage Durations (Sourdough)',
+    set_stage_sub:'Minutes per stage — used for clock-time calculation when a start time is set',
+    min_lbl:'min',
+    starter_hydration_lbl:'Starter mix hydration',
     tl:{
       sourdough:[
         {icon:'🥣',label:'Mix',duration:'15 min',temp:'Room temp',tip:'Combine flour, water, starter and salt. Mix until no dry flour remains.'},
@@ -1254,6 +1264,10 @@ const huO = {
   set_def_fat:'Alapértelmezett zsír (%)',
   set_def_sugar:'Alapértelmezett cukor (%)',
   set_def_temp:'Alapértelmezett konyha hőmérséklet (°C)',
+  set_stage_section:'⏱️ Sütési szakasz időtartamok (Kovász)',
+  set_stage_sub:'Percek szakaszonként — az időpont-kalkulációhoz használt értékek',
+  min_lbl:'perc',
+  starter_hydration_lbl:'Kovász keverék hidratációja',
 };
 Object.assign(T.hu, T.en, huO);
 // Keep EN timelines for HU (same process)
@@ -1663,6 +1677,26 @@ function openSettings(){
   document.getElementById('set_defSugar').value     = appSettings.defSugar;
   document.getElementById('set_defTemp').value      = appSettings.defTemp;
   document.getElementById('set_defMode').value      = appSettings.defMode;
+  // Populate sourdough stage duration inputs
+  const stageSection = document.getElementById('set_stageSection');
+  if(stageSection){
+    const stages = T.en.tl.sourdough;
+    const saved = appSettings.sourdoughStageMins || [];
+    stageSection.innerHTML = stages.map((s,i)=>{
+      const val = (saved[i] != null) ? saved[i] : parseDurationMins(s.duration);
+      return `<div class="settings-row">
+        <div>
+          <div class="settings-row-label">${s.icon} ${s.label}</div>
+          <div class="settings-row-sub">${s.duration}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <input type="number" class="settings-input settings-input-sm" id="set_sd_${i}" value="${val}" min="1" max="2880" step="1">
+          <span style="font-size:.78rem;color:var(--warm-gray)" data-i18n="min_lbl">min</span>
+        </div>
+      </div>`;
+    }).join('');
+    applyTranslations();
+  }
   document.getElementById('settingsOverlay').classList.add('open');
 }
 function closeSettings(){
@@ -1684,6 +1718,12 @@ function applySettings(){
   appSettings.defSugar        = parseFloat(document.getElementById('set_defSugar').value)||0;
   appSettings.defTemp         = parseFloat(document.getElementById('set_defTemp').value)||22;
   appSettings.defMode         = document.getElementById('set_defMode').value;
+  // Save sourdough stage durations
+  const stages = T.en.tl.sourdough;
+  appSettings.sourdoughStageMins = stages.map((s,i)=>{
+    const el = document.getElementById('set_sd_'+i);
+    return el ? (parseInt(el.value)||parseDurationMins(s.duration)) : parseDurationMins(s.duration);
+  });
   try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); }catch(e){}
   // Sync pro-mode feeding ratio inputs
   const rfEl=document.getElementById('ratioFlour'), rwEl=document.getElementById('ratioWater');
@@ -1723,7 +1763,10 @@ function buildTimeline(){
   const startTime = appSettings.bakingStartTime; // 'HH:MM' or ''
   let cumMins = 0;
   stages.forEach((s,i)=>{
-    const stageMins = parseDurationMins(s.duration);
+    const savedMins = (currentBread==='sourdough' && appSettings.sourdoughStageMins && appSettings.sourdoughStageMins[i]!=null)
+      ? appSettings.sourdoughStageMins[i]
+      : null;
+    const stageMins = savedMins!=null ? savedMins : parseDurationMins(s.duration);
     const clockStr  = startTime ? addMins(startTime, cumMins) : null;
     cumMins += stageMins;
     const d=document.createElement('div');
@@ -1776,6 +1819,8 @@ function calcStarter(){
   document.getElementById('sFlour').textContent=flour+'g';
   document.getElementById('sWater').textContent=water+'g';
   document.getElementById('sTotal').textContent=(cur+flour+water)+'g';
+  const hydEl=document.getElementById('sHydration');
+  if(hydEl) hydEl.textContent=flour>0?Math.round(water/flour*100)+'%':'—';
   // Update beginner ratio note to reflect current ratio
   const noteEl=document.getElementById('beginnerRatioNote');
   if(noteEl){
