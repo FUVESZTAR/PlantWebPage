@@ -341,6 +341,73 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .55s ease both}
+
+/* SETTINGS BUTTON */
+.settings-btn{width:34px;height:34px;border-radius:50%;background:var(--cream-dark);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;transition:all var(--tr);padding:0}
+.settings-btn:hover{border-color:var(--brown-light);transform:rotate(30deg)}
+
+/* SETTINGS MODAL */
+.settings-overlay{position:fixed;inset:0;z-index:500;background:rgba(46,36,25,.45);
+  display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
+  transition:opacity .25s}
+.settings-overlay.open{opacity:1;pointer-events:all}
+.settings-modal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  width:min(530px,95vw);max-height:88vh;overflow-y:auto;
+  transform:translateY(18px) scale(.97);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.settings-overlay.open .settings-modal{transform:none}
+.settings-modal-head{display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;
+  background:var(--card);z-index:2}
+.settings-modal-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;
+  color:var(--brown);display:flex;align-items:center;gap:8px}
+.settings-close{width:28px;height:28px;border-radius:50%;background:var(--cream-dark);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;color:var(--warm-gray);transition:all var(--tr)}
+.settings-close:hover{background:var(--brown);color:#fff}
+.settings-body{padding:20px 24px}
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-size:.72rem;font-weight:700;color:var(--brown-mid);
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;
+  padding-bottom:6px;border-bottom:1px solid var(--border)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:11px}
+.settings-row-label{font-size:.82rem;color:var(--charcoal);font-weight:500;flex:1}
+.settings-row-sub{font-size:.71rem;color:var(--warm-gray);margin-top:1px;font-weight:300}
+.settings-input{padding:6px 9px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:var(--cream);font-family:'DM Sans',sans-serif;font-size:.83rem;
+  color:var(--charcoal);outline:none;transition:border-color var(--tr);max-width:140px}
+.settings-input:focus{border-color:var(--brown-light)}
+.settings-input-sm{max-width:72px;text-align:center}
+.settings-footer{padding:16px 24px;border-top:1px solid var(--border);
+  display:flex;gap:9px;justify-content:flex-end;position:sticky;bottom:0;
+  background:var(--card)}
+.btn-settings-save{background:var(--brown);color:#fff;border:none;padding:8px 22px;
+  border-radius:18px;font-size:.82rem;font-weight:500;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:background var(--tr)}
+.btn-settings-save:hover{background:var(--charcoal)}
+.btn-settings-cancel{background:none;border:1px solid var(--border);color:var(--warm-gray);
+  padding:8px 16px;border-radius:18px;font-size:.82rem;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all var(--tr)}
+.btn-settings-cancel:hover{background:var(--cream-dark);color:var(--brown)}
+/* Timeline clock time badge */
+.tl-clock{font-size:.65rem;color:var(--gold);font-weight:600;margin-top:2px}
+
+/* FEED MODE BUTTONS */
+.feed-modes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.feed-mode-btn{display:flex;align-items:center;gap:4px;padding:5px 11px;
+  border-radius:16px;border:1.5px solid var(--border);background:var(--card);
+  font-size:.74rem;font-weight:500;color:var(--warm-gray);cursor:pointer;
+  transition:all var(--tr);font-family:'DM Sans',sans-serif}
+.feed-mode-btn:hover{border-color:var(--brown-light);color:var(--brown);background:var(--cream-mid)}
+.feed-mode-btn.active{border-color:var(--brown);background:var(--brown);color:#fff}
+.feed-mode-ratio{font-size:.65rem;opacity:.75;margin-left:3px}
+
+/* BAKE TEMP BADGE */
+.bake-temp-badge{display:inline-flex;align-items:center;gap:4px;
+  background:rgba(184,92,56,.13);color:var(--rust);font-size:.72rem;font-weight:600;
+  padding:3px 10px;border-radius:10px;margin-top:6px}
 </style>
 </head>
 <body id="app">
@@ -364,6 +431,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('hu')">HU</button>
     </div>
+    <button class="settings-btn" onclick="openSettings()" title="Settings / Beállítások">⚙️</button>
   </div>
 </nav>
 
@@ -682,7 +750,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
             <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
           </div>
         </div>
-        <div class="beginner-only" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio (equal parts starter, water, flour)</div>
+        <div class="beginner-only" id="beginnerRatioNote" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio (equal parts starter, water, flour)</div>
         <div class="starter-result">
           <div class="sr-row"><span data-i18n="w_to_add">Water to add</span><span id="sWater">50g</span></div>
           <div class="sr-row"><span data-i18n="f_to_add">Flour to add</span><span id="sFlour">50g</span></div>
@@ -788,6 +856,102 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
   <div class="fr" data-i18n="footer_txt">Made with love for bakers everywhere 🍞</div>
 </footer>
 
+<!-- SETTINGS MODAL -->
+<div class="settings-overlay" id="settingsOverlay" onclick="overlayClose(event)">
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-modal-head">
+      <div class="settings-modal-title">⚙️ <span data-i18n="settings_title">Settings</span></div>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body">
+
+      <!-- 1. Baking Schedule -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="set_tl_section">🕐 Baking Schedule</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label" data-i18n="set_start_time">Baking start time</div>
+            <div class="settings-row-sub" data-i18n="set_start_time_sub">Shows clock times for each stage in the timeline</div>
+          </div>
+          <input type="time" class="settings-input" id="set_bakingStart" value="">
+        </div>
+      </div>
+
+      <!-- 2. Starter Feeding Defaults -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="set_feed_section">🥄 Starter Feeding Defaults</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label" data-i18n="set_feed_ratio">Default ratio (starter : flour : water)</div>
+            <div class="settings-row-sub" data-i18n="set_feed_ratio_sub">Multipliers relative to current starter weight</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--warm-gray)">
+            <span>1 :</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_ratioFlour" value="1" min="0.5" max="5" step="0.5">
+            <span>:</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_ratioWater" value="1" min="0.5" max="5" step="0.5">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Calculator Defaults -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="set_calc_section">⚙️ Calculator Defaults</div>
+        <div class="settings-row-sub" style="margin-bottom:12px" data-i18n="set_calc_defaults_sub">Applied on page load and when Reset is pressed</div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_flour">Default flour (g per loaf)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defFlour" value="500" min="100" max="2000" step="50">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_loaves">Default loaves count</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defLoaves" value="1" min="1" max="10" step="1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_hydration">Default hydration (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defHydration" value="70" min="40" max="105" step="1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_starter">Default starter (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defStarter" value="20" min="5" max="50" step="1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_salt">Default salt (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defSalt" value="2" min="1" max="4" step="0.1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_fat">Default fat (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defFat" value="0" min="0" max="15" step="0.5">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_sugar">Default sugar (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defSugar" value="0" min="0" max="20" step="0.5">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_temp">Default kitchen temp (°C)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defTemp" value="22" min="16" max="32" step="1">
+        </div>
+      </div>
+
+      <!-- 4. Display -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="set_display_section">🖥️ Display</div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_mode">Default mode on startup</div></div>
+          <select class="settings-input" id="set_defMode">
+            <option value="beginner" data-i18n="mode_beginner">Beginner</option>
+            <option value="pro" data-i18n="mode_pro">Pro</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+    <div class="settings-footer">
+      <button class="btn-settings-cancel" onclick="closeSettings()" data-i18n="cancel_btn">Cancel</button>
+      <button class="btn-settings-save" onclick="applySettings()" data-i18n="save_settings_btn">Save Settings</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════
 //  STATIC DATA
@@ -877,6 +1041,29 @@ const T = {
     r_almost:'Almost there — check for dome and bubbles',
     r_yes:'Ready to use! 🎉 Dome, bubbles, passes float test',
     r_past:'Possibly over-fermented — feed again soon',
+    settings_title:'Settings',
+    set_tl_section:'🕐 Baking Schedule',
+    set_start_time:'Baking start time',
+    set_start_time_sub:'Shows clock times for each stage in the timeline',
+    set_feed_section:'🥄 Starter Feeding Defaults',
+    set_feed_ratio:'Default ratio (starter : flour : water)',
+    set_feed_ratio_sub:'Multipliers relative to current starter weight',
+    set_calc_section:'⚙️ Calculator Defaults',
+    set_def_flour:'Default flour (g per loaf)',
+    set_def_loaves:'Default loaves count',
+    set_def_salt:'Default salt (%)',
+    set_display_section:'🖥️ Display',
+    set_def_mode:'Default mode on startup',
+    cancel_btn:'Cancel',
+    save_settings_btn:'Save Settings',
+    tl_starts_at:'Starts at',
+    ratio_note_custom:'Using ratio 1 : {rf} : {rw} (starter : flour : water)',
+    set_calc_defaults_sub:'Applied on page load and when Reset is pressed',
+    set_def_hydration:'Default hydration (%)',
+    set_def_starter:'Default starter (%)',
+    set_def_fat:'Default fat (%)',
+    set_def_sugar:'Default sugar (%)',
+    set_def_temp:'Default kitchen temp (°C)',
     tl:{
       sourdough:[
         {icon:'🥣',label:'Mix',duration:'15 min',temp:'Room temp',tip:'Combine flour, water, starter and salt. Mix until no dry flour remains.'},
@@ -979,6 +1166,29 @@ const huO = {
   r_almost:'Majdnem ott van — ellenőrizd a kupolát és buborékokat',
   r_yes:'Felhasználásra kész! 🎉',
   r_past:'Esetleg túlerjedt — hamarosan etess újra',
+  settings_title:'Beállítások',
+  set_tl_section:'🕐 Sütési időrend',
+  set_start_time:'Sütés kezdési ideje',
+  set_start_time_sub:'Megjeleníti a pontos időpontokat az időrend minden szakaszánál',
+  set_feed_section:'🥄 Kovász etetés alapértelmezések',
+  set_feed_ratio:'Alapértelmezett arány (kovász : liszt : víz)',
+  set_feed_ratio_sub:'Szorzók a jelenlegi kovász súlyához képest',
+  set_calc_section:'⚙️ Kalkulátor alapértelmezések',
+  set_def_flour:'Alapértelmezett liszt (g / cipó)',
+  set_def_loaves:'Alapértelmezett cipók száma',
+  set_def_salt:'Alapértelmezett só (%)',
+  set_display_section:'🖥️ Megjelenítés',
+  set_def_mode:'Alapértelmezett mód indításkor',
+  cancel_btn:'Mégse',
+  save_settings_btn:'Beállítások mentése',
+  tl_starts_at:'Kezdés',
+  ratio_note_custom:'Beállított arány: 1 : {rf} : {rw} (kovász : liszt : víz)',
+  set_calc_defaults_sub:'Oldalbetöltéskor és Reset gombra alkalmazott értékek',
+  set_def_hydration:'Alapértelmezett hidratáció (%)',
+  set_def_starter:'Alapértelmezett kovász (%)',
+  set_def_fat:'Alapértelmezett zsír (%)',
+  set_def_sugar:'Alapértelmezett cukor (%)',
+  set_def_temp:'Alapértelmezett konyha hőmérséklet (°C)',
 };
 Object.assign(T.hu, T.en, huO);
 // Keep EN timelines for HU (same process)
@@ -995,6 +1205,30 @@ let activeSeedIds = new Set();
 let activeTlIndex = -1;
 let savedRecipes = [];
 try { savedRecipes = JSON.parse(localStorage.getItem('szandi_v3') || '[]'); } catch(e){}
+
+// ═══════════════════════════════════════════════════
+//  SETTINGS STATE
+// ═══════════════════════════════════════════════════
+const SETTINGS_KEY = 'szandi_settings_v1';
+const DEFAULT_SETTINGS = {
+  bakingStartTime: '',   // 'HH:MM' or ''
+  feedRatioFlour: 1,     // default flour multiplier for feeding
+  feedRatioWater: 1,     // default water multiplier for feeding
+  defFlour: 500,         // default flour g per loaf
+  defLoaves: 1,          // default loaves count
+  defSalt: 2,            // default salt %
+  defHydration: 70,      // default hydration %
+  defStarter: 20,        // default starter %
+  defFat: 0,             // default fat %
+  defSugar: 0,           // default sugar %
+  defTemp: 22,           // default kitchen temp °C
+  defMode: 'beginner',   // 'beginner' | 'pro'
+};
+let appSettings = {...DEFAULT_SETTINGS};
+try {
+  const _s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
+  if (_s) appSettings = {...DEFAULT_SETTINGS, ..._s};
+} catch(e) {}
 
 // ═══════════════════════════════════════════════════
 //  HELPERS
@@ -1349,13 +1583,84 @@ function drawPie(slices, total){
 }
 
 // ═══════════════════════════════════════════════════
+//  SETTINGS FUNCTIONS
+// ═══════════════════════════════════════════════════
+function openSettings(){
+  document.getElementById('set_bakingStart').value  = appSettings.bakingStartTime || '';
+  document.getElementById('set_ratioFlour').value   = appSettings.feedRatioFlour;
+  document.getElementById('set_ratioWater').value   = appSettings.feedRatioWater;
+  document.getElementById('set_defFlour').value     = appSettings.defFlour;
+  document.getElementById('set_defLoaves').value    = appSettings.defLoaves;
+  document.getElementById('set_defHydration').value = appSettings.defHydration;
+  document.getElementById('set_defStarter').value   = appSettings.defStarter;
+  document.getElementById('set_defSalt').value      = appSettings.defSalt;
+  document.getElementById('set_defFat').value       = appSettings.defFat;
+  document.getElementById('set_defSugar').value     = appSettings.defSugar;
+  document.getElementById('set_defTemp').value      = appSettings.defTemp;
+  document.getElementById('set_defMode').value      = appSettings.defMode;
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+function overlayClose(e){
+  if(e.target===document.getElementById('settingsOverlay')) closeSettings();
+}
+function applySettings(){
+  appSettings.bakingStartTime = document.getElementById('set_bakingStart').value || '';
+  appSettings.feedRatioFlour  = parseFloat(document.getElementById('set_ratioFlour').value)||1;
+  appSettings.feedRatioWater  = parseFloat(document.getElementById('set_ratioWater').value)||1;
+  appSettings.defFlour        = parseFloat(document.getElementById('set_defFlour').value)||500;
+  appSettings.defLoaves       = parseInt(document.getElementById('set_defLoaves').value)||1;
+  appSettings.defHydration    = parseFloat(document.getElementById('set_defHydration').value)||70;
+  appSettings.defStarter      = parseFloat(document.getElementById('set_defStarter').value)||20;
+  appSettings.defSalt         = parseFloat(document.getElementById('set_defSalt').value)||2;
+  appSettings.defFat          = parseFloat(document.getElementById('set_defFat').value)||0;
+  appSettings.defSugar        = parseFloat(document.getElementById('set_defSugar').value)||0;
+  appSettings.defTemp         = parseFloat(document.getElementById('set_defTemp').value)||22;
+  appSettings.defMode         = document.getElementById('set_defMode').value;
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); }catch(e){}
+  // Sync pro-mode feeding ratio inputs
+  const rfEl=document.getElementById('ratioFlour'), rwEl=document.getElementById('ratioWater');
+  if(rfEl) rfEl.value=appSettings.feedRatioFlour;
+  if(rwEl) rwEl.value=appSettings.feedRatioWater;
+  closeSettings();
+  buildTimeline();
+  calcStarter();
+  applyTranslations();
+}
+
+// ═══════════════════════════════════════════════════
+//  DURATION & CLOCK HELPERS
+// ═══════════════════════════════════════════════════
+function parseDurationMins(durStr){
+  // e.g. "15 min", "4–8 hrs", "30–60 min", "2–3 min/side"
+  const s = durStr.replace(/[–—]/g,'-').toLowerCase();
+  const hm = s.match(/(\d+(?:\.\d+)?)(?:-(\d+(?:\.\d+)?))?\s*hr/);
+  const mm = s.match(/(\d+(?:\.\d+)?)(?:-(\d+(?:\.\d+)?))?\s*min/);
+  if(hm){ const lo=parseFloat(hm[1]),hi=hm[2]?parseFloat(hm[2]):lo; return Math.round((lo+hi)/2*60); }
+  if(mm){ const lo=parseFloat(mm[1]),hi=mm[2]?parseFloat(mm[2]):lo; return Math.round((lo+hi)/2); }
+  return 0;
+}
+function addMins(timeStr, mins){
+  const [h,m]=timeStr.split(':').map(Number);
+  const t=((h*60+m+mins)%1440+1440)%1440; // wrap at 24h, handles negative
+  return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+}
+
+// ═══════════════════════════════════════════════════
 //  TIMELINE
 // ═══════════════════════════════════════════════════
 function buildTimeline(){
   const stages = (T[lang].tl||T.en.tl)[currentBread] || T.en.tl.sourdough;
   const track=document.getElementById('tlTrack');
   track.innerHTML='';
+  const startTime = appSettings.bakingStartTime; // 'HH:MM' or ''
+  let cumMins = 0;
   stages.forEach((s,i)=>{
+    const stageMins = parseDurationMins(s.duration);
+    const clockStr  = startTime ? addMins(startTime, cumMins) : null;
+    cumMins += stageMins;
     const d=document.createElement('div');
     d.className='tl-item'+(i===activeTlIndex?' active':'');
     d.innerHTML=`
@@ -1363,6 +1668,7 @@ function buildTimeline(){
       <div class="tl-body-wrap">
         <div class="tl-label">${s.label}</div>
         <div class="tl-duration">${s.duration}</div>
+        ${clockStr?`<div class="tl-clock">🕐 ${t('tl_starts_at')}: ${clockStr}</div>`:''}
         <div class="tl-detail">
           <div class="tl-detail-inner">
             <div class="td-tip">${s.tip}</div>
@@ -1395,16 +1701,25 @@ function updateTempNote(){
 // ═══════════════════════════════════════════════════
 function calcStarter(){
   const cur=parseFloat(document.getElementById('sCurrentIn').value)||50;
-  let rf=1,rw=1;
+  let rf=appSettings.feedRatioFlour, rw=appSettings.feedRatioWater;
   if(proMode){
-    rf=parseFloat(document.getElementById('ratioFlour')?.value)||1;
-    rw=parseFloat(document.getElementById('ratioWater')?.value)||1;
+    rf=parseFloat(document.getElementById('ratioFlour')?.value)||appSettings.feedRatioFlour;
+    rw=parseFloat(document.getElementById('ratioWater')?.value)||appSettings.feedRatioWater;
   }
   const flour=Math.round(cur*rf);
   const water=Math.round(cur*rw);
   document.getElementById('sFlour').textContent=flour+'g';
   document.getElementById('sWater').textContent=water+'g';
   document.getElementById('sTotal').textContent=(cur+flour+water)+'g';
+  // Update beginner ratio note to reflect current ratio
+  const noteEl=document.getElementById('beginnerRatioNote');
+  if(noteEl){
+    if(rf===1&&rw===1){
+      noteEl.innerHTML=t('ratio_note');
+    } else {
+      noteEl.innerHTML=t('ratio_note_custom').replace('{rf}',rf).replace('{rw}',rw);
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1439,12 +1754,16 @@ function updateReady(){
 // ═══════════════════════════════════════════════════
 function resetDefaults(){
   const b=BREAD_TYPES.find(x=>x.id===currentBread);
-  setVal('flour',500); setVal('hydration',b.hydration);
-  setVal('starter',b.useSourdough?(b.starter||20):0);
-  setVal('yeast',b.useSourdough?0:0.7);
-  setVal('salt',b.salt||2); setVal('fat',b.fat||0);
-  setVal('sugar',b.sugar||0); setVal('temp',22);
-  loaves=1; document.getElementById('loavesCount').textContent=1;
+  setVal('flour',     appSettings.defFlour);
+  setVal('hydration', appSettings.defHydration);
+  setVal('starter',   b.useSourdough ? appSettings.defStarter : 0);
+  setVal('yeast',     b.useSourdough ? 0 : 0.7);
+  setVal('salt',      appSettings.defSalt);
+  setVal('fat',       appSettings.defFat);
+  setVal('sugar',     appSettings.defSugar);
+  setVal('temp',      appSettings.defTemp);
+  loaves=appSettings.defLoaves;
+  document.getElementById('loavesCount').textContent=loaves;
   activeSeedIds.clear();
   buildSeeds();
   calc();
@@ -1526,6 +1845,26 @@ function togglePanel(id){
 // ═══════════════════════════════════════════════════
 document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===lang));
 applyTranslations();
+// Apply settings: default mode
+if(appSettings.defMode==='pro'){
+  proMode=true;
+  document.getElementById('modeToggle').classList.add('on');
+  document.body.classList.add('pro-mode');
+}
+// Apply settings: default flour, loaves, salt + all new slider defaults
+setVal('flour',     appSettings.defFlour);
+setVal('hydration', appSettings.defHydration);
+setVal('starter',   appSettings.defStarter);
+setVal('salt',      appSettings.defSalt);
+setVal('fat',       appSettings.defFat);
+setVal('sugar',     appSettings.defSugar);
+setVal('temp',      appSettings.defTemp);
+loaves=appSettings.defLoaves;
+document.getElementById('loavesCount').textContent=loaves;
+// Pre-fill feeding ratio inputs from settings
+const _rfEl=document.getElementById('ratioFlour'), _rwEl=document.getElementById('ratioWater');
+if(_rfEl) _rfEl.value=appSettings.feedRatioFlour;
+if(_rwEl) _rwEl.value=appSettings.feedRatioWater;
 buildBreadTabs();
 buildSeeds();
 buildTimeline();
