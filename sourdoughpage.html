@@ -1021,6 +1021,7 @@ const T = {
     cancel_btn:'Cancel',
     save_settings_btn:'Save Settings',
     tl_starts_at:'Starts at',
+    ratio_note_custom:'Using ratio 1 : {rf} : {rw} (starter : flour : water)',
     tl:{
       sourdough:[
         {icon:'🥣',label:'Mix',duration:'15 min',temp:'Room temp',tip:'Combine flour, water, starter and salt. Mix until no dry flour remains.'},
@@ -1139,6 +1140,7 @@ const huO = {
   cancel_btn:'Mégse',
   save_settings_btn:'Beállítások mentése',
   tl_starts_at:'Kezdés',
+  ratio_note_custom:'Beállított arány: 1 : {rf} : {rw} (kovász : liszt : víz)',
 };
 Object.assign(T.hu, T.en, huO);
 // Keep EN timelines for HU (same process)
@@ -1579,7 +1581,7 @@ function parseDurationMins(durStr){
 }
 function addMins(timeStr, mins){
   const [h,m]=timeStr.split(':').map(Number);
-  const t=(h*60+m+mins)%1440; // wrap at 24h
+  const t=((h*60+m+mins)%1440+1440)%1440; // wrap at 24h, handles negative
   return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
 }
 
@@ -1652,9 +1654,7 @@ function calcStarter(){
     if(rf===1&&rw===1){
       noteEl.innerHTML=t('ratio_note');
     } else {
-      noteEl.innerHTML=lang==='hu'
-        ?`Beállított arány: 1 : ${rf} : ${rw} (kovász : liszt : víz)`
-        :`Using ratio 1 : ${rf} : ${rw} (starter : flour : water)`;
+      noteEl.innerHTML=t('ratio_note_custom').replace('{rf}',rf).replace('{rw}',rw);
     }
   }
 }
