@@ -1882,6 +1882,23 @@ async function loadActiveNFCPlants() {
     });
 }
 
+/**
+ * Query the maximum value in the Plant_ID column (A) of PlantDataSheet.
+ * Used to assign a new unique ID when the user enters a custom plant or variety.
+ *
+ * @returns {Promise<number>} The current maximum Plant_ID, or 0 if the sheet is empty.
+ */
+async function loadMaxPlantId() {
+  const tq = `select max(A)`;
+  const gvizResponse = await fetchSheetResponseQR(tq);
+  const { rows } = gvizResponse.table;
+  const firstCell = rows?.[0]?.c?.[0];
+  if (firstCell !== null && firstCell !== undefined && firstCell.v !== null && firstCell.v !== undefined) {
+    return Number(firstCell.v);
+  }
+  return 0;
+}
+
 /**  For Plant List , PlantPage
  * Load Plant_ID, LatinName, Name_Variety, Name_HU, Name_EN
  * for all rows where Active_in_NFC = "Y".
@@ -1913,6 +1930,7 @@ let selectedVarietyData = null;
 let customVarietyMode = false;
 let customPlantMode = false;
 let plantId = 1;
+let nextPlantId = null;
 let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
@@ -2070,6 +2088,12 @@ async function populate() {
     //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
+    try {
+      nextPlantId = (await loadMaxPlantId()) + 1;
+      console.log("Next Plant ID for custom entries:", nextPlantId);
+    } catch (maxErr) {
+      console.warn("Could not load max Plant ID:", maxErr);
+    }
     selector.innerHTML = `<option value="">${msg('opt_plant')}</option><option value="__custom__">-- Add custom --</option>`;
     const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
@@ -2121,7 +2145,8 @@ async function populate() {
       plantSelectorCustomInput.focus();
       // Reset variety dropdown (reuse existing helper)
       populateVarieties("");
-      plantIdInput.value = "";
+      plantIdInput.removeAttribute("readonly");
+      plantIdInput.value = nextPlantId != null ? nextPlantId : "";
       latinNameInput.value = "";
       datumInput.value = dateString;
       nfcTypInput.value = "n";
@@ -2133,6 +2158,7 @@ async function populate() {
     customPlantMode = false;
     plantSelectorCustomInput.style.display = "none";
     plantSelectorCustomInput.value = "";
+    plantIdInput.setAttribute("readonly", "");
 
     // Find the Species plant for this name, or fall back to the first match
     const speciesPlant = plants.find(p => p[nameProp] === nameValue && (p.Name_Variety || "").trim() === "Species");
@@ -2218,6 +2244,8 @@ async function populate() {
       nameVarietyCustomInput.style.display = "block";
       nameVarietyCustomInput.value = "";
       nameVarietyCustomInput.focus();
+      plantIdInput.removeAttribute("readonly");
+      plantIdInput.value = nextPlantId != null ? nextPlantId : "";
       updatePreviews();
       return;
     }
@@ -2226,6 +2254,7 @@ async function populate() {
     customVarietyMode = false;
     nameVarietyCustomInput.style.display = "none";
     nameVarietyCustomInput.value = "";
+    plantIdInput.setAttribute("readonly", "");
     
     const varietyIndex = parseInt(value);
     const varietyPlant = plants[varietyIndex];
@@ -2640,6 +2669,7 @@ function calculateSize(text) {
 
   function clearForm() {
     plantIdInput.value = "";
+    plantIdInput.setAttribute("readonly", "");
     nfcIdInput.value = "";
     plantNameInput = "";
     customPlantMode = false;
