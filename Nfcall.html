@@ -1931,6 +1931,7 @@ let customVarietyMode = false;
 let customPlantMode = false;
 let plantId = 1;
 let nextPlantId = null;
+let customPlantID = false;
 let nfcIdValue =0;
 let gpsPacket =null;
 let updateNFCPreviewFn = null;
@@ -2088,12 +2089,6 @@ async function populate() {
     //plants = plants.filter(p => p.Active_in_page === 'Y' && p.Active_in_NFC === 'Y');
     plantData = plants;
     console.log("Plants loaded:", plants.length, "plants");
-    try {
-      nextPlantId = (await loadMaxPlantId()) + 1;
-      console.log("Next Plant ID for custom entries:", nextPlantId);
-    } catch (maxErr) {
-      console.warn("Could not load max Plant ID:", maxErr);
-    }
     selector.innerHTML = `<option value="">${msg('opt_plant')}</option><option value="__custom__">-- Add custom --</option>`;
     const uniqueNames = [...new Set(plants.map(p => p[nameProp]).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
@@ -2137,6 +2132,13 @@ async function populate() {
     if (nameValue === "__custom__") {
       // Allow custom plant name input
       customPlantMode = true;
+          try {
+      nextPlantId = (await loadMaxPlantId()) + 1;
+      console.log("Next Plant ID for custom entries:", nextPlantId);
+      customPlantID = true;     
+    } catch (maxErr) {
+      console.warn("Could not load max Plant ID:", maxErr);
+    }
       selectedPlantIndex = null;
       selectedVarietyData = null;
       plantNameInput = "";
@@ -2240,6 +2242,14 @@ async function populate() {
     if (value === "__custom__") {
       // Allow custom text input
       customVarietyMode = true;
+      if (customPlantID === false) {
+      try {
+      nextPlantId = (await loadMaxPlantId()) + 1;
+      console.log("Next Plant ID for custom entries:", nextPlantId);     
+       } catch (maxErr) {
+      console.warn("Could not load max Plant ID:", maxErr);
+       } 
+      }
       selectedVarietyData = null;
       nameVarietyCustomInput.style.display = "block";
       nameVarietyCustomInput.value = "";
