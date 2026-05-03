@@ -897,6 +897,7 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
       <!-- 3. Calculator Defaults -->
       <div class="settings-section">
         <div class="settings-section-title" data-i18n="set_calc_section">⚙️ Calculator Defaults</div>
+        <div class="settings-row-sub" style="margin-bottom:12px" data-i18n="set_calc_defaults_sub">Applied on page load and when Reset is pressed</div>
         <div class="settings-row">
           <div><div class="settings-row-label" data-i18n="set_def_flour">Default flour (g per loaf)</div></div>
           <input type="number" class="settings-input settings-input-sm" id="set_defFlour" value="500" min="100" max="2000" step="50">
@@ -906,8 +907,28 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
           <input type="number" class="settings-input settings-input-sm" id="set_defLoaves" value="1" min="1" max="10" step="1">
         </div>
         <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_hydration">Default hydration (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defHydration" value="70" min="40" max="105" step="1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_starter">Default starter (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defStarter" value="20" min="5" max="50" step="1">
+        </div>
+        <div class="settings-row">
           <div><div class="settings-row-label" data-i18n="set_def_salt">Default salt (%)</div></div>
           <input type="number" class="settings-input settings-input-sm" id="set_defSalt" value="2" min="1" max="4" step="0.1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_fat">Default fat (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defFat" value="0" min="0" max="15" step="0.5">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_sugar">Default sugar (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defSugar" value="0" min="0" max="20" step="0.5">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label" data-i18n="set_def_temp">Default kitchen temp (°C)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_defTemp" value="22" min="16" max="32" step="1">
         </div>
       </div>
 
@@ -1037,6 +1058,12 @@ const T = {
     save_settings_btn:'Save Settings',
     tl_starts_at:'Starts at',
     ratio_note_custom:'Using ratio 1 : {rf} : {rw} (starter : flour : water)',
+    set_calc_defaults_sub:'Applied on page load and when Reset is pressed',
+    set_def_hydration:'Default hydration (%)',
+    set_def_starter:'Default starter (%)',
+    set_def_fat:'Default fat (%)',
+    set_def_sugar:'Default sugar (%)',
+    set_def_temp:'Default kitchen temp (°C)',
     tl:{
       sourdough:[
         {icon:'🥣',label:'Mix',duration:'15 min',temp:'Room temp',tip:'Combine flour, water, starter and salt. Mix until no dry flour remains.'},
@@ -1156,6 +1183,12 @@ const huO = {
   save_settings_btn:'Beállítások mentése',
   tl_starts_at:'Kezdés',
   ratio_note_custom:'Beállított arány: 1 : {rf} : {rw} (kovász : liszt : víz)',
+  set_calc_defaults_sub:'Oldalbetöltéskor és Reset gombra alkalmazott értékek',
+  set_def_hydration:'Alapértelmezett hidratáció (%)',
+  set_def_starter:'Alapértelmezett kovász (%)',
+  set_def_fat:'Alapértelmezett zsír (%)',
+  set_def_sugar:'Alapértelmezett cukor (%)',
+  set_def_temp:'Alapértelmezett konyha hőmérséklet (°C)',
 };
 Object.assign(T.hu, T.en, huO);
 // Keep EN timelines for HU (same process)
@@ -1184,6 +1217,11 @@ const DEFAULT_SETTINGS = {
   defFlour: 500,         // default flour g per loaf
   defLoaves: 1,          // default loaves count
   defSalt: 2,            // default salt %
+  defHydration: 70,      // default hydration %
+  defStarter: 20,        // default starter %
+  defFat: 0,             // default fat %
+  defSugar: 0,           // default sugar %
+  defTemp: 22,           // default kitchen temp °C
   defMode: 'beginner',   // 'beginner' | 'pro'
 };
 let appSettings = {...DEFAULT_SETTINGS};
@@ -1553,7 +1591,12 @@ function openSettings(){
   document.getElementById('set_ratioWater').value   = appSettings.feedRatioWater;
   document.getElementById('set_defFlour').value     = appSettings.defFlour;
   document.getElementById('set_defLoaves').value    = appSettings.defLoaves;
+  document.getElementById('set_defHydration').value = appSettings.defHydration;
+  document.getElementById('set_defStarter').value   = appSettings.defStarter;
   document.getElementById('set_defSalt').value      = appSettings.defSalt;
+  document.getElementById('set_defFat').value       = appSettings.defFat;
+  document.getElementById('set_defSugar').value     = appSettings.defSugar;
+  document.getElementById('set_defTemp').value      = appSettings.defTemp;
   document.getElementById('set_defMode').value      = appSettings.defMode;
   document.getElementById('settingsOverlay').classList.add('open');
 }
@@ -1569,7 +1612,12 @@ function applySettings(){
   appSettings.feedRatioWater  = parseFloat(document.getElementById('set_ratioWater').value)||1;
   appSettings.defFlour        = parseFloat(document.getElementById('set_defFlour').value)||500;
   appSettings.defLoaves       = parseInt(document.getElementById('set_defLoaves').value)||1;
+  appSettings.defHydration    = parseFloat(document.getElementById('set_defHydration').value)||70;
+  appSettings.defStarter      = parseFloat(document.getElementById('set_defStarter').value)||20;
   appSettings.defSalt         = parseFloat(document.getElementById('set_defSalt').value)||2;
+  appSettings.defFat          = parseFloat(document.getElementById('set_defFat').value)||0;
+  appSettings.defSugar        = parseFloat(document.getElementById('set_defSugar').value)||0;
+  appSettings.defTemp         = parseFloat(document.getElementById('set_defTemp').value)||22;
   appSettings.defMode         = document.getElementById('set_defMode').value;
   try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); }catch(e){}
   // Sync pro-mode feeding ratio inputs
@@ -1706,13 +1754,14 @@ function updateReady(){
 // ═══════════════════════════════════════════════════
 function resetDefaults(){
   const b=BREAD_TYPES.find(x=>x.id===currentBread);
-  setVal('flour', appSettings.defFlour);
-  setVal('hydration',b.hydration);
-  setVal('starter',b.useSourdough?(b.starter||20):0);
-  setVal('yeast',b.useSourdough?0:0.7);
-  setVal('salt', appSettings.defSalt||b.salt||2);
-  setVal('fat',b.fat||0);
-  setVal('sugar',b.sugar||0); setVal('temp',22);
+  setVal('flour',     appSettings.defFlour);
+  setVal('hydration', appSettings.defHydration);
+  setVal('starter',   b.useSourdough ? appSettings.defStarter : 0);
+  setVal('yeast',     b.useSourdough ? 0 : 0.7);
+  setVal('salt',      appSettings.defSalt);
+  setVal('fat',       appSettings.defFat);
+  setVal('sugar',     appSettings.defSugar);
+  setVal('temp',      appSettings.defTemp);
   loaves=appSettings.defLoaves;
   document.getElementById('loavesCount').textContent=loaves;
   activeSeedIds.clear();
@@ -1802,9 +1851,14 @@ if(appSettings.defMode==='pro'){
   document.getElementById('modeToggle').classList.add('on');
   document.body.classList.add('pro-mode');
 }
-// Apply settings: default flour, loaves, salt
-setVal('flour', appSettings.defFlour);
-setVal('salt',  appSettings.defSalt);
+// Apply settings: default flour, loaves, salt + all new slider defaults
+setVal('flour',     appSettings.defFlour);
+setVal('hydration', appSettings.defHydration);
+setVal('starter',   appSettings.defStarter);
+setVal('salt',      appSettings.defSalt);
+setVal('fat',       appSettings.defFat);
+setVal('sugar',     appSettings.defSugar);
+setVal('temp',      appSettings.defTemp);
 loaves=appSettings.defLoaves;
 document.getElementById('loavesCount').textContent=loaves;
 // Pre-fill feeding ratio inputs from settings
