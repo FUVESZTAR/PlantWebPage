@@ -393,6 +393,21 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
 .btn-settings-cancel:hover{background:var(--cream-dark);color:var(--brown)}
 /* Timeline clock time badge */
 .tl-clock{font-size:.65rem;color:var(--gold);font-weight:600;margin-top:2px}
+
+/* FEED MODE BUTTONS */
+.feed-modes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.feed-mode-btn{display:flex;align-items:center;gap:4px;padding:5px 11px;
+  border-radius:16px;border:1.5px solid var(--border);background:var(--card);
+  font-size:.74rem;font-weight:500;color:var(--warm-gray);cursor:pointer;
+  transition:all var(--tr);font-family:'DM Sans',sans-serif}
+.feed-mode-btn:hover{border-color:var(--brown-light);color:var(--brown);background:var(--cream-mid)}
+.feed-mode-btn.active{border-color:var(--brown);background:var(--brown);color:#fff}
+.feed-mode-ratio{font-size:.65rem;opacity:.75;margin-left:3px}
+
+/* BAKE TEMP BADGE */
+.bake-temp-badge{display:inline-flex;align-items:center;gap:4px;
+  background:rgba(184,92,56,.13);color:var(--rust);font-size:.72rem;font-weight:600;
+  padding:3px 10px;border-radius:10px;margin-top:6px}
 </style>
 </head>
 <body id="app">
