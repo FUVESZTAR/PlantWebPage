@@ -456,6 +456,8 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
   padding:8px 16px;border-radius:18px;font-size:.82rem;font-weight:500;
   font-family:'DM Sans',sans-serif;cursor:pointer;transition:all var(--tr)}
 .btn-settings-cancel:hover{background:var(--cream-dark);color:var(--brown)}
+.settings-subsection-title{font-size:.75rem;font-weight:600;color:var(--brown-light);
+  margin:14px 0 8px;padding-bottom:4px;border-bottom:1px dashed var(--border)}
 /* Timeline clock time badge */
 .tl-clock{font-size:.65rem;color:var(--gold);font-weight:600;margin-top:2px}
 
@@ -1011,29 +1013,10 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
           <input type="number" class="settings-input settings-input-sm" id="set_defLoaves" value="1" min="1" max="10" step="1">
         </div>
         <div class="settings-row">
-          <div><div class="settings-row-label" data-i18n="set_def_hydration">Default hydration (%)</div></div>
-          <input type="number" class="settings-input settings-input-sm" id="set_defHydration" value="70" min="40" max="105" step="1">
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-row-label" data-i18n="set_def_starter">Default starter (%)</div></div>
-          <input type="number" class="settings-input settings-input-sm" id="set_defStarter" value="20" min="5" max="50" step="1">
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-row-label" data-i18n="set_def_salt">Default salt (%)</div></div>
-          <input type="number" class="settings-input settings-input-sm" id="set_defSalt" value="2" min="1" max="4" step="0.1">
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-row-label" data-i18n="set_def_fat">Default fat (%)</div></div>
-          <input type="number" class="settings-input settings-input-sm" id="set_defFat" value="0" min="0" max="15" step="0.5">
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-row-label" data-i18n="set_def_sugar">Default sugar (%)</div></div>
-          <input type="number" class="settings-input settings-input-sm" id="set_defSugar" value="0" min="0" max="20" step="0.5">
-        </div>
-        <div class="settings-row">
           <div><div class="settings-row-label" data-i18n="set_def_temp">Default kitchen temp (°C)</div></div>
           <input type="number" class="settings-input settings-input-sm" id="set_defTemp" value="22" min="16" max="32" step="1">
         </div>
+        <div id="set_breadDefaultsSection"></div>
       </div>
 
       <!-- 4. Display -->
@@ -1346,18 +1329,31 @@ const DEFAULT_SETTINGS = {
   feedFridgeW: 5, feedFridgeF: 5,   // Hűtős / Fridge preset
   defFlour: 500,         // default flour g per loaf
   defLoaves: 1,          // default loaves count
-  defSalt: 2,            // default salt %
-  defHydration: 70,      // default hydration %
-  defStarter: 20,        // default starter %
-  defFat: 0,             // default fat %
-  defSugar: 0,           // default sugar %
   defTemp: 22,           // default kitchen temp °C
   defMode: 'beginner',   // 'beginner' | 'pro'
+  breadDefaults: {
+    sourdough: { hydration: 72, starter: 20, salt: 2,   fat: 0, sugar: 0 },
+    flatbread:  { hydration: 60, yeast: 0.7, salt: 1.8, fat: 3, sugar: 0 },
+    baguette:   { hydration: 68, yeast: 0.7, salt: 2,   fat: 0, sugar: 0 },
+    burger:     { hydration: 62, yeast: 0.7, salt: 1.8, fat: 8, sugar: 5 },
+    kaiser:     { hydration: 58, yeast: 0.7, salt: 1.8, fat: 4, sugar: 2 },
+    roll:       { hydration: 60, yeast: 0.7, salt: 1.8, fat: 2, sugar: 1 },
+  },
 };
 let appSettings = {...DEFAULT_SETTINGS};
 try {
   const _s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
-  if (_s) appSettings = {...DEFAULT_SETTINGS, ..._s};
+  if (_s) {
+    appSettings = {...DEFAULT_SETTINGS, ..._s};
+    // Deep merge breadDefaults so new bread types always get their defaults
+    appSettings.breadDefaults = {};
+    BREAD_TYPES.forEach(b => {
+      appSettings.breadDefaults[b.id] = {
+        ...DEFAULT_SETTINGS.breadDefaults[b.id],
+        ...(_s.breadDefaults?.[b.id] ?? {})
+      };
+    });
+  }
 } catch(e) {}
 
 // ═══════════════════════════════════════════════════
@@ -1438,16 +1434,17 @@ function buildBreadTabs(){
 function selectBread(id){
   currentBread=id;
   const b=BREAD_TYPES.find(x=>x.id===id);
+  const d=appSettings.breadDefaults[id]||DEFAULT_SETTINGS.breadDefaults[id];
   document.querySelectorAll('.bread-tab').forEach((el,i)=>el.classList.toggle('active',BREAD_TYPES[i].id===id));
-  setVal('hydration',b.hydration);
-  setVal('fat',b.fat); setVal('sugar',b.sugar); setVal('salt',b.salt);
+  setVal('hydration',d.hydration);
+  setVal('fat',d.fat); setVal('sugar',d.sugar); setVal('salt',d.salt);
   const isSour=b.useSourdough;
   document.getElementById('starterRow').style.display=isSour?'':'none';
   document.getElementById('yeastRow').style.display=isSour?'none':'';
   document.getElementById('rStarterCard').style.display=isSour?'':'none';
   document.getElementById('rYeastCard').style.display=isSour?'none':'';
-  setVal('starter',isSour?(b.starter||20):0);
-  setVal('yeast',isSour?0:0.7);
+  setVal('starter',isSour?(d.starter??20):0);
+  setVal('yeast',isSour?0:(d.yeast??0.7));
   buildTimeline();
   calc();
 }
@@ -1727,13 +1724,43 @@ function openSettings(){
   document.getElementById('set_feedFridgeF').value  = appSettings.feedFridgeF;
   document.getElementById('set_defFlour').value     = appSettings.defFlour;
   document.getElementById('set_defLoaves').value    = appSettings.defLoaves;
-  document.getElementById('set_defHydration').value = appSettings.defHydration;
-  document.getElementById('set_defStarter').value   = appSettings.defStarter;
-  document.getElementById('set_defSalt').value      = appSettings.defSalt;
-  document.getElementById('set_defFat').value       = appSettings.defFat;
-  document.getElementById('set_defSugar').value     = appSettings.defSugar;
   document.getElementById('set_defTemp').value      = appSettings.defTemp;
   document.getElementById('set_defMode').value      = appSettings.defMode;
+  // Populate per-bread-type defaults
+  const bdSection = document.getElementById('set_breadDefaultsSection');
+  if(bdSection){
+    bdSection.innerHTML = BREAD_TYPES.map(b => {
+      const d = appSettings.breadDefaults[b.id] || DEFAULT_SETTINGS.breadDefaults[b.id];
+      const bName = b[lang] || b.en;
+      const leavenRow = b.useSourdough
+        ? `<div class="settings-row">
+             <div><div class="settings-row-label">${bName} ${t('starter_lbl')} (%)</div></div>
+             <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_starter" value="${d.starter ?? 20}" min="5" max="50" step="1">
+           </div>`
+        : `<div class="settings-row">
+             <div><div class="settings-row-label">${bName} ${t('yeast_lbl')} (%)</div></div>
+             <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_yeast" value="${d.yeast ?? 0.7}" min="0.1" max="3" step="0.1">
+           </div>`;
+      return `<div class="settings-subsection-title">${b.icon} ${bName}</div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">${bName} ${t('hyd_lbl')} (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_hydration" value="${d.hydration}" min="40" max="105" step="1">
+        </div>
+        ${leavenRow}
+        <div class="settings-row">
+          <div><div class="settings-row-label">${bName} ${t('salt_lbl')} (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_salt" value="${d.salt}" min="1" max="4" step="0.1">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">${bName} ${t('fat_lbl')} (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_fat" value="${d.fat}" min="0" max="15" step="0.5">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">${bName} ${t('sugar_lbl')} (%)</div></div>
+          <input type="number" class="settings-input settings-input-sm" id="set_bd_${b.id}_sugar" value="${d.sugar}" min="0" max="20" step="0.5">
+        </div>`;
+    }).join('');
+  }
   // Populate sourdough stage duration inputs
   const stageSection = document.getElementById('set_stageSection');
   if(stageSection){
@@ -1774,13 +1801,29 @@ function applySettings(){
   appSettings.feedFridgeF     = parseFloat(document.getElementById('set_feedFridgeF').value)||5;
   appSettings.defFlour        = parseFloat(document.getElementById('set_defFlour').value)||500;
   appSettings.defLoaves       = parseInt(document.getElementById('set_defLoaves').value)||1;
-  appSettings.defHydration    = parseFloat(document.getElementById('set_defHydration').value)||70;
-  appSettings.defStarter      = parseFloat(document.getElementById('set_defStarter').value)||20;
-  appSettings.defSalt         = parseFloat(document.getElementById('set_defSalt').value)||2;
-  appSettings.defFat          = parseFloat(document.getElementById('set_defFat').value)||0;
-  appSettings.defSugar        = parseFloat(document.getElementById('set_defSugar').value)||0;
   appSettings.defTemp         = parseFloat(document.getElementById('set_defTemp').value)||22;
   appSettings.defMode         = document.getElementById('set_defMode').value;
+  // Save per-bread-type defaults
+  BREAD_TYPES.forEach(b => {
+    const def = DEFAULT_SETTINGS.breadDefaults[b.id];
+    const hEl = document.getElementById(`set_bd_${b.id}_hydration`);
+    const sEl = document.getElementById(`set_bd_${b.id}_salt`);
+    const fEl = document.getElementById(`set_bd_${b.id}_fat`);
+    const suEl = document.getElementById(`set_bd_${b.id}_sugar`);
+    if(!appSettings.breadDefaults) appSettings.breadDefaults = {};
+    if(!appSettings.breadDefaults[b.id]) appSettings.breadDefaults[b.id] = {...def};
+    if(hEl)  appSettings.breadDefaults[b.id].hydration = parseFloat(hEl.value)  || def.hydration;
+    if(sEl)  appSettings.breadDefaults[b.id].salt      = parseFloat(sEl.value)  || def.salt;
+    if(fEl)  appSettings.breadDefaults[b.id].fat       = parseFloat(fEl.value)  || 0;
+    if(suEl) appSettings.breadDefaults[b.id].sugar     = parseFloat(suEl.value) || 0;
+    if(b.useSourdough){
+      const stEl = document.getElementById(`set_bd_${b.id}_starter`);
+      if(stEl) appSettings.breadDefaults[b.id].starter = parseFloat(stEl.value) || def.starter || 20;
+    } else {
+      const yEl = document.getElementById(`set_bd_${b.id}_yeast`);
+      if(yEl) appSettings.breadDefaults[b.id].yeast = parseFloat(yEl.value) || def.yeast || 0.7;
+    }
+  });
   // Save sourdough stage durations
   const stages = (T[lang].tl||T.en.tl).sourdough;
   appSettings.sourdoughStageMins = stages.map((s,i)=>{
@@ -1961,13 +2004,14 @@ function updateReady(){
 // ═══════════════════════════════════════════════════
 function resetDefaults(){
   const b=BREAD_TYPES.find(x=>x.id===currentBread);
+  const d=appSettings.breadDefaults[currentBread]||DEFAULT_SETTINGS.breadDefaults[currentBread];
   setVal('flour',     appSettings.defFlour);
-  setVal('hydration', appSettings.defHydration);
-  setVal('starter',   b.useSourdough ? appSettings.defStarter : 0);
-  setVal('yeast',     b.useSourdough ? 0 : 0.7);
-  setVal('salt',      appSettings.defSalt);
-  setVal('fat',       appSettings.defFat);
-  setVal('sugar',     appSettings.defSugar);
+  setVal('hydration', d.hydration);
+  setVal('starter',   b.useSourdough ? (d.starter ?? 20) : 0);
+  setVal('yeast',     b.useSourdough ? 0 : (d.yeast ?? 0.7));
+  setVal('salt',      d.salt);
+  setVal('fat',       d.fat);
+  setVal('sugar',     d.sugar);
   setVal('temp',      appSettings.defTemp);
   loaves=appSettings.defLoaves;
   document.getElementById('loavesCount').textContent=loaves;
@@ -2060,11 +2104,12 @@ if(appSettings.defMode==='pro'){
 }
 // Apply settings: default flour, loaves, salt + all new slider defaults
 setVal('flour',     appSettings.defFlour);
-setVal('hydration', appSettings.defHydration);
-setVal('starter',   appSettings.defStarter);
-setVal('salt',      appSettings.defSalt);
-setVal('fat',       appSettings.defFat);
-setVal('sugar',     appSettings.defSugar);
+const _initBread = appSettings.breadDefaults[currentBread] || DEFAULT_SETTINGS.breadDefaults[currentBread];
+setVal('hydration', _initBread.hydration);
+setVal('starter',   _initBread.starter ?? 20);
+setVal('salt',      _initBread.salt);
+setVal('fat',       _initBread.fat);
+setVal('sugar',     _initBread.sugar);
 setVal('temp',      appSettings.defTemp);
 loaves=appSettings.defLoaves;
 document.getElementById('loavesCount').textContent=loaves;
