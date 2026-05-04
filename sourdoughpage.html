@@ -1340,7 +1340,7 @@ const DEFAULT_SETTINGS = {
     roll:       { hydration: 60, yeast: 0.7, salt: 1.8, fat: 2, sugar: 1 },
   },
 };
-let appSettings = {...DEFAULT_SETTINGS, breadDefaults: JSON.parse(JSON.stringify(DEFAULT_SETTINGS.breadDefaults))};
+let appSettings = {...DEFAULT_SETTINGS};
 try {
   const _s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
   if (_s) {
@@ -1350,7 +1350,7 @@ try {
     BREAD_TYPES.forEach(b => {
       appSettings.breadDefaults[b.id] = {
         ...DEFAULT_SETTINGS.breadDefaults[b.id],
-        ...(_s.breadDefaults && _s.breadDefaults[b.id] ? _s.breadDefaults[b.id] : {})
+        ...(_s.breadDefaults?.[b.id] ?? {})
       };
     });
   }
