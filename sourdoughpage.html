@@ -959,14 +959,41 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
         <div class="settings-section-title" data-i18n="set_feed_section">🥄 Starter Feeding Defaults</div>
         <div class="settings-row">
           <div>
-            <div class="settings-row-label" data-i18n="set_feed_ratio">Default ratio (starter : flour : water)</div>
+            <div class="settings-row-label" data-i18n="set_feed_ratio_custom">Custom ratio (starter : water : flour)</div>
             <div class="settings-row-sub" data-i18n="set_feed_ratio_sub">Multipliers relative to current starter weight</div>
           </div>
           <div style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--warm-gray)">
             <span>1 :</span>
-            <input type="number" class="settings-input settings-input-sm" id="set_ratioFlour" value="1" min="0.5" max="5" step="0.5">
+            <input type="number" class="settings-input settings-input-sm" id="set_ratioWater" value="1" min="0.5" max="10" step="0.5">
             <span>:</span>
-            <input type="number" class="settings-input settings-input-sm" id="set_ratioWater" value="1" min="0.5" max="5" step="0.5">
+            <input type="number" class="settings-input settings-input-sm" id="set_ratioFlour" value="1" min="0.5" max="10" step="0.5">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">⚡ <span data-i18n="feed_mode_fast">Gyors</span> <span style="font-size:.72rem;color:var(--warm-gray)" data-i18n="set_feed_preset_ratio">ratio (starter : water : flour)</span></div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--warm-gray)">
+            <span>1 :</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedFastW" value="1" min="0.5" max="10" step="0.5">
+            <span>:</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedFastF" value="1" min="0.5" max="10" step="0.5">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">🌡️ <span data-i18n="feed_mode_normal">Normál</span> <span style="font-size:.72rem;color:var(--warm-gray)" data-i18n="set_feed_preset_ratio">ratio (starter : water : flour)</span></div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--warm-gray)">
+            <span>1 :</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedNormalW" value="2" min="0.5" max="10" step="0.5">
+            <span>:</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedNormalF" value="2" min="0.5" max="10" step="0.5">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">❄️ <span data-i18n="feed_mode_fridge">Hűtős</span> <span style="font-size:.72rem;color:var(--warm-gray)" data-i18n="set_feed_preset_ratio">ratio (starter : water : flour)</span></div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--warm-gray)">
+            <span>1 :</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedFridgeW" value="5" min="0.5" max="10" step="0.5">
+            <span>:</span>
+            <input type="number" class="settings-input settings-input-sm" id="set_feedFridgeF" value="5" min="0.5" max="10" step="0.5">
           </div>
         </div>
       </div>
@@ -1129,7 +1156,9 @@ const T = {
     set_start_time_sub:'Shows clock times for each stage in the timeline',
     set_feed_section:'🥄 Starter Feeding Defaults',
     set_feed_ratio:'Default ratio (starter : flour : water)',
+    set_feed_ratio_custom:'Custom ratio (starter : water : flour)',
     set_feed_ratio_sub:'Multipliers relative to current starter weight',
+    set_feed_preset_ratio:'ratio (starter : water : flour)',
     set_calc_section:'⚙️ Calculator Defaults',
     set_def_flour:'Default flour (g per loaf)',
     set_def_loaves:'Default loaves count',
@@ -1263,7 +1292,9 @@ const huO = {
   set_start_time_sub:'Megjeleníti a pontos időpontokat az időrend minden szakaszánál',
   set_feed_section:'🥄 Kovász etetés alapértelmezések',
   set_feed_ratio:'Alapértelmezett arány (kovász : liszt : víz)',
+  set_feed_ratio_custom:'Egyéni arány (kovász : víz : liszt)',
   set_feed_ratio_sub:'Szorzók a jelenlegi kovász súlyához képest',
+  set_feed_preset_ratio:'arány (kovász : víz : liszt)',
   set_calc_section:'⚙️ Kalkulátor alapértelmezések',
   set_def_flour:'Alapértelmezett liszt (g / cipó)',
   set_def_loaves:'Alapértelmezett cipók száma',
@@ -1308,8 +1339,11 @@ try { savedRecipes = JSON.parse(localStorage.getItem('szandi_v3') || '[]'); } ca
 const SETTINGS_KEY = 'szandi_settings_v1';
 const DEFAULT_SETTINGS = {
   bakingStartTime: '',   // 'HH:MM' or ''
-  feedRatioFlour: 1,     // default flour multiplier for feeding
-  feedRatioWater: 1,     // default water multiplier for feeding
+  feedRatioFlour: 1,     // default flour multiplier for feeding (custom mode)
+  feedRatioWater: 1,     // default water multiplier for feeding (custom mode)
+  feedFastW: 1, feedFastF: 1,       // Gyors / Fast preset
+  feedNormalW: 2, feedNormalF: 2,   // Normál / Normal preset
+  feedFridgeW: 5, feedFridgeF: 5,   // Hűtős / Fridge preset
   defFlour: 500,         // default flour g per loaf
   defLoaves: 1,          // default loaves count
   defSalt: 2,            // default salt %
@@ -1685,6 +1719,12 @@ function openSettings(){
   document.getElementById('set_bakingStart').value  = appSettings.bakingStartTime || '';
   document.getElementById('set_ratioFlour').value   = appSettings.feedRatioFlour;
   document.getElementById('set_ratioWater').value   = appSettings.feedRatioWater;
+  document.getElementById('set_feedFastW').value    = appSettings.feedFastW;
+  document.getElementById('set_feedFastF').value    = appSettings.feedFastF;
+  document.getElementById('set_feedNormalW').value  = appSettings.feedNormalW;
+  document.getElementById('set_feedNormalF').value  = appSettings.feedNormalF;
+  document.getElementById('set_feedFridgeW').value  = appSettings.feedFridgeW;
+  document.getElementById('set_feedFridgeF').value  = appSettings.feedFridgeF;
   document.getElementById('set_defFlour').value     = appSettings.defFlour;
   document.getElementById('set_defLoaves').value    = appSettings.defLoaves;
   document.getElementById('set_defHydration').value = appSettings.defHydration;
@@ -1726,6 +1766,12 @@ function applySettings(){
   appSettings.bakingStartTime = document.getElementById('set_bakingStart').value || '';
   appSettings.feedRatioFlour  = parseFloat(document.getElementById('set_ratioFlour').value)||1;
   appSettings.feedRatioWater  = parseFloat(document.getElementById('set_ratioWater').value)||1;
+  appSettings.feedFastW       = parseFloat(document.getElementById('set_feedFastW').value)||1;
+  appSettings.feedFastF       = parseFloat(document.getElementById('set_feedFastF').value)||1;
+  appSettings.feedNormalW     = parseFloat(document.getElementById('set_feedNormalW').value)||2;
+  appSettings.feedNormalF     = parseFloat(document.getElementById('set_feedNormalF').value)||2;
+  appSettings.feedFridgeW     = parseFloat(document.getElementById('set_feedFridgeW').value)||5;
+  appSettings.feedFridgeF     = parseFloat(document.getElementById('set_feedFridgeF').value)||5;
   appSettings.defFlour        = parseFloat(document.getElementById('set_defFlour').value)||500;
   appSettings.defLoaves       = parseInt(document.getElementById('set_defLoaves').value)||1;
   appSettings.defHydration    = parseFloat(document.getElementById('set_defHydration').value)||70;
@@ -1742,13 +1788,13 @@ function applySettings(){
     return el ? (parseInt(el.value)||parseDurationMins(s.duration)) : parseDurationMins(s.duration);
   });
   try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); }catch(e){}
-  // Sync pro-mode feeding ratio inputs
+  // Sync custom feeding ratio inputs
   const rfEl=document.getElementById('ratioFlour'), rwEl=document.getElementById('ratioWater');
   if(rfEl) rfEl.value=appSettings.feedRatioFlour;
   if(rwEl) rwEl.value=appSettings.feedRatioWater;
   closeSettings();
   buildTimeline();
-  calcStarter();
+  setFeedMode(feedMode);  // re-apply to update ratios from new settings
   applyTranslations();
 }
 
@@ -1824,22 +1870,31 @@ function updateTempNote(){
 // ═══════════════════════════════════════════════════
 //  FEED MODE
 // ═══════════════════════════════════════════════════
-const FEED_MODE_RATIOS = {
-  fast:   {w:1, f:1},
-  normal: {w:2, f:2},
-  fridge: {w:5, f:5},
-};
+function getFeedModeRatios(){
+  return {
+    fast:   {w: appSettings.feedFastW,   f: appSettings.feedFastF},
+    normal: {w: appSettings.feedNormalW, f: appSettings.feedNormalF},
+    fridge: {w: appSettings.feedFridgeW, f: appSettings.feedFridgeF},
+  };
+}
 function setFeedMode(mode){
   feedMode = mode;
+  const ratios = getFeedModeRatios();
   document.querySelectorAll('.feed-mode-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.mode===mode);
+    // Update ratio label on preset buttons
+    const ratioSpan = b.querySelector('.feed-mode-ratio');
+    if(ratioSpan && b.dataset.mode && ratios[b.dataset.mode]){
+      const r = ratios[b.dataset.mode];
+      ratioSpan.textContent = '1:'+r.w+':'+r.f;
+    }
   });
   const customRow = document.getElementById('customRatioRow');
   if(mode==='custom'){
     if(customRow) customRow.style.display='';
   } else {
     if(customRow) customRow.style.display='none';
-    const r = FEED_MODE_RATIOS[mode];
+    const r = ratios[mode];
     const ratioFlourEl=document.getElementById('ratioFlour'), ratioWaterEl=document.getElementById('ratioWater');
     if(ratioFlourEl) ratioFlourEl.value=r.f;
     if(ratioWaterEl) ratioWaterEl.value=r.w;
@@ -1856,13 +1911,11 @@ function calcStarter(){
   if(feedMode==='custom'){
     rf=parseFloat(document.getElementById('ratioFlour')?.value)||appSettings.feedRatioFlour;
     rw=parseFloat(document.getElementById('ratioWater')?.value)||appSettings.feedRatioWater;
-  } else if(FEED_MODE_RATIOS[feedMode]){
-    const ratio = FEED_MODE_RATIOS[feedMode];
-    rf=ratio.f;
-    rw=ratio.w;
   } else {
-    rf=appSettings.feedRatioFlour;
-    rw=appSettings.feedRatioWater;
+    const ratios = getFeedModeRatios();
+    const ratio = ratios[feedMode];
+    if(ratio){ rf=ratio.f; rw=ratio.w; }
+    else { rf=appSettings.feedRatioFlour; rw=appSettings.feedRatioWater; }
   }
   const flour=Math.round(cur*rf);
   const water=Math.round(cur*rw);
