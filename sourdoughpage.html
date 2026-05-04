@@ -806,16 +806,22 @@ footer .fr{font-size:.74rem;color:var(--warm-gray)}
             <input type="number" id="sCurrentIn" value="50" oninput="sS('sCurrent');calcStarter()">
           </div>
         </div>
-        <div class="input-group pro-only">
+        <div class="feed-modes" id="feedModes">
+          <button class="feed-mode-btn" data-mode="fast" onclick="setFeedMode('fast')">⚡ <span data-i18n="feed_mode_fast">Gyors</span><span class="feed-mode-ratio">1:1:1</span></button>
+          <button class="feed-mode-btn active" data-mode="normal" onclick="setFeedMode('normal')">🌡️ <span data-i18n="feed_mode_normal">Normál</span><span class="feed-mode-ratio">1:2:2</span></button>
+          <button class="feed-mode-btn" data-mode="fridge" onclick="setFeedMode('fridge')">❄️ <span data-i18n="feed_mode_fridge">Hűtős</span><span class="feed-mode-ratio">1:5:5</span></button>
+          <button class="feed-mode-btn" data-mode="custom" onclick="setFeedMode('custom')">✏️ <span data-i18n="feed_mode_custom">Egyéni</span></button>
+        </div>
+        <div class="input-group" id="customRatioRow" style="display:none">
           <div class="input-label"><span data-i18n="feed_ratio_lbl">Ratio (starter : water : flour)</span></div>
           <div style="display:flex;gap:8px;align-items:center">
             <span style="font-size:.8rem;color:var(--warm-gray)">1 :</span>
-            <input type="number" id="ratioWater" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
+            <input type="number" id="ratioWater" value="2" min="0.5" max="10" step="0.5" oninput="calcStarter()">
             <span style="font-size:.8rem;color:var(--warm-gray)">:</span>
-            <input type="number" id="ratioFlour" value="1" min="0.5" max="5" step="0.5" oninput="calcStarter()">
+            <input type="number" id="ratioFlour" value="2" min="0.5" max="10" step="0.5" oninput="calcStarter()">
           </div>
         </div>
-        <div class="beginner-only" id="beginnerRatioNote" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px" data-i18n="ratio_note">Using standard 1:1:1 ratio (equal parts starter, water, flour)</div>
+        <div id="beginnerRatioNote" style="font-size:.74rem;color:var(--warm-gray);padding:8px;background:var(--cream);border-radius:8px;margin-bottom:8px"></div>
         <div class="starter-result">
           <div class="sr-row"><span data-i18n="w_to_add">Water to add</span><span id="sWater">50g</span></div>
           <div class="sr-row"><span data-i18n="f_to_add">Flour to add</span><span id="sFlour">50g</span></div>
@@ -1095,6 +1101,11 @@ const T = {
     feed_title:'Feeding Calculator',feed_sub:'Compute how much flour and water to add',
     cur_starter_lbl:'Current Starter (g)',feed_ratio_lbl:'Ratio (starter : water : flour)',
     ratio_note:'Using standard 1:1:1 ratio (equal parts starter, water, flour)',
+    feed_mode_fast:'Fast',feed_mode_normal:'Normal',feed_mode_fridge:'Fridge',feed_mode_custom:'Custom',
+    feed_mode_desc_fast:'Fast (1:1:1) — quick activation at room temperature',
+    feed_mode_desc_normal:'Normal (1:2:2) — standard everyday feeding',
+    feed_mode_desc_fridge:'Fridge (1:5:5) — slow cold fermentation in refrigerator',
+    feed_mode_desc_custom:'Custom ratio',
     f_to_add:'Flour to add',w_to_add:'Water to add',total_after:'Total after feeding',
     ready_title:'Is My Starter Ready?',ready_sub:'Gauge health and readiness',
     hrs_fed_lbl:'Hours since last feed',rise_lbl:'Rise since feeding (%)',readiness_lbl:'Readiness indicator',
@@ -1224,6 +1235,11 @@ const huO = {
   feed_title:'Etetési kalkulátor',feed_sub:'Számítsd ki, mennyit kell etetned',
   cur_starter_lbl:'Jelenlegi kovász (g)',feed_ratio_lbl:'Arány (kovász : víz : liszt)',
   ratio_note:'Szabványos 1:1:1 arány (egyenlő rész kovász, víz, liszt)',
+  feed_mode_fast:'Gyors',feed_mode_normal:'Normál',feed_mode_fridge:'Hűtős',feed_mode_custom:'Egyéni',
+  feed_mode_desc_fast:'Gyors (1:1:1) — gyors aktiválás szobahőmérsékleten',
+  feed_mode_desc_normal:'Normál (1:2:2) — szokásos napi etetés',
+  feed_mode_desc_fridge:'Hűtős (1:5:5) — lassú hideg erjedés hűtőszekrényben',
+  feed_mode_desc_custom:'Egyéni arány',
   f_to_add:'Hozzáadandó liszt',w_to_add:'Hozzáadandó víz',total_after:'Összesen etetés után',
   ready_title:'Kész a kovászom?',ready_sub:'Mérd fel a kovász egészségét',
   hrs_fed_lbl:'Etetés óta eltelt órák',rise_lbl:'Kelés az etetés óta (%)',readiness_lbl:'Készenlét jelző',
@@ -1283,6 +1299,7 @@ let currentBread = 'sourdough';
 let activeSeedIds = new Set();
 let activeTlIndex = -1;
 let savedRecipes = [];
+let feedMode = 'normal';
 try { savedRecipes = JSON.parse(localStorage.getItem('szandi_v3') || '[]'); } catch(e){}
 
 // ═══════════════════════════════════════════════════
@@ -1805,14 +1822,47 @@ function updateTempNote(){
 }
 
 // ═══════════════════════════════════════════════════
+//  FEED MODE
+// ═══════════════════════════════════════════════════
+const FEED_MODE_RATIOS = {
+  fast:   {w:1, f:1},
+  normal: {w:2, f:2},
+  fridge: {w:5, f:5},
+};
+function setFeedMode(mode){
+  feedMode = mode;
+  document.querySelectorAll('.feed-mode-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode===mode);
+  });
+  const customRow = document.getElementById('customRatioRow');
+  if(mode==='custom'){
+    if(customRow) customRow.style.display='';
+  } else {
+    if(customRow) customRow.style.display='none';
+    const r = FEED_MODE_RATIOS[mode];
+    const ratioFlourEl=document.getElementById('ratioFlour'), ratioWaterEl=document.getElementById('ratioWater');
+    if(ratioFlourEl) ratioFlourEl.value=r.f;
+    if(ratioWaterEl) ratioWaterEl.value=r.w;
+  }
+  calcStarter();
+}
+
+// ═══════════════════════════════════════════════════
 //  STARTER
 // ═══════════════════════════════════════════════════
 function calcStarter(){
   const cur=parseFloat(document.getElementById('sCurrentIn').value)||50;
-  let rf=appSettings.feedRatioFlour, rw=appSettings.feedRatioWater;
-  if(proMode){
+  let rf, rw;
+  if(feedMode==='custom'){
     rf=parseFloat(document.getElementById('ratioFlour')?.value)||appSettings.feedRatioFlour;
     rw=parseFloat(document.getElementById('ratioWater')?.value)||appSettings.feedRatioWater;
+  } else if(FEED_MODE_RATIOS[feedMode]){
+    const ratio = FEED_MODE_RATIOS[feedMode];
+    rf=ratio.f;
+    rw=ratio.w;
+  } else {
+    rf=appSettings.feedRatioFlour;
+    rw=appSettings.feedRatioWater;
   }
   const flour=Math.round(cur*rf);
   const water=Math.round(cur*rw);
@@ -1821,15 +1871,9 @@ function calcStarter(){
   document.getElementById('sTotal').textContent=(cur+flour+water)+'g';
   const hydEl=document.getElementById('sHydration');
   if(hydEl) hydEl.textContent=flour>0?Math.round(water/flour*100)+'%':'—';
-  // Update beginner ratio note to reflect current ratio
+  // Update mode description note
   const noteEl=document.getElementById('beginnerRatioNote');
-  if(noteEl){
-    if(rf===1&&rw===1){
-      noteEl.innerHTML=t('ratio_note');
-    } else {
-      noteEl.innerHTML=t('ratio_note_custom').replace('{rf}',rf).replace('{rw}',rw);
-    }
-  }
+  if(noteEl) noteEl.textContent=t('feed_mode_desc_'+feedMode)||'';
 }
 
 // ═══════════════════════════════════════════════════
@@ -1971,10 +2015,8 @@ setVal('sugar',     appSettings.defSugar);
 setVal('temp',      appSettings.defTemp);
 loaves=appSettings.defLoaves;
 document.getElementById('loavesCount').textContent=loaves;
-// Pre-fill feeding ratio inputs from settings
-const _rfEl=document.getElementById('ratioFlour'), _rwEl=document.getElementById('ratioWater');
-if(_rfEl) _rfEl.value=appSettings.feedRatioFlour;
-if(_rwEl) _rwEl.value=appSettings.feedRatioWater;
+// Pre-fill feeding ratio inputs from settings and init feed mode
+setFeedMode('normal');
 buildBreadTabs();
 buildSeeds();
 buildTimeline();
